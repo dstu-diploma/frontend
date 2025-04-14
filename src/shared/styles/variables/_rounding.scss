@@ -1,0 +1,13 @@
+$rounding_unit: 0.125rem;
+
+$rounding: (
+    xs: $rounding_unit * 1,
+    sm: $rounding_unit * 2,
+    md: $rounding_unit * 3,
+    lg: $rounding_unit * 4,
+    xl: $rounding_unit * 6,
+    2xl: $rounding_unit * 8,
+    3xl: $rounding_unit * 12,
+    none: 0,
+    full: 50%
+);

@@ -1,0 +1,82 @@
+body {
+    user-select: none;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: inherit;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: transparent;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+:root {
+    --background: #0e0e10;
+    --foreground: #ffffff;
+    --primary: #fc5453;
+    --primary-foreground: #ffffff;
+    --card: #16171a;
+    --card-foreground: #ffffff;
+    --muted: hsl(216, 16%, 12%);
+    --muted-hover: #36393f;
+    --muted-foreground: #aaaaaa;
+    --ghost: #16171a;
+    --ghost-foreground: #ffffff;
+    --secondary: #0b0d14;
+    --secondary-foreground: #ffffff;
+    --dialog: #17191e;
+    --dialog-foreground: #ffffff;
+    --destructive: rgba(252, 84, 83, 0.1);
+    --destructive-foreground: #fc5453;
+    --warning: rgba(228, 207, 19, 0.1);
+    --warning-foreground: #e4cf13;
+    --border: #676767;
+    --ring: rgba(0, 0, 0, 0);
+    --radius: 0.75rem;
+}
+
+* {
+    color: #fff;
+    border-color: var(--border);
+    box-sizing: border-box;
+}
+
+button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    padding: 0;
+    margin: 0;
+    font-weight: 400;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+}

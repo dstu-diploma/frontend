@@ -1,0 +1,78 @@
+@use "sass:meta";
+@use "sass:math";
+@use "sass:list";
+@use "sass:map";
+
+@use "variables" as *;
+
+@mixin media($size: tablet, $type: min) {
+    @if map.has-key($breakpoints, $size) {
+        @media (#{$type}-width: map.get($breakpoints, $size)) {
+            @content;
+        }
+    } @else {
+        @warn "Точка останова #{$size} не найдена в карте $breakpoints.";
+    }
+}
+
+@mixin text-size($key) {
+    font-size: map.get($font-sizes, $key);
+    line-height: map.get($line-heights, $key);
+}
+
+@mixin weight($key) {
+    font-weight: map.get($weights, $key);
+}
+
+@mixin letter-spacing($size) {
+    @if map.has-key($tracking, $size) {
+        letter-spacing: map.get($tracking, $size);
+    } @else {
+        letter-spacing: $size;
+    }
+}
+
+@mixin inset($top, $right: $top, $bottom: $top, $left: $right) {
+    top: $top;
+    right: $right;
+    bottom: $bottom;
+    left: $left;
+}
+
+@mixin rounded($size) {
+    @if map.has-key($rounding, $size) {
+        border-radius: map.get($rounding, $size);
+    } @else {
+        @warn "Значение #{$size} отсутствует в карте $rounding.";
+    }
+}
+
+@mixin grid-cols($value) {
+    grid-template-columns: repeat($value, 1fr);
+}
+
+@mixin col-span($value) {
+    grid-column: span $value / span $value;
+}
+
+@mixin spacing($property, $values...) {
+    $resolved-values: ();
+
+    @each $value in $values {
+        @if meta.type-of($value) == "number" and math.is-unitless($value) {
+            $sign: if($value < 0, -1, 1);
+            $abs-value: abs($value);
+
+            @if map.has-key($spacing, $abs-value) {
+                $resolved-values: list.append($resolved-values, $sign * map.get($spacing, $abs-value));
+            } @else {
+                @warn "Значение #{$value} не найдено в карте $spacing.";
+                $resolved-values: list.append($resolved-values, $value);
+            }
+        } @else {
+            $resolved-values: list.append($resolved-values, $value);
+        }
+    }
+
+    #{$property}: $resolved-values;
+}
