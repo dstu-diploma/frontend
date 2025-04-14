@@ -23,17 +23,19 @@ export const Header = ({ user }: HeaderProps) => {
           <span className={styles.userName}>{user.name}</span>
           <div className={styles.avatarWrapper}>
             {user.avatar ? (
-              <Image
-                src={user.avatar}
-                alt={user.name}
-                width={40}
-                height={40}
-                className={styles.avatar}
-              />
+              <Link href="/profile">
+                <Image
+                  src={user.avatar}
+                  alt={user.name}
+                  width={40}
+                  height={40}
+                  className={styles.avatar}
+                />
+              </Link>
             ) : (
-              <div className={styles.avatarPlaceholder}>
+              <Link href="/profile" className={styles.avatarPlaceholder}>
                 {user.name.charAt(0).toUpperCase()}
-              </div>
+              </Link>
             )}
           </div>
         </div>

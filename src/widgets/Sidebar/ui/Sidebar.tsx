@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+// import { Button } from '@/shared/ui/shadcn/button/';
 import styles from './Sidebar.module.css';
 
 const navigationItems = [
@@ -54,6 +55,9 @@ export const Sidebar = () => {
           ))}
         </ul>
       </nav>
+      {/* <footer className={styles.sidebarFooter}>
+        <Button variant="default">Выйти</Button>
+      </footer> */}
     </aside>
   );
 }; 
