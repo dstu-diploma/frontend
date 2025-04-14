@@ -1,0 +1,70 @@
+.profileContainer {
+    padding: 0 1rem;
+}
+
+.profileContent {
+    width: 100%;
+}
+
+.profileTitle {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.profileFormItem {
+    margin-top: 1.25rem;
+}
+
+.formSubmit {
+    margin-top: 2rem;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.formSubmit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+    z-index: -1;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+}
+
+.formSubmit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(44, 82, 130, 0.2);
+}
+
+.formSubmit:hover::before {
+    opacity: 1;
+}
+
+.formSubmit:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(44, 82, 130, 0.15);
+}
+
+.formSubmit:disabled {
+    background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
