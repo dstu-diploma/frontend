@@ -12,8 +12,54 @@
     font-weight: 600;
 }
 
+.profileDropdownContainer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profileAvatarTrigger {
+    cursor: pointer;
+    border: none;
+    background: none;
+    margin-bottom: 1.75rem;
+}
+
+.profileAvatarFallback {
+    font-size: 1.5rem;
+    background-color: #e3e3e3;
+}
+
+.profileAvatarTrigger:focus {
+    outline: none;
+}
+
+.profileAvatarBlock {
+    height: 100px;
+    width: 100px;
+    background-color: grey;
+    border-radius: 50%;
+    font-size: 1rem;
+}
+
+.profileForm {
+    margin-top: 20px;
+}
+
+.profileFormColumns {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+}
+
+.profileFormGroup {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
 .profileFormItem {
-    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
 }
 
 .formSubmit {
