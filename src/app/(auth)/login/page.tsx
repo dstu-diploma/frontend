@@ -1,6 +1,6 @@
 'use client';
 
-import { LoginForm, LoginFormData } from '@/features/auth/ui/LoginForm';
+import { LoginForm, LoginFormData } from '@/features/user/';
 
 export default function LoginPage() {
   const handleLogin = async (data: LoginFormData) => {

@@ -1,5 +1,6 @@
 'use client';
 
+import { QueryProvider } from '@/providers/QueryProvider';
 import { Roboto } from 'next/font/google';
 import '../globals.css';
 import styles from './layout.module.css';
@@ -18,11 +19,13 @@ export default function AuthLayout({
   return (
     <html lang="ru" className={roboto.className}>
       <body>
-        <div className={styles.layout}>
-          <main className={styles.main}>
-            {children}
-          </main>
-        </div>
+        <QueryProvider>
+          <div className={styles.layout}>
+            <main className={styles.main}>
+              {children}
+            </main>
+          </div>
+        </QueryProvider>
       </body>
     </html>
   );
