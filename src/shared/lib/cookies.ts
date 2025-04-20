@@ -8,6 +8,14 @@ const COOKIE_OPTIONS = {
   sameSite: 'strict' as const,
 };
 
+export const setAccessToken = (accessToken: string) => {
+  Cookies.set('access_token', accessToken, COOKIE_OPTIONS);
+}
+
+export const setUserCookie = (user: BaseUserType) => {
+  Cookies.set('user', JSON.stringify(user), COOKIE_OPTIONS);
+}
+
 export const setAuthCookies = (user: BaseUserType, accessToken: string, refreshToken: string) => {
   Cookies.set('user', JSON.stringify(user), COOKIE_OPTIONS);
   Cookies.set('access_token', accessToken, COOKIE_OPTIONS);
