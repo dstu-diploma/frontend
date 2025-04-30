@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { BaseUserType } from '@/features/user/model/types';
+import { BaseUserType, TokensObject } from '@/features/user/model/types';
 
 const COOKIE_OPTIONS = {
   expires: 7,
@@ -14,6 +14,11 @@ export const setAccessToken = (accessToken: string) => {
 
 export const setUserCookie = (user: BaseUserType) => {
   Cookies.set('user', JSON.stringify(user), COOKIE_OPTIONS);
+}
+
+export const setTokensCookie = (tokens: TokensObject) => {
+  Cookies.set('access_token', tokens.accessToken)
+  Cookies.set('refresh_token', tokens.refreshToken)
 }
 
 export const setAuthCookies = (user: BaseUserType, accessToken: string, refreshToken: string) => {
