@@ -2,6 +2,7 @@
 
 import { QueryProvider } from '@/providers/QueryProvider';
 import { Roboto } from 'next/font/google';
+import { Toaster } from '@/shared/ui/shadcn/toast/toaster';
 import '../globals.css';
 import styles from './layout.module.css';
 
@@ -24,6 +25,7 @@ export default function AuthLayout({
             <main className={styles.main}>
               {children}
             </main>
+            <Toaster />
           </div>
         </QueryProvider>
       </body>
