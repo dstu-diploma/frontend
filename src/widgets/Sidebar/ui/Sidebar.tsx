@@ -1,40 +1,19 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-// import { Button } from '@/shared/ui/shadcn/button/';
+import { usePathname, useRouter } from 'next/navigation';
+import { removeAuthCookies } from '@/shared/lib/helpers/cookies';
+import { navigationItems } from '../configs/navItemsConfig';
 import styles from './Sidebar.module.css';
-
-const navigationItems = [
-  {
-    label: 'Главная',
-    href: '/',
-    icon: '🏠'
-  },
-  {
-    label: 'Хакатоны',
-    href: '/hackathons',
-    icon: '🎯'
-  },
-  {
-    label: 'Мои команды',
-    href: '/teams',
-    icon: '👥'
-  },
-  {
-    label: 'Проекты',
-    href: '/projects',
-    icon: '📋'
-  },
-  {
-    label: 'Настройки',
-    href: '/settings',
-    icon: '⚙️'
-  }
-];
 
 export const Sidebar = () => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    removeAuthCookies();
+    router.push('/login');
+  };
 
   return (
     <aside className={styles.sidebar}>
@@ -55,9 +34,14 @@ export const Sidebar = () => {
           ))}
         </ul>
       </nav>
-      {/* <footer className={styles.sidebarFooter}>
-        <Button variant="default">Выйти</Button>
-      </footer> */}
+      <footer className={styles.sidebarFooter}>
+        <button 
+          onClick={handleLogout}
+          className={styles.logoutButton}
+        >
+          <span className={styles.label}>Выйти</span>
+        </button>
+      </footer>
     </aside>
   );
 }; 
