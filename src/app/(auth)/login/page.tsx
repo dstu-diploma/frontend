@@ -1,16 +1,43 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoginForm, LoginFormData } from '@/features/user/';
 import { userApiMutations } from '@/features/user/';
-import { setAuthCookies } from '@/shared/lib/cookies';
+import { setAuthCookies } from '@/shared/lib/helpers/cookies';
 import { AxiosError } from 'axios';
+import { useToast } from '@/shared/hooks/use-toast';
+import LoadingSpinner from '@/shared/ui/custom/LoadingSpinner/LoadingSpinner';
+import styles from './login.module.css'
 
 export default function LoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
+  const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { mutate: loginUser, isPending: isSubmitting } = userApiMutations.login();
+
+  useEffect(() => {
+    const redirectReason = localStorage.getItem('login_redirect_reason');
+    if (redirectReason === 'session_expired') {
+      console.log('got it')
+      toast({
+        title: 'Сессия истекла',
+        description: 'Пожалуйста, войдите снова',
+        variant: 'destructive',
+      });
+      localStorage.removeItem('login_redirect_reason');
+    }
+    setHasCheckedAuth(true);
+  }, [toast]);
+
+  if (!hasCheckedAuth) {
+    return (
+      <div className={styles.spinnerContainer}>
+        <LoadingSpinner />
+      </div>
+    )
+  }
 
   const handleLogin = async (data: LoginFormData) => {
     loginUser(
