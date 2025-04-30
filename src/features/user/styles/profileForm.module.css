@@ -1,0 +1,169 @@
+.profileFormContainer {
+    width: 62.5%;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.profileForm {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.profileFormColumns {
+    width: 100%;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.profileFormRow {
+    display: flex;
+    gap: 1rem;
+}
+
+.profileFormRow>.profileFormItem {
+    width: 50%;
+}
+
+.profileFormGroup {
+    width: calc(100% / 2);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.profileFormGroup:last-child {
+    gap: 2.5rem;
+}
+
+.profileFormItem {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.profileFormItemText {
+    display: block;
+    padding: 0.5rem 0;
+}
+
+.profileFormItem:has(.profileFormAbout) {
+    flex: 1;
+}
+
+.profileFormAbout {
+    height: 100%;
+}
+
+.formSubmit {
+    margin-top: 2rem;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.formSubmit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+    z-index: -1;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+}
+
+.formSubmit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(44, 82, 130, 0.2);
+}
+
+.formSubmit:hover::before {
+    opacity: 1;
+}
+
+.formSubmit:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(44, 82, 130, 0.15);
+}
+
+.formSubmit:disabled {
+    background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.profileFormInput:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+    background-color: #fff;
+}
+
+.dropdownFileInput {
+    display: none;
+}
+
+.profileAvatarTrigger {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 1rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.profileAvatarTrigger>span {
+    width: 100%;
+    height: 100%;
+}
+
+.profileAvatarFallback {
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1px solid #e2e8f0;
+    font-size: 3.25rem;
+    background-color: white;
+}
+
+.errorText {
+    color: #e53e3e;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    display: block;
+    padding-top: 0.5rem;
+    position: absolute;
+    bottom: -27px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
