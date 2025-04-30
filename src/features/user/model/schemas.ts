@@ -65,6 +65,8 @@ export const profileSchema = z.object({
       .string()
       .min(10, { message: "Дата рождения должна содержать минимум 10 символов" })
       .optional(),
+    role: z.string().optional(),
+    registerDate: z.string().optional()
 });
 
 export type RegisterFormData = z.infer<typeof registerSchema>;

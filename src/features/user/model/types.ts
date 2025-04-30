@@ -15,14 +15,14 @@ export interface UserProfile extends Omit<User, 'id'> {
 } 
 
 export type BaseUserType = {
-  id: number,
-  first_name: string,
-  last_name: string,
-  patronymic: string,
-  register_date: string,
-  email: string,
-  about: string | null,
-  birthday: string | null
+  first_name: string;
+  last_name: string;
+  email: string;
+  patronymic?: string | undefined;
+  about?: string | undefined;
+  birthday?: string | undefined;
+  role?: string | undefined;
+  registerDate?: Date | undefined;
 }
 
 export interface RegisterRequestBody {
@@ -42,6 +42,11 @@ export interface AuthResponseBody {
 export interface LoginRequestBody {
   username: string;
   password: string;
+}
+
+export interface TokensObject {
+  accessToken: string
+  refreshToken: string
 }
 
 

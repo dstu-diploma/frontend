@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
 import { UserProfile } from '../model/types';
-import { userApi } from '../api/userApi';
+import { profileApi } from '../api/profileApi';
 
-export const useProfile = () => {
+export const useProfile = (): {
+  profile: UserProfile | null;
+  isLoading: boolean;
+  error: string | null;
+  updateProfile: (newProfile: Partial<UserProfile>) => Promise<void>;
+  updateAvatar: (file: File | null) => Promise<void>;
+} => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -12,16 +18,8 @@ export const useProfile = () => {
   }, []);
 
   const loadProfile = async () => {
-    try {
-      setIsLoading(true);
-      const data = await userApi.getProfile();
-      setProfile(data);
-    } catch (err) {
-      setError('Не удалось загрузить профиль');
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
+    const data = profileApi.getProfile();
+    setProfile(data);
   };
 
   const updateProfile = async (newProfile: Partial<UserProfile>) => {
@@ -37,11 +35,15 @@ export const useProfile = () => {
     }
   };
 
-  const updateAvatar = async (file: File) => {
+  const updateAvatar = async (file: File | null) => {
     try {
       setIsLoading(true);
-      const avatarUrl = await userApi.updateAvatar(file);
-      setProfile(prev => ({ ...prev, avatar: avatarUrl } as UserProfile));
+      if (file) {
+        const avatarUrl = await userApi.updateAvatar(file);
+        setProfile(prev => ({ ...prev, avatar: avatarUrl } as UserProfile));
+      } else {
+        setProfile(prev => ({ ...prev, avatar: undefined } as UserProfile));
+      }
     } catch (err) {
       setError('Не удалось обновить аватар');
       console.error(err);
