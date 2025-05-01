@@ -19,6 +19,7 @@ import { Camera, Trash2 } from 'lucide-react';
 import { profileSchema } from '../model/schemas';
 import { ProfileFormData } from '@/features/user/';
 import { getAuthCookies } from '@/shared/lib/helpers/cookies';
+import { useUsername } from '@/providers/UsernameContext';
 import { formatDate, ISOStringToDateString } from '@/shared/lib/helpers/date';
 import LoadingSpinner from '@/shared/ui/custom/LoadingSpinner/LoadingSpinner';
 import styles from '@/features/user/styles/profileForm.module.css';
@@ -33,12 +34,12 @@ const ProfileForm = ({ onSubmit, handleAvatarChange, handleDeleteAvatar }: Profi
   const cookies = getAuthCookies();
   const profile = cookies.user;
   const { toast, dismiss } = useToast()
+  const { setUsername } = useUsername()
   const [isLocalLoading, setIsLocalLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -55,7 +56,10 @@ const ProfileForm = ({ onSubmit, handleAvatarChange, handleDeleteAvatar }: Profi
       await new Promise(resolve => setTimeout(resolve, 200));
       await onSubmit(data);
       toast({ variant: 'defaultBlueSuccess', description: "Данные успешно сохранены!" });
-      reset(data);
+      setUsername({
+        first_name: data.first_name,
+        last_name: data.last_name,
+      })
     } catch (error) {
       console.error(error);
       toast({ variant: "destructive", description: "Ошибка при сохранении" });
@@ -148,18 +152,6 @@ const ProfileForm = ({ onSubmit, handleAvatarChange, handleDeleteAvatar }: Profi
             </div>
             <div className={styles.profileFormGroup}>
               <div className={styles.profileFormItem}>
-                <Label htmlFor="first_name">Имя</Label>
-                <Input
-                  id="first_name"
-                  {...register('first_name')}
-                  defaultValue={profile.first_name}
-                  className={styles.profileFormInput}
-                  {...errors.first_name && (
-                    <span className={styles.errorText}>{errors.first_name.message}</span>
-                  )}
-                />
-              </div>
-              <div className={styles.profileFormItem}>
                 <Label htmlFor="last_name">Фамилия</Label>
                 <Input
                   id="last_name"
@@ -170,6 +162,18 @@ const ProfileForm = ({ onSubmit, handleAvatarChange, handleDeleteAvatar }: Profi
                 {errors.last_name && (
                   <span className={styles.errorText}>{errors.last_name.message}</span>
                 )}
+              </div>
+              <div className={styles.profileFormItem}>
+                <Label htmlFor="first_name">Имя</Label>
+                <Input
+                  id="first_name"
+                  {...register('first_name')}
+                  defaultValue={profile.first_name}
+                  className={styles.profileFormInput}
+                  {...errors.first_name && (
+                    <span className={styles.errorText}>{errors.first_name.message}</span>
+                  )}
+                />
               </div>
               <div className={styles.profileFormItem}>
                 <Label htmlFor="patronymic">Отчество</Label>
