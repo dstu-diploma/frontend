@@ -4,7 +4,7 @@ import { profileApiMutations, ProfileFormData } from '@/features/user';
 import { setUserCookie } from '@/shared/lib/helpers/cookies';
 import { dateStringToISO } from '@/shared/lib/helpers/date';
 import { BaseUserType } from '@/features/user/model/types';
-import ProfileForm from '@/features/user/ui/ProfileForm';
+import ProfileForm from '@/features/user/ui/profile/ProfileForm';
 import styles from './profile.module.css'
 
 const ProfilePage = () => {
