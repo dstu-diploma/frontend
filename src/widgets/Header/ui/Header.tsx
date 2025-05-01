@@ -1,13 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
-import styles from './Header.module.css';
 import { useUsername } from '@/providers/UsernameContext';
+import { profileApi } from '@/features/user';
+import { getAuthCookies } from '@/shared/lib/helpers/cookies';
+import UserAvatar from './UserAvatar/UserAvatar';
+import styles from './Header.module.css';
 
 export const Header = () => {
   const { username } = useUsername()
-  
+  const authCookies = getAuthCookies()
+  const userAvatarSrc = profileApi.getAvatar(authCookies.user.id);
+
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
@@ -19,21 +23,10 @@ export const Header = () => {
             <span>{username?.first_name && username?.last_name && `${username.first_name} ${username.last_name}`}</span>
           </Link>
           <div className={styles.avatarWrapper}>
-            {/* {user?.avatar ? (
-              <Link href="/profile">
-                <Image
-                  src={user.avatar}
-                  alt={user.first_name}
-                  width={40}
-                  height={40}
-                  className={styles.avatar}
-                />
-              </Link>
-            ) : ( */}
-              <Link href="/profile" className={styles.avatarPlaceholder}>
-                {username?.first_name.charAt(0).toUpperCase()}
-              </Link>
-            {/* )} */}
+            <UserAvatar 
+              username={username}
+              userAvatarSrc={userAvatarSrc}
+            />
           </div>
         </div>
       </div>
