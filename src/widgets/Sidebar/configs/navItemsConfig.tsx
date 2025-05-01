@@ -26,8 +26,8 @@ export const navigationItems: NavItem[] = [
     icon: <MdEmojiEvents />,
   },
   {
-    label: 'Мои команды',
-    href: '/teams',
+    label: 'Моя команда',
+    href: '/team',
     icon: <RiTeamLine />
   },
-  ];
+];
