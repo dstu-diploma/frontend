@@ -44,6 +44,10 @@ export interface LoginRequestBody {
   password: string;
 }
 
+export interface RefreshResponseBody {
+  access_token: string;
+}
+
 export interface TokensObject {
   accessToken: string
   refreshToken: string

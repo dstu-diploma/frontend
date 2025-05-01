@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getAuthCookies, removeAuthCookies, setTokensCookie } from '../lib/helpers/cookies';
-import { headers } from 'next/headers';
 import { AuthService } from '../lib/services/auth.service';
+import { userApi } from '@/features/user';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost';
 
@@ -38,28 +38,19 @@ axiosInstance.interceptors.response.use(
       const { refreshToken } = getAuthCookies();
       
       if (!refreshToken) {
-        AuthService.gracefulLogout();
+        AuthService.gracefulLogout()
         return Promise.reject(error);
       }
       
       try {
-        const response = await axios.post(`${API_URL}/user/access_token`, 
-          {}, 
-          {
-            headers: {
-              'Authorization': `Bearer ${refreshToken}`,
-            },
-          }
-        );
-        
-        const newAccessToken = response.data.access_token;
+        const data = await userApi.refreshAccessToken()
         
         setTokensCookie({
-          accessToken: newAccessToken,
+          accessToken: data.access_token,
           refreshToken: refreshToken,
         });
         
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {

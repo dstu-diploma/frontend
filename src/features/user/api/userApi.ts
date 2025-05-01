@@ -1,6 +1,12 @@
 import axiosInstance from '@/shared/api/axios';
 import { useMutation } from '@tanstack/react-query';
-import { RegisterRequestBody, AuthResponseBody, LoginRequestBody } from '../model/types';
+import { 
+    RegisterRequestBody, 
+    AuthResponseBody, 
+    LoginRequestBody, 
+    RefreshResponseBody 
+} from '../model/types';
+import { getAuthCookies } from '@/shared/lib/helpers/cookies';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost';
 
@@ -21,8 +27,18 @@ export const userApi = {
         });
         return response.data;
     },
-    refreshToken: async () => {
-        const response = await axiosInstance.post(`${API_URL}/user/refresh`);
+    refreshAccessToken: async (): Promise<RefreshResponseBody> => {
+        const authCookies = getAuthCookies()
+        const refreshToken = authCookies.refreshToken;
+        const response = await axiosInstance.post(
+            `${API_URL}/user/access_token`, 
+            {},
+            {
+                headers: {
+                    'Authorization': `Bearer ${refreshToken}`
+                }
+            }
+        );
         return response.data;
     }
 }
@@ -38,4 +54,9 @@ export const userApiMutations = {
           mutationFn: userApi.loginUser
         });
     },
+    refresh: () => {
+        return useMutation({
+            mutationFn: userApi.refreshAccessToken
+        })
+    }
 }
