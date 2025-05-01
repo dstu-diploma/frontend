@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Roboto } from 'next/font/google';
 import { Toaster } from '@/shared/ui/shadcn/toast/toaster';
 import { QueryProvider } from '@/providers/QueryProvider';
+import { UsernameProvider } from '@/providers/UsernameContext';
 import { Header } from '@/widgets/Header/ui/Header';
 import { Sidebar } from '@/widgets/Sidebar/ui/Sidebar';
 import styles from './layout.module.css';
@@ -30,14 +31,16 @@ export default function AppLayout({
     <html>
       <body suppressHydrationWarning={true}>
         <QueryProvider>
-          <div className={`${styles.layout} ${roboto.className}`}>
-            <Header />
-              <div className={styles.container}>
-                <Sidebar />
-                <main className={styles.main}>{children}</main>
-                <Toaster />
-              </div>
-          </div>
+          <UsernameProvider>
+            <div className={`${styles.layout} ${roboto.className}`}>
+              <Header />
+                <div className={styles.container}>
+                  <Sidebar />
+                  <main className={styles.main}>{children}</main>
+                  <Toaster />
+                </div>
+            </div>
+          </UsernameProvider>
         </QueryProvider>
       </body>
     </html>

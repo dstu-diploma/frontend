@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -40,7 +41,6 @@ export const LoginForm = ({ onSubmit, error, isSubmitting }: LoginFormProps) => 
               <span className={styles.errorText}>{errors.username.message}</span>
             )}
           </div>
-
           <div className={styles.formGroup}>
             <label htmlFor="password">Пароль</label>
             <input
