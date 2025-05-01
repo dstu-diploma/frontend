@@ -1,72 +1,32 @@
 'use client';
 
-import { useState } from 'react' 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useToast } from '@/shared/hooks/use-toast';
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar/';
 import { Button } from '@/shared/ui/shadcn/button/';
 import { Input } from '@/shared/ui/shadcn/input/';
 import { Label } from '@/shared/ui/shadcn/label/';
 import { Textarea } from '@/shared/ui/shadcn/textarea/';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/shared/ui/shadcn/dropdown/';
-import { Camera, Trash2 } from 'lucide-react';
-import { profileSchema } from '../model/schemas';
 import { ProfileFormData } from '@/features/user/';
-import { getAuthCookies } from '@/shared/lib/helpers/cookies';
-import { useUsername } from '@/providers/UsernameContext';
 import { formatDate, ISOStringToDateString } from '@/shared/lib/helpers/date';
+import { ProfileAvatar } from './ProfileAvatar';
 import LoadingSpinner from '@/shared/ui/custom/LoadingSpinner/LoadingSpinner';
 import styles from '@/features/user/styles/profileForm.module.css';
+import { useProfileForm } from '../../hooks/useProfileForm';
+import { mapRole } from '@/shared/lib/helpers/roleMapping';
 
 interface ProfileFormProps {
   onSubmit: (data: ProfileFormData) => void;
-  handleAvatarChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleDeleteAvatar?: () => void;
 }
 
-const ProfileForm = ({ onSubmit, handleAvatarChange, handleDeleteAvatar }: ProfileFormProps) => {
-  const cookies = getAuthCookies();
-  const profile = cookies.user;
-  const { toast, dismiss } = useToast()
-  const { setUsername } = useUsername()
-  const [isLocalLoading, setIsLocalLoading] = useState(false);
-
+const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
   const {
+    isLocalLoading,
+    submitHandler,
     register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      ...profile,
-      birthday: ISOStringToDateString(profile.birthday),
-    }
-  });
+    errors,
+    isSubmitting,
+    profile,
+  } = useProfileForm({ onSubmit })
 
-  const submitHandler = handleSubmit(async (data) => {
-    setIsLocalLoading(true);
-    dismiss();
-    try {
-      await new Promise(resolve => setTimeout(resolve, 200));
-      await onSubmit(data);
-      toast({ variant: 'defaultBlueSuccess', description: "Данные успешно сохранены!" });
-      setUsername({
-        first_name: data.first_name,
-        last_name: data.last_name,
-      })
-    } catch (error) {
-      console.error(error);
-      toast({ variant: "destructive", description: "Ошибка при сохранении" });
-    } finally {
-      setIsLocalLoading(false);
-    }
-  });
+  console.log(mapRole(profile.role))
 
   return (
     <div className={styles.profileFormContainer}>
@@ -81,40 +41,9 @@ const ProfileForm = ({ onSubmit, handleAvatarChange, handleDeleteAvatar }: Profi
         >
           <div className={styles.profileFormColumns}>
             <div className={styles.profileFormGroup}>
-              <div className={styles.profileDropdownContainer}>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild className={styles.profileAvatarTrigger}>
-                    <button className={styles.profileAvatarTriggerButton}>
-                      <Avatar className={styles.profileAvatarBlock}>
-                        <AvatarImage src={profile.avatar} />
-                        <AvatarFallback 
-                          className={styles.profileAvatarFallback}
-                        >
-                          {profile.first_name[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start">
-                    <DropdownMenuItem asChild className={styles.dropdownMenuItem}>
-                      <label className={styles.dropdownMenuItemLabel}>
-                        <Camera className={styles.dropdownMenuIcon} />
-                        <span>Добавить фото</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleAvatarChange}
-                          className={styles.dropdownFileInput}
-                        />
-                      </label>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleDeleteAvatar}>
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      <span>Удалить фото</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                </div>
+                <ProfileAvatar 
+                  profile={profile}
+                />
                 <div className={styles.profileFormRow}>
                   <div className={styles.profileFormItem}>
                     <Label htmlFor="registerDate">Дата регистрации</Label>
@@ -131,7 +60,7 @@ const ProfileForm = ({ onSubmit, handleAvatarChange, handleDeleteAvatar }: Profi
                     <Input
                       id="role"
                       {...register('role')}
-                      defaultValue={profile.role || ''}
+                      defaultValue={mapRole(profile.role) || ''}
                       disabled={true}
                       className={styles.profileFormInput}
                     />

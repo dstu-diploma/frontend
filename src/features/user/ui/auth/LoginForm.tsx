@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema, type LoginFormData } from '../model/schemas';
-import styles from '../styles/auth.module.css';
+import { loginSchema, type LoginFormData } from '../../model/schemas';
+import styles from '../../styles/auth.module.css';
 
 interface LoginFormProps {
   onSubmit: (data: LoginFormData) => void;

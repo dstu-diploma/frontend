@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema, type RegisterFormData } from '../model/schemas';
-import styles from '../styles/auth.module.css';
+import { registerSchema, type RegisterFormData } from '../../model/schemas';
+import styles from '../../styles/auth.module.css';
 
 interface RegisterFormProps {
   onSubmit: (data: RegisterFormData) => void;
