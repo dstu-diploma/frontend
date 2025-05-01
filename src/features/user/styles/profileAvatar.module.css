@@ -1,0 +1,44 @@
+.profileAvatarBlock:focus,
+.profileAvatarTrigger:focus {
+    outline: none;
+}
+
+.profileAvatarTrigger {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 1rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.profileAvatarTrigger>span {
+    width: 100%;
+    height: 100%;
+}
+
+.profileAvatarFallback {
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1px solid #e2e8f0;
+    background-color: white;
+}
+
+.profileAvatarFallback span {
+    font-size: 3.25rem;
+}
+
+.dropdownItem {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.dropdownMenuItem span {
+    font-size: 0.875rem;
+}
+
+.dropdownMenuItem svg {
+    width: 20px;
+    height: 20px;
+    stroke: #3182ce;
+}
