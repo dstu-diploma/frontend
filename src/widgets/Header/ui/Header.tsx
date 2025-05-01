@@ -3,11 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Header.module.css';
-import { getAuthCookies } from '@/shared/lib/helpers/cookies';
+import { useUsername } from '@/providers/UsernameContext';
 
 export const Header = () => {
-  const cookies = getAuthCookies();
-  const user = cookies.user;
+  const { username } = useUsername()
   
   return (
     <header className={styles.header}>
@@ -17,10 +16,10 @@ export const Header = () => {
         </Link>
         <div className={styles.userInfo}>
           <Link href="/profile" className={styles.userName}>
-            <span>{user?.first_name && user?.last_name && `${user.first_name} ${user.last_name}`}</span>
+            <span>{username?.first_name && username?.last_name && `${username.first_name} ${username.last_name}`}</span>
           </Link>
           <div className={styles.avatarWrapper}>
-            {user?.avatar ? (
+            {/* {user?.avatar ? (
               <Link href="/profile">
                 <Image
                   src={user.avatar}
@@ -30,11 +29,11 @@ export const Header = () => {
                   className={styles.avatar}
                 />
               </Link>
-            ) : (
+            ) : ( */}
               <Link href="/profile" className={styles.avatarPlaceholder}>
-                {user?.first_name.charAt(0).toUpperCase()}
+                {username?.first_name.charAt(0).toUpperCase()}
               </Link>
-            )}
+            {/* )} */}
           </div>
         </div>
       </div>
