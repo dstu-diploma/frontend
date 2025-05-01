@@ -56,8 +56,8 @@ export default function LoginPage() {
           if (axiosError.response) {
             const data = axiosError.response.data as { detail?: string };
             
-            if (data.detail?.toLowerCase().includes('password') && data.detail?.toLowerCase().includes('email')) {
-              setError('Неверный email или пароль');
+            if (data.detail?.toLowerCase().includes('логин') && data.detail?.toLowerCase().includes('пароль')) {
+              setError('Неверный логин или пароль');
             } else {
               setError('Ошибка сервера при авторизации');
             }

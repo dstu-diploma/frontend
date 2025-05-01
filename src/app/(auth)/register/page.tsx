@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { RegisterForm, RegisterFormData, userApiMutations } from '@/features/user';
 import { useState } from 'react';
+import { AxiosError } from 'axios';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -23,8 +24,20 @@ export default function RegisterPage() {
           router.push('/login');
         },
         onError: (error: Error) => {
-          setError('Ошибка сервера при регистрации!');
-          console.error('Registration failed:', error);
+          const axiosError = error as AxiosError;
+          if (axiosError.response) {
+            const data = axiosError.response.data as { detail?: string };
+            
+            if (data.detail?.toLowerCase().includes('уже зарегистрирован')) {
+              setError('Аккаунт с данной почтой уже существует');
+            } else {
+              console.log(data.detail)
+              setError('Ошибка сервера при авторизации');
+            }
+          } else {
+            setError('Ошибка сервера при авторизации!');
+          }
+          console.error('Login failed:', error);
         },
     });
   };
