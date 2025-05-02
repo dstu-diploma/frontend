@@ -1,0 +1,198 @@
+.selectTrigger {
+    display: flex;
+    height: 2.25rem;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    white-space: nowrap;
+    border-radius: 0.375rem;
+    border: 1px solid var(--input);
+    background-color: transparent;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    outline: none;
+  
+    &[data-placeholder] {
+      color: var(--muted-foreground);
+    }
+  
+    &:focus {
+      outline: none;
+      ring: 1px solid var(--ring);
+      ring-offset: var(--ring-offset-background);
+    }
+  
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  
+    span {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+  
+  .selectScrollButton {
+    display: flex;
+    cursor: default;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0;
+  }
+  
+  .selectContent {
+    position: relative;
+    z-index: 50;
+    max-height: var(--radix-select-content-available-height);
+    min-width: 8rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 0.375rem;
+    border: 1px solid;
+    background-color: var(--popover);
+    color: var(--popover-foreground);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  
+    &[data-state="open"] {
+      animation: fadeIn 0.2s ease-out, zoomIn 0.2s ease-out;
+    }
+  
+    &[data-state="closed"] {
+      animation: fadeOut 0.2s ease-in, zoomOut 0.2s ease-in;
+    }
+  
+    &[data-side="bottom"] {
+      transform-origin: var(--radix-select-content-transform-origin);
+      animation: slideInFromTop 0.2s ease-out;
+    }
+  
+    &[data-side="left"] {
+      transform-origin: var(--radix-select-content-transform-origin);
+      animation: slideInFromRight 0.2s ease-out;
+    }
+  
+    &[data-side="right"] {
+      transform-origin: var(--radix-select-content-transform-origin);
+      animation: slideInFromLeft 0.2s ease-out;
+    }
+  
+    &[data-side="top"] {
+      transform-origin: var(--radix-select-content-transform-origin);
+      animation: slideInFromBottom 0.2s ease-out;
+    }
+  
+    &.popper {
+      &[data-side="bottom"] {
+        transform: translateY(0.25rem);
+      }
+      &[data-side="left"] {
+        transform: translateX(-0.25rem);
+      }
+      &[data-side="right"] {
+        transform: translateX(0.25rem);
+      }
+      &[data-side="top"] {
+        transform: translateY(-0.25rem);
+      }
+    }
+  }
+  
+  .selectViewport {
+    padding: 0.25rem;
+  
+    &.popper {
+      height: var(--radix-select-trigger-height);
+      width: 100%;
+      min-width: var(--radix-select-trigger-width);
+    }
+  }
+  
+  .selectLabel {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  
+  .selectItem {
+    position: relative;
+    display: flex;
+    width: 100%;
+    cursor: default;
+    user-select: none;
+    align-items: center;
+    border-radius: 0.125rem;
+    padding: 0.375rem 2rem 0.375rem 0.5rem;
+    font-size: 0.875rem;
+    outline: none;
+  
+    &:focus {
+      background-color: var(--accent);
+      color: var(--accent-foreground);
+    }
+  
+    &[data-disabled] {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+  
+    .selectItemIndicator {
+      position: absolute;
+      right: 0.5rem;
+      display: flex;
+      height: 0.875rem;
+      width: 0.875rem;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  
+  .selectSeparator {
+    height: 1px;
+    margin: 0.25rem -0.25rem;
+    background-color: var(--muted);
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  
+  @keyframes zoomIn {
+    from { transform: scale(0.95); }
+    to { transform: scale(1); }
+  }
+  
+  @keyframes zoomOut {
+    from { transform: scale(1); }
+    to { transform: scale(0.95); }
+  }
+  
+  @keyframes slideInFromTop {
+    from { transform: translateY(-0.5rem); }
+    to { transform: translateY(0); }
+  }
+  
+  @keyframes slideInFromRight {
+    from { transform: translateX(0.5rem); }
+    to { transform: translateX(0); }
+  }
+  
+  @keyframes slideInFromLeft {
+    from { transform: translateX(-0.5rem); }
+    to { transform: translateX(0); }
+  }
+  
+  @keyframes slideInFromBottom {
+    from { transform: translateY(0.5rem); }
+    to { transform: translateY(0); }
+  }
