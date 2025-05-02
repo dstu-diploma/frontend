@@ -1,8 +1,8 @@
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { userApiMutations } from "../api/userApi";
-import { RegisterFormData } from "../model/schemas";
+import { userApiMutations } from "../../api/userApi";
+import { RegisterFormData } from "../../model/schemas";
 
 export const useRegister = () => {
   const router = useRouter();

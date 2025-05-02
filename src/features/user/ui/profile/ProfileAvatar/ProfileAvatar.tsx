@@ -12,9 +12,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/shared/ui/shadcn/dropdown';
-import { User } from '../../model/types';
-import styles from '../../styles/profileAvatar.module.css';
-import { useProfileAvatar } from '../../hooks/useProfileAvatar';
+import { User } from '../../../model/types';
+import { useProfileAvatar } from '../../../hooks/profile/useProfileAvatar';
+import styles from './ProfileAvatar.module.scss';
 
 interface ProfileAvatarProps {
   profile: User;

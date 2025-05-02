@@ -3,8 +3,8 @@ import { setAuthCookies } from "@/shared/lib/helpers/cookies";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { userApiMutations } from "../api/userApi";
-import { LoginFormData } from "../model/schemas";
+import { userApiMutations } from "../../api/userApi";
+import { LoginFormData } from "../../model/schemas";
 
 export const useLogin = () => {
   const router = useRouter();

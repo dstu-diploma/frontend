@@ -5,7 +5,7 @@ import { ISOStringToDateString } from "@/shared/lib/helpers/date";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ProfileFormData, profileSchema } from "../model/schemas";
+import { ProfileFormData, profileSchema } from "../../model/schemas";
 import { mapRole } from "@/shared/lib/helpers/roleMapping";
 
 interface useProfileFormProps {

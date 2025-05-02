@@ -6,17 +6,17 @@ import { Label } from '@/shared/ui/shadcn/label/';
 import { Textarea } from '@/shared/ui/shadcn/textarea/';
 import { ProfileFormData } from '@/features/user/';
 import { formatDate, ISOStringToDateString } from '@/shared/lib/helpers/date';
-import { ProfileAvatar } from './ProfileAvatar';
+import { ProfileAvatar } from '../ProfileAvatar/ProfileAvatar';
 import LoadingSpinner from '@/shared/ui/custom/LoadingSpinner/LoadingSpinner';
-import styles from '@/features/user/styles/profileForm.module.css';
-import { useProfileForm } from '../../hooks/useProfileForm';
+import { useProfileForm } from '../../../hooks/profile/useProfileForm';
 import { mapRole } from '@/shared/lib/helpers/roleMapping';
+import styles from './ProfileForm.module.scss';
 
 interface ProfileFormProps {
   onSubmit: (data: ProfileFormData) => void;
 }
 
-const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
+export const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
   const {
     isLocalLoading,
     submitHandler,
@@ -156,5 +156,3 @@ const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
     </div>
   )
 }
-
-export default ProfileForm

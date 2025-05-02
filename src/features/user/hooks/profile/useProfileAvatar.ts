@@ -1,6 +1,6 @@
 import { getAuthCookies } from "@/shared/lib/helpers/cookies";
 import { useState, useRef, useEffect } from "react";
-import { profileApi, profileApiMutations } from "../api/profileApi";
+import { profileApi, profileApiMutations } from "../../api/profileApi";
 import { useToast } from "@/shared/hooks/use-toast";
 
 export const useProfileAvatar = () => {
