@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, type LoginFormData } from '../../model/schemas';
-import styles from '../../styles/auth.module.css';
+import styles from './auth.module.scss';
+import { Button } from '@/shared/ui/shadcn/button';
 
 interface LoginFormProps {
   onSubmit: (data: LoginFormData) => void;
@@ -55,11 +55,23 @@ export const LoginForm = ({ onSubmit, error, isSubmitting }: LoginFormProps) => 
             )}
           </div>
           <div className={styles.formButtons}>
-            <button type="submit" className={styles.formButton} disabled={isSubmitting || !isValid}>
+            <Button 
+              type="submit" 
+              className={styles.formButton} 
+              disabled={isSubmitting || !isValid}
+            >
               {isSubmitting ? 'Вход...' : 'Войти'}
-            </button>
-            <Link href="/register" className={styles.formButton}>
+            </Button>
+            <Link 
+              href="/register" 
+              className={styles.linkButton}
+            >
+              <Button 
+                type="submit"
+                className={styles.formButton} 
+              >
                 Создать аккаунт
+              </Button>
             </Link>
           </div>
           {error && (

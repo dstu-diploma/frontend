@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, type RegisterFormData } from '../../model/schemas';
-import styles from '../../styles/auth.module.css';
+import styles from './auth.module.scss';
+import { Button } from '@/shared/ui/shadcn/button';
 
 interface RegisterFormProps {
   onSubmit: (data: RegisterFormData) => void;
@@ -114,15 +115,20 @@ export const RegisterForm = ({ onSubmit, error }: RegisterFormProps) => {
             )}
           </div>
           <div className={styles.formButtons}>
-            <button 
+            <Button 
               type="submit" 
               className={styles.formButton}
               disabled={isSubmitting || !isValid}
             >
               {isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
-            </button>
-            <Link href="/login" className={styles.formButton}>
-              Войти в аккаунт
+            </Button>
+            <Link href="/login" className={styles.linkButton}>
+              <Button 
+                type="submit" 
+                className={styles.formButton}
+              >
+                Войти в аккаунт
+              </Button>
             </Link>
           </div>
           {error && (
