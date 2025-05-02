@@ -1,5 +1,6 @@
-import { TeamMember } from '../model/types';
-import styles from '../styles/teamcard.module.css'
+import Image from 'next/image'
+import { TeamMember } from '../../model/types';
+import styles from './TeamMemberCard.module.scss'
 
 interface TeamMemberCardProps {
   member: TeamMember;
@@ -10,10 +11,12 @@ export const TeamMemberCard = ({ member }: TeamMemberCardProps) => {
     <div className={styles.card}>
       <div className={styles.avatarContainer}>
         {member.avatarUrl ? (
-          <img 
-            src={member.avatarUrl} 
+          <Image 
+            src={'/placeholder.png'} 
             alt={`${member.firstName} ${member.lastName}`}
             className={styles.avatarImage}
+            width={200}
+            height={200}
           />
         ) : (
           <div className={styles.avatarPlaceholder}>
@@ -22,7 +25,7 @@ export const TeamMemberCard = ({ member }: TeamMemberCardProps) => {
         )}
       </div>
       <div className={styles.info}>
-        <h3 className={styles.name}>{member.firstName} {member.lastName}</h3>
+        <h4 className={styles.name}>{member.firstName} {member.lastName}</h4>
         {member.role && <p className={styles.role}>{member.role}</p>}
       </div>
     </div>
