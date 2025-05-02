@@ -15,15 +15,6 @@ export const profileApi = {
     const response = await axiosInstance.patch(`${API_URL}/user/`, profile);
     return response.data;
   },
-  updateAvatar: async (file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    });
-  },
   setOrUpdateAvatar: async (file: File): Promise<RefreshResponseBody> => {
     const formData = new FormData()
     formData.append('file', file)
@@ -39,15 +30,15 @@ export const profileApi = {
     return response.data;
   },
   getAvatar: (user_id: number) => {
-      return API_URL + '/uploads/avatars/' + user_id + '.jpg'
+    return API_URL + '/uploads/avatars/' + user_id + '.jpg'
   },
   isAvatarExists: async (url: string): Promise<boolean> => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);  
-        img.onerror = () => resolve(false);
-        img.src = url;
-      });
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);  
+      img.onerror = () => resolve(false);
+      img.src = url;
+    });
   }
 }; 
 
