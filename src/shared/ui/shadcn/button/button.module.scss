@@ -1,0 +1,86 @@
+.button {
+    padding: 1rem;
+    background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+        z-index: -1;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 0;
+    }
+    
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(44, 82, 130, 0.2);
+    }
+    
+    &:hover::before {
+        opacity: 1;
+    }
+    
+    &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(44, 82, 130, 0.15);
+    }
+    
+    &:disabled {
+        background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+
+        &:hover {
+            background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+            transform: none;
+            box-shadow: none;
+        }
+
+        &:hover::before {
+            opacity: 0 !important;
+        }
+    }
+} 
+
+.buttonDestructive {
+    @extend .button;
+    background: linear-gradient(135deg, #ce3131 0%, #822c2c 100%) !important;
+
+    &:hover {
+        background-color: rgb(204, 85, 85) !important;
+    }
+}
+
+/* Sizes */
+.buttonSize {
+    &Sm {
+        height: 1rem;
+    }
+    
+    &Default {
+        height: 2.5rem;
+    }
+    
+    &Lg {
+        height: 4rem;
+    }
+}
