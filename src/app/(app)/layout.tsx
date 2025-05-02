@@ -1,14 +1,15 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Roboto } from 'next/font/google';
 import { Toaster } from '@/shared/ui/shadcn/toast/toaster';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { UsernameProvider } from '@/providers/UsernameContext';
 import { Header } from '@/widgets/Header/ui/Header';
 import { Sidebar } from '@/widgets/Sidebar/ui/Sidebar';
-import styles from './layout.module.css';
-import '../globals.css';
+import LayoutFallback from '@/shared/ui/custom/LayoutFallback/LayoutFallback';
+import styles from './layout.module.scss';
+import '@/shared/styles/globals.scss';
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -32,14 +33,16 @@ export default function AppLayout({
       <body suppressHydrationWarning={true}>
         <QueryProvider>
           <UsernameProvider>
-            <div className={`${styles.layout} ${roboto.className}`}>
-              <Header />
-                <div className={styles.container}>
-                  <Sidebar />
-                  <main className={styles.main}>{children}</main>
-                  <Toaster />
-                </div>
-            </div>
+            <Suspense fallback={<LayoutFallback />}>
+              <div className={`${styles.layout} ${roboto.className}`}>
+                <Header />
+                  <div className={styles.container}>
+                    <Sidebar />
+                    <main className={styles.main}>{children}</main>
+                    <Toaster />
+                  </div>
+              </div>
+            </Suspense>
           </UsernameProvider>
         </QueryProvider>
       </body>

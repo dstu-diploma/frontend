@@ -1,10 +1,12 @@
 'use client';
 
+import { Suspense } from 'react';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { Roboto } from 'next/font/google';
 import { Toaster } from '@/shared/ui/shadcn/toast/toaster';
-import '../globals.css';
-import styles from './layout.module.css';
+import LayoutFallback from '@/shared/ui/custom/LayoutFallback/LayoutFallback';
+import styles from './layout.module.scss';
+import '@/shared/styles/globals.scss';
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -21,12 +23,14 @@ export default function AuthLayout({
     <html lang="ru" className={roboto.className}>
       <body>
         <QueryProvider>
-          <div className={styles.layout}>
-            <main className={styles.main}>
-              {children}
-            </main>
-            <Toaster />
-          </div>
+          <Suspense fallback={<LayoutFallback />}>
+            <div className={styles.layout}>
+              <main className={styles.main}>
+                {children}
+              </main>
+              <Toaster />
+            </div>
+          </Suspense> 
         </QueryProvider>
       </body>
     </html>
