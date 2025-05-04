@@ -1,6 +1,6 @@
-import { getAuthCookies } from "@/shared/lib/helpers/cookies";
+import { cookiesApi } from "@/shared/lib/helpers/cookies";
 import { useState, useRef, useEffect } from "react";
-import { profileApi, profileApiMutations } from "../../api/profileApi";
+import { profileApi } from "../../api/profileApi";
 import { useToast } from "@/shared/hooks/use-toast";
 
 export const useProfileAvatar = () => {
@@ -10,12 +10,12 @@ export const useProfileAvatar = () => {
   const objectUrlRef = useRef<string | null>(null);
   const { toast, dismiss } = useToast()
 
-  const { mutate: setOrUpdateAvatar } = profileApiMutations.setOrUpdateAvatar()
-  const { mutate: deleteAvatar } = profileApiMutations.deleteAvatar()
+  const { mutate: setOrUpdateAvatar } = profileApi.setOrUpdateAvatar()
+  const { mutate: deleteAvatar } = profileApi.deleteAvatar()
 
   useEffect(() => {
     const prepareAvatar = async () => {
-      const authCookies = getAuthCookies()
+      const authCookies = cookiesApi.getAuthCookies()
       const userId = authCookies.user.id
       const avatarPath = profileApi.getAvatar(userId)
       const pathIsValid = await profileApi.isAvatarExists(avatarPath)

@@ -1,9 +1,9 @@
 import { useToast } from "@/shared/hooks/use-toast";
-import { setAuthCookies } from "@/shared/lib/helpers/cookies";
+import { cookiesApi } from "@/shared/lib/helpers/cookies";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { userApiMutations } from "../../api/userApi";
+import { userApi } from "../../api/userApi";
 import { LoginFormData } from "../../model/schemas";
 
 export const useLogin = () => {
@@ -11,7 +11,7 @@ export const useLogin = () => {
   const { toast } = useToast();
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { mutate: loginUser, isPending: isSubmitting } = userApiMutations.login();
+  const { mutate: loginUser, isPending: isSubmitting } = userApi.login();
 
   useEffect(() => {
     const redirectReason = localStorage.getItem('login_redirect_reason');
@@ -36,8 +36,8 @@ export const useLogin = () => {
       {
         onSuccess: (response) => {
           setError(null);
-          setAuthCookies(response.user, response.access_token, response.refresh_token);
-          router.push('/');
+          cookiesApi.setAuthCookies(response.user, response.access_token, response.refresh_token);
+          router.push('/hackathons');
         },
         onError: (error: Error) => {
           const axiosError = error as AxiosError;

@@ -1,12 +1,12 @@
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { userApiMutations } from "../../api/userApi";
+import { userApi } from "../../api/userApi";
 import { RegisterFormData } from "../../model/schemas";
 
 export const useRegister = () => {
   const router = useRouter();
-  const { mutate: registerUser } = userApiMutations.register();
+  const { mutate: registerUser } = userApi.register();
   const [error, setError] = useState<string | null>(null);
 
   const handleRegister = async (data: RegisterFormData) => {

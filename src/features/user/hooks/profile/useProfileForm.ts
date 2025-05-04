@@ -1,6 +1,6 @@
 import { useUsername } from "@/providers/UsernameContext";
 import { useToast } from "@/shared/hooks/use-toast";
-import { getAuthCookies } from "@/shared/lib/helpers/cookies";
+import { cookiesApi } from "@/shared/lib/helpers/cookies";
 import { ISOStringToDateString } from "@/shared/lib/helpers/date";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -13,8 +13,7 @@ interface useProfileFormProps {
 }
 
 export const useProfileForm = ({ onSubmit }: useProfileFormProps) => {
-  const cookies = getAuthCookies();
-  const profile = cookies.user;
+  const profile = cookiesApi.getUser()
   const { toast, dismiss } = useToast()
   const { setUsername } = useUsername()
   const [isLocalLoading, setIsLocalLoading] = useState(false);
@@ -38,14 +37,20 @@ export const useProfileForm = ({ onSubmit }: useProfileFormProps) => {
     try {
       await new Promise(resolve => setTimeout(resolve, 200));
       await onSubmit(data);
-      toast({ variant: 'defaultBlueSuccess', description: "Данные успешно сохранены!" });
+      toast({ 
+        variant: 'defaultBlueSuccess', 
+        description: "Данные успешно сохранены!" 
+      });
       setUsername({
         first_name: data.first_name,
         last_name: data.last_name,
       })
     } catch (error) {
       console.error(error);
-      toast({ variant: "destructive", description: "Ошибка при сохранении" });
+      toast({ 
+        variant: "destructive", 
+        description: "Ошибка при сохранении"
+       });
     } finally {
       setIsLocalLoading(false);
     }
