@@ -1,0 +1,15 @@
+.dialogContent {
+    font-family: 'Roboto Fallback', sans-serif;
+}
+
+.dialogForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    input:focus {
+        border-color: #3182ce;
+        box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        background-color: #fff;
+    }
+}

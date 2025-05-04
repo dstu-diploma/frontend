@@ -1,0 +1,22 @@
+.avatarContainer {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    background-color: #f3f4f6;
+    overflow: hidden;
+    margin-right: 1rem;
+
+    .avatarImage {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .avatarPlaceholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #6b7280;
+    }
+}

@@ -1,7 +1,11 @@
-import { TeamInviteCard } from '../TeamInviteCard/TeamInviteCard';
+import { TeamInfo } from '../../../model/types';
 import styles from './TeamSidebar.module.scss'
 
-export const TeamSidebar = () => {
+interface TeamSidebarProps {
+  team: TeamInfo
+}
+
+export const TeamSidebar = ({ team }: TeamSidebarProps) => {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.sidebarBlock}>
@@ -9,24 +13,21 @@ export const TeamSidebar = () => {
         <ul className={styles.navList}>
           <li className={styles.navItem}>
             <span className={styles.icon}>Команда:&nbsp;</span>
-            <span className={styles.label}>Отряд морских котиков</span>
+            <span className={styles.label}>{team.name}</span>
+          </li>
+          <li className={styles.navItem}>
+            <span className={styles.icon}>Капитан:&nbsp;</span>
+            <span className={styles.label}>{team?.mates.length}</span>
           </li>
           <li className={styles.navItem}>
             <span className={styles.icon}>Участников:&nbsp;</span>
-            <span className={styles.label}>3</span>
+            <span className={styles.label}>{team?.mates.length}</span>
           </li>
           <li className={styles.navItem}>
             <span className={styles.icon}>Хакатон:&nbsp;</span>
             <span className={styles.label}>ДГТУ 2025</span>
           </li>
         </ul>
-      </div>
-      <div className={styles.sidebarBlock}>
-        <h4>Приглашения</h4>
-        <div className={styles.invitesContainer}>
-          <TeamInviteCard username='Босс качалки' />
-          <TeamInviteCard username='Король вмо' />
-        </div>
       </div>
     </aside>
   );
