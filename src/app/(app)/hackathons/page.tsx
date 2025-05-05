@@ -2,7 +2,7 @@
 
 const HackathonsPage = () => {
     return (
-        <div>Страница хакатонов</div>
+        <div>Здесь будут расположены все хакатоны</div>
     )
 }
 
