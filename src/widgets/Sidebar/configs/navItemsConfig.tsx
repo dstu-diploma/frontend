@@ -2,8 +2,9 @@ import { FaHome } from "react-icons/fa";
 import { IoPersonOutline } from "react-icons/io5";
 import { MdEmojiEvents } from "react-icons/md";
 import { RiTeamLine } from "react-icons/ri";
+import { RiAdminLine } from "react-icons/ri";
 
-type NavItem = {
+export type NavItem = {
   label: string
   href: string
   icon: React.ReactNode
@@ -30,4 +31,9 @@ export const navigationItems: NavItem[] = [
     href: '/team',
     icon: <RiTeamLine />
   },
+  {
+    label: 'Админ-панель',
+    href: '/admin',
+    icon: <RiAdminLine />
+  }
 ];
