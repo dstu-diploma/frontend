@@ -1,7 +1,7 @@
 'use client';
 
 import { RegisterForm } from '@/features/user';
-import { useRegister } from '@/features/user/hooks/useRegister';
+import { useRegister } from '@/features/user/hooks/auth/useRegister';
 
 export default function RegisterPage() {
   const {
