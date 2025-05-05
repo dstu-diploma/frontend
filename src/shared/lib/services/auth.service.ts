@@ -1,8 +1,8 @@
-import { removeAuthCookies } from "../helpers/cookies";
+import { cookiesApi } from "../helpers/cookies";
 
 export class AuthService {
     static gracefulLogout() {
-        removeAuthCookies();
+        cookiesApi.removeAuthCookies();
         localStorage.setItem('login_redirect_reason', 'session_expired');
         if (typeof window !== 'undefined') {
             window.location.href = '/login'
@@ -10,7 +10,7 @@ export class AuthService {
       }
     
     static async forceLogout() {
-        removeAuthCookies();
+        cookiesApi.removeAuthCookies();
         localStorage.setItem('login_redirect_reason', 'session_expired');
         window.location.href = '/login'
     }
