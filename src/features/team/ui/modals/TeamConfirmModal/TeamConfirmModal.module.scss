@@ -8,6 +8,23 @@
     align-items: center;
     gap: 2.5rem;
 
+    .dialogConfirmHeader {
+        .dialogConfirmTitle { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+
+            .dialogConfirmTitleText {
+                text-align: center;
+            }
+
+            .dangerWarning {
+                color: #ef4444;
+            }
+        }
+    }
+
     .dialogActions {
         width: 75%;
         display: flex;
