@@ -1,5 +1,5 @@
 import { useToast } from "@/shared/hooks/use-toast";
-import { teamApi } from "../../api/teamApi";
+import { teamApi } from "../../api";
 import { useState } from "react";
 
 interface useCreateModalProps {
