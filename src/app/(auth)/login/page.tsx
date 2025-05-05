@@ -1,9 +1,8 @@
 'use client';
 
 import { LoginForm } from '@/features/user/';
-import { useLogin } from '@/features/user/hooks/useLogin';
-import styles from './login.module.css'
-import LoadingSpinner from '@/shared/ui/custom/LoadingSpinner/LoadingSpinner';
+import { useLogin } from '@/features/user/hooks/auth/useLogin';
+import LayoutFallback from '@/shared/ui/custom/LayoutFallback/LayoutFallback';
 
 export default function LoginPage() {
   const {
@@ -15,9 +14,7 @@ export default function LoginPage() {
 
   if (!hasCheckedAuth) {
     return (
-      <div className={styles.spinnerContainer}>
-        <LoadingSpinner />
-      </div>
+      <LayoutFallback />
     )
   }
 
