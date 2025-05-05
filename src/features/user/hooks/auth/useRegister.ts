@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { userApi } from "../../api/userApi";
+import { userApi } from "../../api";
 import { RegisterFormData } from "../../model/schemas";
 
 export const useRegister = () => {

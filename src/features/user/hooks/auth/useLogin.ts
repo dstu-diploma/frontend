@@ -3,7 +3,7 @@ import { cookiesApi } from "@/shared/lib/helpers/cookies";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { userApi } from "../../api/userApi";
+import { userApi } from "../../api";
 import { LoginFormData } from "../../model/schemas";
 
 export const useLogin = () => {
