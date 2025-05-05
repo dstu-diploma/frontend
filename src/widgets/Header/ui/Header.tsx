@@ -2,15 +2,15 @@
 
 import Link from 'next/link';
 import { useUsername } from '@/providers/UsernameContext';
-import { profileApi } from '@/features/user';
-import { getAuthCookies } from '@/shared/lib/helpers/cookies';
+import { userApi } from '@/features/user';
+import { cookiesApi } from '@/shared/lib/helpers/cookies';
 import UserAvatar from './UserAvatar/UserAvatar';
 import styles from './Header.module.css';
 
 export const Header = () => {
   const { username } = useUsername()
-  const authCookies = getAuthCookies()
-  const userAvatarSrc = profileApi.getAvatar(authCookies.user.id);
+  const user = cookiesApi.getUser()
+  const userAvatarSrc = userApi.getAvatar(user.id) + `?t=${Date.now()}`;
 
   return (
     <header className={styles.header}>
