@@ -1,18 +1,26 @@
 // UI
-export { RegisterForm } from './ui/RegisterForm';
-export { LoginForm } from './ui/LoginForm';
+export { RegisterForm } from './ui/auth/RegisterForm';
+export { LoginForm } from './ui/auth/LoginForm';
+export { ProfileAvatar } from './ui/profile/ProfileAvatar/ProfileAvatar'
+export { ProfileForm } from './ui/profile/ProfileForm/ProfileForm'
 
 // Типы
-export type { ProfileFormData,RegisterFormData, LoginFormData } from './model/schemas';
-export type { User, UserProfile } from './model/types';
+export type { 
+  ProfileFormData, 
+  RegisterFormData,  
+  LoginFormData 
+} from './model/schemas';
+export type { 
+  User, 
+  UserProfile 
+} from './model/types';
 
 // Схемы валидации
-export type { profileSchema, registerSchema, loginSchema } from './model/schemas';
+export type { 
+  profileSchema, 
+  registerSchema, 
+  loginSchema 
+} from './model/schemas';
 
 // API
-export { profileApi, profileApiMutations } from './api/profileApi';
-export { userApi, userApiMutations } from './api/userApi';
-
-// Хуки
-export { useProfile } from './hooks/useProfile';
-
+export { userApi } from './api';
