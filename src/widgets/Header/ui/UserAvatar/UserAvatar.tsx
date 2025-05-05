@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { profileApi, userApi } from '@/features/user';
+import { userApi } from '@/features/user';
 import { Username } from '@/providers/UsernameContext';
 import styles from './UserAvatar.module.css'
 
@@ -18,7 +18,7 @@ export default function UserAvatar({ username, userAvatarSrc }: UserAvatarProps)
   useEffect(() => {
     const checkAvatar = async () => {
       try {
-        const exists = await profileApi.isAvatarExists(userAvatarSrc);
+        const exists = await userApi.isAvatarExists(userAvatarSrc);
         console.log(userAvatarSrc)
         setAvatarExists(exists);
       } catch (error) {
