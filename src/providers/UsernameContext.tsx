@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { getAuthCookies } from '@/shared/lib/helpers/cookies';
+import { cookiesApi } from '@/shared/lib/helpers/cookies';
 
-interface Username {
+export interface Username {
   first_name: string;
   last_name: string;
 }
@@ -15,10 +15,12 @@ const UsernameContext = createContext<UsernameContextType | undefined>(undefined
 
 export const UsernameProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState<Username | null>(() => {
-    const cookies = getAuthCookies();
-    return cookies.user 
-      ? { first_name: cookies.user.first_name, last_name: cookies.user.last_name } 
-      : null;
+    const user = cookiesApi.getUser()
+    return user 
+      ? { 
+        first_name: user.first_name, 
+        last_name:user.last_name 
+      } : null;
   });
 
   return (
