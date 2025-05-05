@@ -2,7 +2,7 @@ import { userApi } from "@/features/user"
 import { UserPartial } from "@/features/user/model/types"
 import { cookiesApi } from "@/shared/lib/helpers/cookies"
 import { useState, useEffect } from "react"
-import { teamApi } from "../api/teamApi"
+import { teamApi } from "../api"
 import { TeamInfo } from "../model/types"
 import { useToast } from "@/shared/hooks/use-toast"
 import { AxiosError } from "axios"
@@ -11,12 +11,17 @@ export const useTeam = () => {
   const { mutate: getUsers } = userApi.getUsers()
   const { mutate: getMyTeamInfo } = teamApi.getMyTeamInfo()
   const { mutate: leaveTeam } = teamApi.leaveTeam()
+  const { mutate: kickMate } = teamApi.kickMate()
+  const { mutate: setCaptainRights } = teamApi.setCaptainRights()
 
   const [isTeamLoading, setIsTeamLoading] = useState(false)
+  const [isTeamMatesLoading, setIsTeamMatesLoading] = useState(false)
   const [teamName, setTeamName] = useState('')
   const [teamInfo, setTeamInfo] = useState<TeamInfo | null>(null)
   const [teamMates, setTeamMates] = useState<UserPartial[] | null>(null)
   const [hasTeam, setHasTeam] = useState(false)
+  const [isCaptain, setIsCaptain] = useState(false)
+  const [nonCaptainMates, setNonCaptainMates] = useState<UserPartial[] | null>(null)
   
   const { toast, dismiss } = useToast()
   const user = cookiesApi.getUser()
@@ -26,7 +31,6 @@ export const useTeam = () => {
     setIsTeamLoading(true)
     getMyTeamInfo(user.id, {
       onSuccess: (data) => {
-        console.log('Данные о команде:', data)
         if (data.id) {
           setHasTeam(true)
         }
@@ -67,20 +71,25 @@ export const useTeam = () => {
     })  
   }
 
-  // Функция для получения списка участников команды
+  // Функция для получения списка участников команды и его обработки
   const getTeamMates = async () => {
     if (teamInfo) {
       const mate_ids = teamInfo.mates.map((mateRef) => mateRef.user_id)
       getUsers(mate_ids, {
         onSuccess: (data) => {
-          const matesWithCaptain = data.map((mate) => {
+          const modifiedMates = data.map((mate) => {
             const mateRef = teamInfo?.mates.find(ref => ref.user_id === mate.id);
             return {
               ...mate,
               is_captain: mateRef?.is_captain ?? false,
+              role_desc: mateRef?.role_desc ?? ''
             };
           });
-          setTeamMates(matesWithCaptain);
+          setTeamMates(modifiedMates);
+          setIsCaptain(modifiedMates.some(
+            mate => mate.is_captain && mate.id === user.id
+          ))
+          setNonCaptainMates(modifiedMates.filter(mate => !mate.is_captain))
         },
         onError: (error) => {
           dismiss()
@@ -96,7 +105,24 @@ export const useTeam = () => {
     } 
   }
 
-  // Функция для обновления данных о команде
+  // Функция для обновления карточек участников команды
+  const refreshTeamMates = async (success_message: string) => {
+    setTeamMates(null)
+    setIsTeamMatesLoading(true)
+
+    setTimeout(async () => {
+      await getTeamMates()
+      setIsTeamLoading(false)
+    }, 500)
+
+    dismiss()
+    toast({
+      variant: 'defaultBlueSuccess',
+      description: `${success_message}`
+    })
+  }
+
+  // Функция для обновления данных о всей команде
   const refreshTeamInfo = async (success_message: string) => {
     setHasTeam(false)
     setTeamInfo(null)
@@ -135,6 +161,43 @@ export const useTeam = () => {
     })
   }
 
+  // Обработчик исключения участника из команды
+  const handleTeamKick = (event: React.FormEvent, user_id: number) => {
+    event.preventDefault()
+    kickMate(user_id, {
+      onSuccess: async () => {
+        await refreshTeamInfo(`Участник ${teamInfo?.name} успешно исключен из команды`)
+      },
+      onError: (error) => {
+        dismiss()
+        toast({
+          variant: 'destructive',
+          description: 'Ошибка при исключении участника'
+        })
+        console.error("Ошибка при исключении участника:", error)
+      }
+    })
+  }
+
+  // Обработчик назначения капитана
+  const handleChangeCaptain = (event: React.FormEvent, user_id: number) => {
+    event.preventDefault()
+    const requestBody = { user_id: user_id, is_captain: true }
+    setCaptainRights(requestBody, {
+      onSuccess: async () => {
+        await refreshTeamMates(`Участник ${teamInfo?.name} успешно назначен капитаном`)
+      },
+      onError: (error) => {
+        dismiss()
+        toast({
+          variant: 'destructive',
+          description: 'Ошибка при назначении капитана'
+        })
+        console.error("Ошибка при назначении капитана:", error)
+      }
+    })
+  }
+
   useEffect(() => {
     getCurrentUserTeamInfo()
   }, [])
@@ -146,18 +209,25 @@ export const useTeam = () => {
   }, [teamInfo])
 
   return {
+    isCaptain,
     setHasTeam,
     setTeamInfo,
     setTeamMates,
+    nonCaptainMates,
+    setNonCaptainMates,
+    isTeamMatesLoading,
     setIsTeamLoading,
     getCurrentUserTeamInfo,
     refreshTeamInfo,
+    refreshTeamMates,
     isTeamLoading,
     hasTeam,
     teamInfo,
     teamMates,
     teamName,
     setTeamName,
-    handleTeamLeave
+    handleTeamLeave,
+    handleTeamKick,
+    handleChangeCaptain
   }
 }
