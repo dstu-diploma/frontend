@@ -2,24 +2,27 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { removeAuthCookies } from '@/shared/lib/helpers/cookies';
-import { navigationItems } from '../configs/navItemsConfig';
+import { cookiesApi } from '@/shared/lib/helpers/cookies';
+import { navigationItems, NavItem } from '../configs/navItemsConfig';
 import styles from './Sidebar.module.css';
 
 export const Sidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const user = cookiesApi.getUser()
 
   const handleLogout = () => {
-    removeAuthCookies();
+    cookiesApi.removeAuthCookies();
     router.push('/login');
   };
 
+  const processNavigationItems = navigationItems.filter((item: NavItem) => !(item.href === '/admin' && user.role !== 'admin'))
+    
   return (
     <aside className={styles.sidebar}>
       <nav className={styles.navigation}>
         <ul className={styles.navList}>
-          {navigationItems.map((item) => (
+          {processNavigationItems.map((item) => (
             <li key={item.href} className={styles.navItem}>
               <Link
                 href={item.href}
