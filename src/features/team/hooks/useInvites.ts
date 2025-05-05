@@ -1,7 +1,7 @@
 import { useToast } from "@/shared/hooks/use-toast"
 import { useEffect, useState } from "react"
 import { TeamInvite, TeamInfo } from "../model/types"
-import { teamApi } from "../api/teamApi"
+import { teamApi } from "../api"
 
 interface useInvitesProps {
   refreshTeamInfo: (success_message: string) => Promise<void>
