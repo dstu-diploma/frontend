@@ -31,8 +31,14 @@
 
     li {
         width: 100%;
+        display: flex;
+        justify-content: space-between;
         border-bottom: 1px solid #e7e7e7;
         padding: 0.75rem 0;
+
+        .value {
+            color: rgba(0, 0, 0, 0.7);
+        }
 
         &:first-child {
             padding: 0.75rem 0; 
@@ -43,11 +49,4 @@
             padding-bottom: 0;
         }
     }
-}
-
-.invitesContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding-top: 0.75rem;
 }
