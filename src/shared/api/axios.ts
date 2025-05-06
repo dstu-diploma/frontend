@@ -56,9 +56,7 @@ axiosInstance.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${response.data.access_token}`;
         return axiosInstance(originalRequest);
       } catch (error) {
-        cookiesApi.removeAuthCookies();
-        localStorage.setItem('login_redirect_reason', 'session_expired');
-        window.location.href = '/login';
+        AuthService.gracefulLogout();
         return Promise.reject(error);
       }
     }
