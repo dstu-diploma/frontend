@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const protectedRoutes = ['/profile', '/admin', '/team', '/user']
+  const protectedRoutes = ['/profile', '/admin', '/hackathons', '/team', '/user']
   const isAuthenticated = request.cookies.has('access_token')
   
   for (const route of protectedRoutes) {
