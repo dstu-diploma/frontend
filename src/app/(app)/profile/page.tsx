@@ -7,11 +7,10 @@ import { BaseUserType } from '@/features/user/model/types';
 import { ProfileForm } from '@/features/user/ui/profile/ProfileForm/ProfileForm';
 import styles from './profile.module.css'
 
-const ProfilePage = () => {
+const ProfilePage = () => {  
   const { mutate: updateProfile } = userApi.updateProfile();
 
   const handleSubmit = async (data: ProfileFormData) => {
-    console.log("Обновление данных юзера...")
     updateProfile({
       first_name: data.first_name,
       last_name: data.last_name,
