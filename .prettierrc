@@ -9,5 +9,7 @@
   "endOfLine": "lf",
   "tabWidth": 2,
   "plugins": ["prettier-plugin-jsdoc"],
-  "jsdocAddDefault": true
+  "jsdocAddDefault": true,
+  "filepath": "./src/**/*.{js,jsx,ts,tsx}",
+  "encoding": "utf-8"
 }
