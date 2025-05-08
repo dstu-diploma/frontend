@@ -1,0 +1,38 @@
+.adminTabFilter {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+
+  .searchInput {
+    flex: 1;
+
+    &:hover {
+      border-color: #3182ce;
+    }
+
+    &:focus {
+      border-color: #3182ce;
+    }
+  }
+
+  .selectContent {
+    .selectGroup {
+      .selectItem {
+        
+      }
+    }
+  }
+
+  .selectTrigger {
+    width: 20%;
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid var(--border);
+    padding: 0.75rem;
+    
+    span {
+      font-size: 16px;
+      color: #6b7280;
+    }
+  }
+}
