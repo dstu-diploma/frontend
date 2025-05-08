@@ -12,11 +12,6 @@ export type NavItem = {
   
 export const navigationItems: NavItem[] = [
   {
-    label: 'Главная',
-    href: '/',
-    icon: <FaHome />,
-  },
-  {
     label: 'Профиль',
     href: '/profile',
     icon: <IoPersonOutline />,
