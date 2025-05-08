@@ -1,0 +1,65 @@
+.accordionItem {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.accordionHeader {
+  display: flex;
+}
+
+.accordionTrigger {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  text-align: left;
+  cursor: pointer;
+  background: none;
+  border: none;
+  outline: none;
+  &:hover {
+    text-decoration: underline;
+  }
+  &[data-state='open'] .chevronIcon {
+    transform: rotate(180deg);
+  }
+}
+
+.chevronIcon {
+  height: 1rem;
+  width: 1rem;
+  flex-shrink: 0;
+  color: #6b7280;
+  transition: transform 0.2s;
+}
+
+.accordionContent {
+  overflow: hidden;
+  font-size: 0.875rem;
+  animation-duration: 0.2s;
+  &[data-state='closed'] {
+    animation-name: accordion-up;
+  }
+  &[data-state='open'] {
+    animation-name: accordion-down;
+  }
+}
+
+@keyframes accordion-down {
+  from { height: 0; opacity: 0; }
+  to { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to { height: 0; opacity: 0; }
+}
+
+.accordionContentInner {
+  padding-bottom: 1rem;
+  padding-top: 0;
+}
