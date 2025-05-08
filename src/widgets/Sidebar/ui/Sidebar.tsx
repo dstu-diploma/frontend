@@ -1,28 +1,34 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { cookiesApi } from '@/shared/lib/helpers/cookies';
-import { navigationItems, NavItem } from '../configs/navItemsConfig';
-import styles from './Sidebar.module.css';
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
+import { navigationItems, NavItem } from '../configs/navItemsConfig'
+import styles from './Sidebar.module.css'
 
 export const Sidebar = () => {
-  const pathname = usePathname();
-  const router = useRouter();
+  const pathname = usePathname()
+  const router = useRouter()
   const user = cookiesApi.getUser()
 
   const handleLogout = () => {
-    cookiesApi.removeAuthCookies();
-    router.push('/login');
-  };
+    cookiesApi.removeAuthCookies()
+    router.push('/login')
+  }
 
-  const processNavigationItems = navigationItems.filter((item: NavItem) => !(item.href === '/admin' && user.role !== 'admin'))
-    
+  const processNavigationItems = navigationItems.filter(
+    (item: NavItem) =>
+      !(
+        (item.href === '/admin' && user.role !== 'admin') ||
+        (item.href === '/team' && user.role !== 'user')
+      ),
+  )
+
   return (
     <aside className={styles.sidebar}>
       <nav className={styles.navigation}>
         <ul className={styles.navList}>
-          {processNavigationItems.map((item) => (
+          {processNavigationItems.map(item => (
             <li key={item.href} className={styles.navItem}>
               <Link
                 href={item.href}
@@ -38,13 +44,10 @@ export const Sidebar = () => {
         </ul>
       </nav>
       <footer className={styles.sidebarFooter}>
-        <button 
-          onClick={handleLogout}
-          className={styles.logoutButton}
-        >
+        <button onClick={handleLogout} className={styles.logoutButton}>
           <span className={styles.label}>Выйти</span>
         </button>
       </footer>
     </aside>
-  );
-}; 
+  )
+}
