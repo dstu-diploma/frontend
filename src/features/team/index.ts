@@ -1,8 +1,8 @@
 // UI
 export { TeamMemberCard } from './ui/cards/TeamMemberCard/'
 export { TeamInviteCard } from './ui/cards/TeamInviteCard/'
-export { TeamConfirmModal } from './ui/modals/TeamConfirmModal/'
-export { TeamActionModal } from './ui/modals/TeamActionModal/'
+export { ConfirmModal } from '../../shared/ui/custom/ConfirmModal'
+export { ActionModal } from '../../shared/ui/custom/ActionModal'
 export { TeamSidebar } from './ui/sidebar/TeamSidebar/'
 
 // Хуки
@@ -14,17 +14,16 @@ export { useInviteModal } from './hooks/dialogs/useInviteModal'
 export { useSetRoleModal } from './hooks/dialogs/useSetRoleModal'
 
 // Типы
-export type { 
-  TeamInfo, 
-  TeamMateRef, 
+export type {
+  TeamInfo,
+  TeamMateRef,
   TeamMate,
   TeamInvite,
   TeamCreateRequestBody,
   TeamCreateResponseBody,
   TeamRenameRequestBody,
-  TeamRenameResponseBody
+  TeamRenameResponseBody,
 } from './model/types'
 
 // API
-export { teamApi } from './api';
-
+export { teamApi } from './api'
