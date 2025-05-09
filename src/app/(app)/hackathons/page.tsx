@@ -11,15 +11,18 @@ import {
   hackathonFormSchema,
   type HackathonFormData,
 } from '@/features/hackatons/model/schemas'
-import HackathonsCreateFormContent from '@/features/hackatons/ui/HackathonsCreateFormContent'
+import HackathonsCreateFormContent from '@/features/hackatons/ui/modal-form-contents/HackathonsCreateFormContent'
 import { useHackathons } from '@/features/hackatons/hooks/useHackathons'
 import { adminApi } from '@/features/admin/api'
 import { toast, useToast } from '@/shared/hooks/use-toast'
 import { AxiosError } from 'axios'
 import UserCardSkeleton from '@/shared/ui/custom/UserCardSkeleton'
 import styles from './hackathons.module.scss'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
+import { useSetRoleModal } from '@/features/team'
 
 const HackathonsPage = () => {
+  const user = cookiesApi.getUser()
   const { mutate: createHackathon } = adminApi.createHackathon()
   const { toast, dismiss } = useToast()
   const { allHackathons, isHackathonsLoading } = useHackathons()
@@ -64,25 +67,29 @@ const HackathonsPage = () => {
     })
   }
 
+  console.log(user)
+
   return (
     <div className={styles.hackathonsContainer}>
       <h1 className={styles.hackathonsTitle}>Хакатоны</h1>
       <div className={styles.hackathonsContent}>
-        <Toolbar>
-          <div className={styles.toolbarContent}>
-            <ActionModal
-              title='Объявление хакатона'
-              trigger={<Button>Объявить новый хакатон</Button>}
-              submitButtonText='Объявить'
-              onSave={e => {
-                e.preventDefault()
-                form.handleSubmit(onSubmit)(e)
-              }}
-            >
-              <HackathonsCreateFormContent form={form} />
-            </ActionModal>
-          </div>
-        </Toolbar>
+        {(user.role === 'admin' || user.role === 'organizer') && (
+          <Toolbar>
+            <div className={styles.toolbarContent}>
+              <ActionModal
+                title='Объявление хакатона'
+                trigger={<Button>Объявить новый хакатон</Button>}
+                submitButtonText='Объявить'
+                onSave={e => {
+                  e.preventDefault()
+                  form.handleSubmit(onSubmit)(e)
+                }}
+              >
+                <HackathonsCreateFormContent form={form} />
+              </ActionModal>
+            </div>
+          </Toolbar>
+        )}
         <div className={styles.hackathons}>
           <h4>Список хакатонов</h4>
           {isHackathonsLoading ? (
