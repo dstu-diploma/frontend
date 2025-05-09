@@ -6,6 +6,8 @@ import { useToast } from "@/shared/hooks/use-toast";
 export const useProfileAvatar = () => {
   const [avatarSrc, setAvatarSrc] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [timestamp, setTimestamp] = useState<number>(Date.now())
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const objectUrlRef = useRef<string | null>(null);
   const { toast, dismiss } = useToast()
@@ -15,17 +17,20 @@ export const useProfileAvatar = () => {
 
   useEffect(() => {
     const prepareAvatar = async () => {
-      const authCookies = cookiesApi.getAuthCookies()
-      const userId = authCookies.user.id
-      const avatarPath = profileApi.getAvatar(userId)
+      const user = cookiesApi.getUser()
+      const avatarPath = profileApi.getAvatar(user.userId)
       const pathIsValid = await profileApi.isAvatarExists(avatarPath)
 
       if (pathIsValid) {
-        setAvatarSrc(avatarPath)
+        setAvatarSrc(`${avatarPath}?t=${timestamp}`)
       }
     }
     prepareAvatar()
-  }, [])
+  }, [timestamp])
+
+  const refreshAvatar = () => {
+    setTimestamp(Date.now())
+  }
 
   useEffect(() => {
     return () => {
