@@ -1,5 +1,48 @@
 .adminPage {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    
     .adminPageContent {
-        
+        margin-top: 20px;
+
+        .tabs {
+            width: 100%;
+
+            .tabContent {
+                margin-top: 2rem;
+            }
+
+            .tabsList {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 0.5rem;
+    
+                .tabsTrigger {
+                    padding: 15px 20px;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 8px;
+                    background: #fff;
+                    color: #222e3a;
+                    font-weight: 500;
+                    font-size: 16px;
+                    margin-right: 8px;
+                    cursor: pointer;
+                    transition: background 0.2s, color 0.2s, border-color 0.2s;
+                  
+                    &:last-child {
+                      margin-right: 0;
+                    }
+                  
+                    &[data-state="active"] {
+                      background: #e6f0fa;
+                      color: #2563eb;
+                      border-color: #2563eb;
+                      font-weight: 700;
+                    }
+                }
+            }   
+        } 
     }
 }

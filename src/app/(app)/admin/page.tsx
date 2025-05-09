@@ -1,91 +1,54 @@
-"use client"
+'use client'
 
-import { Input } from '@/shared/ui/shadcn/input'
-import { 
-  Card, 
-  CardHeader, 
-  CardContent, 
-  CardFooter, 
-  CardTitle, 
-  CardDescription 
-} from '@/shared/ui/shadcn/card'
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
-  TabsTrigger 
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
 } from '@/shared/ui/shadcn/tabs'
+import AdminTab from '@/features/admin/ui/AdminTab'
 import styles from './admin.module.scss'
-import { Label } from '@/shared/ui/shadcn/label'
-import { Button } from '@/shared/ui/shadcn/button'
 
-const AdminPage = () => {   
-    return (                                                
-      <div className={styles.adminPage}>
-        <h1>Админка</h1>
-        <div className={styles.adminPageContent}>
-          <Tabs defaultValue="account" className="w-[400px]">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="users">
-                <Button>Пользователи</Button>
-              </TabsTrigger>
-              <TabsTrigger value="teams">
-                <Button>Команды</Button>
-              </TabsTrigger>
-              <TabsTrigger value="hackathons">
-                <Button>Хакатоны</Button>
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="users">
-                <Card>
-                <CardHeader>
-                    <CardTitle>Account</CardTitle>
-                    <CardDescription>
-                    Make changes to your account here. Click save when you're done.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                    <div className="space-y-1">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" defaultValue="Pedro Duarte" />
-                    </div>
-                    <div className="space-y-1">
-                    <Label htmlFor="username">Username</Label>
-                    <Input id="username" defaultValue="@peduarte" />
-                    </div>
-                </CardContent>
-                <CardFooter>
-                    <Button>Save changes</Button>
-                </CardFooter>
-                </Card>
-            </TabsContent>
-            <TabsContent value="teams">
-                <Card>
-                <CardHeader>
-                    <CardTitle>Password</CardTitle>
-                    <CardDescription>
-                    Change your password here. After saving, you'll be logged out.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                    <div className="space-y-1">
-                    <Label htmlFor="current">Current password</Label>
-                    <Input id="current" type="password" />
-                    </div>
-                    <div className="space-y-1">
-                    <Label htmlFor="new">New password</Label>
-                    <Input id="new" type="password" />
-                    </div>
-                </CardContent>
-                <CardFooter>
-                    <Button>Save password</Button>
-                </CardFooter>
-                </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
+const AdminPage = () => {
+  return (
+    <div className={styles.adminPage}>
+      <h1>Панель администратора</h1>
+      <p>
+        В данной панели вы можете управлять состоянием системы, выбрав
+        соответствующую категорию.
+      </p>
+      <div className={styles.adminPageContent}>
+        <Tabs defaultValue='users' className={styles.tabs}>
+          <TabsList className={styles.tabsList}>
+            <TabsTrigger className={styles.tabsTrigger} value='users'>
+              Пользователи
+            </TabsTrigger>
+            <TabsTrigger className={styles.tabsTrigger} value='brandTeams'>
+              Команды-бренды
+            </TabsTrigger>
+            <TabsTrigger className={styles.tabsTrigger} value='hackathonTeams'>
+              Хакатоновские команды
+            </TabsTrigger>
+            <TabsTrigger className={styles.tabsTrigger} value='hackathons'>
+              Хакатоны
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent className={styles.tabContent} value='users'>
+            <AdminTab tab='users' />
+          </TabsContent>
+          <TabsContent className={styles.tabContent} value='brandTeams'>
+            <AdminTab tab='brandTeams' />
+          </TabsContent>
+          <TabsContent className={styles.tabContent} value='hackathonTeams'>
+            <AdminTab tab='hackathonTeams' />
+          </TabsContent>
+          <TabsContent className={styles.tabContent} value='hackathons'>
+            <AdminTab tab='hackathons' />
+          </TabsContent>
+        </Tabs>
       </div>
-    )
+    </div>
+  )
 }
 
 export default AdminPage
