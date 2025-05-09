@@ -3,11 +3,15 @@ import { TEAM_SERVICE_HACKATHON_TEAM_API_URL } from '@/shared/api/basePaths'
 import { useMutation } from '@tanstack/react-query'
 
 export const hackathonTeamsApi = {
-  registerTeamOnHackathon: () => {
+  applyToHackathon: () => {
     return useMutation({
-      mutationFn: async () => {
+      mutationFn: async (data: {
+        hackathon_id: number
+        mate_user_ids: number[]
+      }) => {
         const response = await axiosInstance.post(
           `${TEAM_SERVICE_HACKATHON_TEAM_API_URL}/`,
+          data,
         )
         return response.data
       },
