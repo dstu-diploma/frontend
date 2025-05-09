@@ -1,15 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { Button } from '@/shared/ui/shadcn/button';
-import Toolbar from '@/shared/ui/custom/Toolbar/Toolbar';
-import { UserPartial } from '@/features/user/model/types';
-import { cookiesApi } from '@/shared/lib/helpers/cookies';
+import { Button } from '@/shared/ui/shadcn/button'
+import Toolbar from '@/shared/ui/custom/Toolbar/Toolbar'
+import UserCardSkeleton from '@/shared/ui/custom/UserCardSkeleton'
+import { UserPartial } from '@/features/user/model/types'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import {
   TeamMemberCard,
   TeamSidebar,
-  TeamActionModal,
-  TeamConfirmModal,
+  ActionModal,
+  ConfirmModal,
   TeamInviteCard,
   useTeam,
   useInvites,
@@ -17,9 +18,9 @@ import {
   useCreateModal,
   useInviteModal,
   useSetRoleModal,
-  type TeamInfo
+  type TeamInfo,
 } from '@/features/team/'
-import styles from './team.module.scss';
+import styles from './team.module.scss'
 
 export default function TeamsPage() {
   const user = cookiesApi.getUser()
@@ -27,47 +28,39 @@ export default function TeamsPage() {
   const {
     isCaptain,
     isTeamLoading,
+    isTeamMatesLoading,
     hasTeam,
     teamInfo,
+    teamRole,
     teamMates,
-    teamName,
-    setTeamName,
+    teamInfoName,
     handleTeamLeave,
-    refreshTeamInfo
+    refreshTeamInfo,
+    refreshTeamMates,
+    refreshTeamName,
+    handleChangeCaptain,
   } = useTeam()
 
+  const { userInvites, handleAcceptInvite, handleDenyInvite } = useInvites({
+    refreshTeamInfo,
+  })
+
+  const { role, setRole, handleMateRoleChange, handleMateRoleSave } =
+    useSetRoleModal({ refreshTeamMates, teamRole })
+
+  const { teamName, setTeamName, handleTeamRename, handleTeamNameChange } =
+    useRenameModal({ teamInfoName, refreshTeamName })
+
   const {
-    userInvites, 
-    handleAcceptInvite,
-    handleDenyInvite,
-  } = useInvites({ refreshTeamInfo })
-
-  const { 
-    role, 
-    setRole, 
-    handleMateRoleChange,
-    handleMateRoleSave,
-  } = useSetRoleModal({ refreshTeamInfo })
-
-  const { 
-    handleTeamRename, 
-    handleTeamNameChange 
-  } = useRenameModal({ teamName, setTeamName })
-
-  const { 
-    setNewTeamName, 
-    newTeamName, 
-    handleTeamCreateChange, 
-    handleTeamCreate 
+    setNewTeamName,
+    newTeamName,
+    handleTeamCreateChange,
+    handleTeamCreate,
   } = useCreateModal({ refreshTeamInfo })
 
-  const { 
-    mateEmail, 
-    setMateEmail, 
-    handleTeamInviteChange, 
-    handleTeamInvite 
-  } = useInviteModal()
-  
+  const { mateEmail, setMateEmail, handleTeamInviteChange, handleTeamInvite } =
+    useInviteModal()
+
   return (
     <div className={styles.teamContainer}>
       <h1 className={styles.teamTitle}>Моя команда</h1>
@@ -75,10 +68,12 @@ export default function TeamsPage() {
         <Toolbar>
           <div className={styles.toolbarContent}>
             {isTeamLoading && <span>Загрузка данных о команде...</span>}
-            {!isTeamLoading && !hasTeam && <span>Вы не состоите в команде</span>}
+            {!isTeamLoading && !hasTeam && (
+              <span>Вы не состоите в команде</span>
+            )}
             <div className={styles.toolbarControls}>
-              {!hasTeam && !isTeamLoading && 
-                <TeamActionModal 
+              {!hasTeam && !isTeamLoading && (
+                <ActionModal
                   title='Создание команды'
                   fieldName='name'
                   fieldValue={newTeamName}
@@ -89,12 +84,12 @@ export default function TeamsPage() {
                   onSave={handleTeamCreate}
                 >
                   <Button>Создать команду</Button>
-                </TeamActionModal>
-              }
-              {hasTeam && isCaptain &&
-                <TeamActionModal 
+                </ActionModal>
+              )}
+              {hasTeam && isCaptain && (
+                <ActionModal
                   fieldName='name'
-                  title='Название команды'
+                  title='Обновить название команды'
                   fieldValue={teamName}
                   setFieldValue={setTeamName}
                   fieldPlaceholder='Введите новое название команды'
@@ -102,13 +97,13 @@ export default function TeamsPage() {
                   onChange={handleTeamNameChange}
                   onSave={handleTeamRename}
                 >
-                  <Button>Изменить название</Button>
-                </TeamActionModal>
-              }
-              {hasTeam &&
-                <TeamActionModal 
+                  <Button>Изменить название команды</Button>
+                </ActionModal>
+              )}
+              {hasTeam && (
+                <ActionModal
                   fieldName='name'
-                  title='Установление роли'
+                  title='Установить или обновить роль'
                   fieldValue={role}
                   setFieldValue={setRole}
                   fieldPlaceholder='Введите Вашу текущую роль в команде'
@@ -116,47 +111,73 @@ export default function TeamsPage() {
                   onChange={handleMateRoleChange}
                   onSave={handleMateRoleSave}
                 >
-                  <Button>Установить роль</Button>
-                </TeamActionModal>
-              }
-              {hasTeam && 
-                <TeamActionModal
+                  <Button>Изменить свою роль в команде</Button>
+                </ActionModal>
+              )}
+              {hasTeam && isCaptain && (
+                <ActionModal
                   fieldName='email'
-                  title='Пригласить игрока'
+                  title='Пригласить участника'
                   fieldValue={mateEmail}
                   setFieldValue={setMateEmail}
                   fieldType='email'
-                  labelText='Электронная почта'
                   fieldPlaceholder='Введите электронную почту пользователя'
                   submitButtonText='Отправить приглашение'
                   onChange={handleTeamInviteChange}
                   onSave={handleTeamInvite}
                 >
                   <Button>Пригласить в команду</Button>
-                </TeamActionModal>
-              }
-              {hasTeam && 
-                <TeamConfirmModal
+                </ActionModal>
+              )}
+              {hasTeam && isCaptain && (
+                <ConfirmModal
+                  title='Вы действительно хотите снять с себя права капитана?'
+                  submitButtonText='Снять права'
+                  isSingleCaptainText={
+                    teamMates?.filter(mate => mate.is_captain).length == 1
+                      ? 'Назначьте нового капитана, т.к. вы единственный капитан'
+                      : ''
+                  }
+                  onConfirm={e =>
+                    handleChangeCaptain(
+                      e,
+                      teamMates?.find(
+                        mate => mate.is_captain && mate.id == user.id,
+                      ) as UserPartial,
+                    )
+                  }
+                >
+                  <Button variant='destructive'>
+                    Cнять с себя права капитана
+                  </Button>
+                </ConfirmModal>
+              )}
+              {hasTeam && (
+                <ConfirmModal
                   title='Вы действительно хотите покинуть команду?'
                   submitButtonText='Покинуть'
-                  isCaptainText={teamMates?.length == 1 ? 'Данное действие удалит команду' : ''}
+                  isSingleCaptainText={
+                    teamMates?.filter(mate => mate.is_captain).length == 1
+                      ? 'Назначьте нового капитана, т.к. вы единственный капитан'
+                      : ''
+                  }
                   onConfirm={handleTeamLeave}
                 >
                   <Button variant='destructive'>Покинуть команду</Button>
-                </TeamConfirmModal>
-              }
+                </ConfirmModal>
+              )}
             </div>
           </div>
         </Toolbar>
         {!hasTeam && !isTeamLoading && (
           <div className={styles.invitesContainer}>
-          <h3>Приглашения</h3>
+            <h3>Приглашения</h3>
             <div className={styles.invites}>
               {userInvites.length > 0 ? (
                 userInvites.map((team: TeamInfo) => (
-                  <TeamInviteCard 
+                  <TeamInviteCard
                     key={team.name}
-                    team={team} 
+                    team={team}
                     onAccept={handleAcceptInvite}
                     onReject={handleDenyInvite}
                   />
@@ -167,34 +188,44 @@ export default function TeamsPage() {
             </div>
           </div>
         )}
-        {hasTeam && teamInfo &&
-         <div className={styles.teamContents}>
+        {hasTeam && teamInfo && (
+          <div className={styles.teamContents}>
             <h3>Участники команды</h3>
             <div className={styles.membersContainer}>
               <div className={styles.teamMembers}>
                 <div className={styles.members}>
-                  {teamMates && teamMates?.length > 0 ? teamMates?.map((member: UserPartial) => (
-                    <Link 
-                      key={member.id} 
-                      href={member.id === user.id ? '/profile' : `/user/${member.id}`}
-                      className={styles.link}
-                    >
-                      <TeamMemberCard 
-                        member={member} 
-                        isCaptain={isCaptain}
-                      /> 
-                    </Link>
-                    )) : <span className={styles.noMates}>В команде нет активных участников</span>}
-                  </div>
+                  {isTeamMatesLoading ? (
+                    <div className={styles.skeletonContainer}>
+                      <UserCardSkeleton />
+                      <UserCardSkeleton />
+                      <UserCardSkeleton />
+                    </div>
+                  ) : teamMates && teamMates?.length > 0 ? (
+                    teamMates?.map((member: UserPartial) => (
+                      <Link
+                        key={member.id}
+                        href={
+                          member.id === user.id
+                            ? '/profile'
+                            : `/user/${member.id}`
+                        }
+                        className={styles.link}
+                      >
+                        <TeamMemberCard member={member} isCaptain={isCaptain} />
+                      </Link>
+                    ))
+                  ) : (
+                    <span className={styles.noMates}>
+                      В команде нет активных участников
+                    </span>
+                  )}
                 </div>
-              <TeamSidebar
-                team={teamInfo}
-                teamMates={teamMates}
-              />
+              </div>
+              <TeamSidebar team={teamInfo} teamName={teamInfoName} />
             </div>
           </div>
-        }
+        )}
       </div>
     </div>
-  );
+  )
 }
