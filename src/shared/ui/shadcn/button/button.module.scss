@@ -65,8 +65,16 @@
     @extend .button;
     background: linear-gradient(135deg, #ce3131 0%, #822c2c 100%) !important;
 
+    &::before {
+        background: linear-gradient(135deg, #822c2c 0%, #4a1a1a 100%) !important;
+    }
+
     &:hover {
-        background-color: rgb(204, 85, 85) !important;
+        box-shadow: 0 4px 12px rgba(130, 44, 44, 0.2);
+    }
+
+    &:active {
+        box-shadow: 0 2px 6px rgba(130, 44, 44, 0.15);
     }
 }
 
