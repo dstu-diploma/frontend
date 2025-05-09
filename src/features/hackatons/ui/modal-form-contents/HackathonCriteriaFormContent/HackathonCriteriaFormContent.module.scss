@@ -1,0 +1,38 @@
+.dialogFormContentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dialogFormContentItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dialogFormInput {
+  width: 100%;
+}
+
+.errorMessage {
+  color: #ef4444;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.markdownEditor {
+  width: 100%;
+  
+  :global {
+    .mdxeditor {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      min-height: 200px;
+      
+      &:focus-within {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+    }
+  }
+}
