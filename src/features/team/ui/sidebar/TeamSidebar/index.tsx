@@ -1,13 +1,12 @@
-import { UserPartial } from '@/features/user/model/types';
 import { TeamInfo } from '../../../model/types';
 import styles from './TeamSidebar.module.scss'
 
 interface TeamSidebarProps {
   team: TeamInfo
-  teamMates: UserPartial[] | null
+  teamName: string
 }
 
-export const TeamSidebar = ({ team, teamMates }: TeamSidebarProps) => {
+export const TeamSidebar = ({ team, teamName }: TeamSidebarProps) => {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.sidebarBlock}>
@@ -15,7 +14,7 @@ export const TeamSidebar = ({ team, teamMates }: TeamSidebarProps) => {
         <ul className={styles.navList}>
           <li className={styles.navItem}>
             <span className={styles.param}>Команда&nbsp;</span>
-            <span className={styles.value}>{team.name}</span>
+            <span className={styles.value}>{teamName}</span>
           </li>
           <li className={styles.navItem}>
             <span className={styles.param}>Участников&nbsp;</span>
@@ -23,7 +22,7 @@ export const TeamSidebar = ({ team, teamMates }: TeamSidebarProps) => {
           </li>
           <li className={styles.navItem}>
             <span className={styles.param}>Хакатон&nbsp;</span>
-            <span className={styles.value}>ДГТУ 2025</span>
+            <span className={styles.value}>Не указан</span>
           </li>
         </ul>
       </div>
