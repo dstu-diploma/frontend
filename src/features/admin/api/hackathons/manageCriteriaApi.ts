@@ -13,33 +13,53 @@ export const manageCriteriaApi = {
       },
     })
   },
-  setCriteria: () => {
+  createCriterion: () => {
     return useMutation({
-      mutationFn: async (hackathon_id: number) => {
+      mutationFn: async ({
+        hackathon_id,
+        name,
+        weight,
+      }: {
+        hackathon_id: number
+        name: string
+        weight: number
+      }) => {
         const response = await axiosInstance.post(
           `${HACKATHON_SERVICE_MANAGE_API_URL}/criterion/${hackathon_id}`,
+          {
+            name,
+            weight,
+          },
         )
         return response.data
       },
     })
   },
-  updateCriteria: () => {
+  updateCriterion: () => {
     return useMutation({
       mutationFn: async ({
         hackathon_id,
         criterion_id,
+        name,
+        weight,
       }: {
         hackathon_id: number
         criterion_id: number
+        name: string
+        weight: number
       }) => {
         const response = await axiosInstance.put(
           `${HACKATHON_SERVICE_MANAGE_API_URL}/criterion/${hackathon_id}/${criterion_id}`,
+          {
+            name,
+            weight,
+          },
         )
         return response.data
       },
     })
   },
-  deleteCriteria: () => {
+  deleteCriterion: () => {
     return useMutation({
       mutationFn: async ({
         hackathon_id,

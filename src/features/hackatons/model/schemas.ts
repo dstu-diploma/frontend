@@ -49,4 +49,21 @@ export const hackathonFormSchema = z
     path: ['endDate'],
   })
 
+export const criterionFormSchema = z.object({
+  name: z
+    .string()
+    .min(3, 'Название должно содержать минимум 3 символа')
+    .max(100, 'Название не должно превышать 100 символов'),
+  weight: z
+    .string()
+    .transform(val => parseFloat(val))
+    .pipe(
+      z
+        .number()
+        .min(0, 'Вес не может быть меньше 0')
+        .max(1, 'Вес не может быть больше 1'),
+    ),
+})
+
 export type HackathonFormData = z.output<typeof hackathonFormSchema>
+export type CriterionFormData = z.output<typeof criterionFormSchema>
