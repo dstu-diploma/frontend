@@ -16,13 +16,17 @@ export const Sidebar = () => {
     router.push('/login')
   }
 
-  const processNavigationItems = navigationItems.filter(
-    (item: NavItem) =>
-      !(
-        (item.href === '/admin' && user.role !== 'admin') ||
-        (item.href === '/team' && user.role !== 'user')
-      ),
-  )
+  const processNavigationItems = navigationItems.filter((item: NavItem) => {
+    if (item.href === '/admin' && user.role !== 'admin') {
+      return false
+    }
+
+    if (item.href === '/team' && user.role !== 'user') {
+      return false
+    }
+
+    return true
+  })
 
   return (
     <aside className={styles.sidebar}>
