@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { navigationItems, NavItem } from '../configs/navItemsConfig'
 import styles from './Sidebar.module.css'
+import clsx from 'clsx'
 
 export const Sidebar = () => {
   const pathname = usePathname()
@@ -40,7 +41,14 @@ export const Sidebar = () => {
                   pathname === item.href ? styles.active : ''
                 }`}
               >
-                <span className={styles.icon}>{item.icon}</span>
+                <span
+                  className={clsx(
+                    styles.icon,
+                    item.isIconFillable && styles.iconFill,
+                  )}
+                >
+                  {item.icon}
+                </span>
                 <span className={styles.label}>{item.label}</span>
               </Link>
             </li>
