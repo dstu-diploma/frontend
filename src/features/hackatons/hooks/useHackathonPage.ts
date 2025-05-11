@@ -9,12 +9,15 @@ export const useHackathonPage = (page_id: number) => {
   const { toast, dismiss } = useToast()
   const { mutate: getHackathonById, isPending: isHackathonLoading } =
     hackathonApi.getHackathonById()
+  const { mutate: getMyHackathonTeam } = hackathonApi.getMyHackathonTeam()
   const { mutate: getMyTeamInfo } = teamApi.getMyTeamInfo()
   const { mutate: applyToHackathon } = teamApi.applyToHackathon()
 
   const [hackathonInfo, setHackathonInfo] = useState<DetailedHackathon | null>(
     null,
   )
+  const [hasTeam, setHasTeam] = useState<boolean>(false)
+  const [isUserTeamApplied, setIsUserTeamApplied] = useState<boolean>(false)
   const [mateIds, setMateIds] = useState<number[]>([])
 
   // Получение информации о хакатоне
@@ -31,6 +34,31 @@ export const useHackathonPage = (page_id: number) => {
         setMateIds(data.mates.map(mate => mate.user_id))
       },
     })
+  }, [])
+
+  // Установка флага наличия команды
+  useEffect(() => {
+    if (mateIds.length > 0) {
+      setHasTeam(true)
+    }
+  }, [mateIds])
+
+  // Установка флага участия в хакатоне
+  useEffect(() => {
+    if (mateIds.length > 0) {
+      getMyHackathonTeam(Number(page_id), {
+        onSuccess: () => {
+          setIsUserTeamApplied(true)
+        },
+        onError: error => {
+          console.error(
+            'Ошибка при получении информации об участниках команды:',
+            error,
+          )
+          setIsUserTeamApplied(false)
+        },
+      })
+    }
   }, [])
 
   // Отправка заявки на участие в хакатоне
@@ -64,6 +92,8 @@ export const useHackathonPage = (page_id: number) => {
   }
 
   return {
+    hasTeam,
+    isUserTeamApplied,
     hackathonInfo,
     isHackathonLoading,
     handleApplicationSubmit,
