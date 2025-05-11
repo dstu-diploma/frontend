@@ -25,7 +25,8 @@ const HackathonsPage = () => {
   const user = cookiesApi.getUser()
   const { mutate: createHackathon } = adminApi.createHackathon()
   const { toast, dismiss } = useToast()
-  const { allHackathons, isHackathonsLoading } = useHackathons()
+  const { allHackathons, isHackathonsLoading, getAllHackathons } =
+    useHackathons()
 
   const form = useForm<HackathonFormData>({
     resolver: zodResolver(hackathonFormSchema),
@@ -41,15 +42,14 @@ const HackathonsPage = () => {
   })
 
   const onSubmit = (data: HackathonFormData) => {
-    console.log('Form data:', data)
-    console.log('Form errors:', form.formState.errors)
     createHackathon(data, {
-      onSuccess: () => {
+      onSuccess: async () => {
         dismiss()
         toast({
           variant: 'defaultBlueSuccess',
-          description: `Хакатон ${data.name} успешно создан`,
+          description: `Хакатон «${data.name}» успешно создан`,
         })
+        await getAllHackathons()
       },
       onError: error => {
         dismiss()
@@ -67,8 +67,6 @@ const HackathonsPage = () => {
     })
   }
 
-  console.log(user)
-
   return (
     <div className={styles.hackathonsContainer}>
       <h1 className={styles.hackathonsTitle}>Хакатоны</h1>
@@ -84,6 +82,7 @@ const HackathonsPage = () => {
                   e.preventDefault()
                   form.handleSubmit(onSubmit)(e)
                 }}
+                contentClassName={styles.hackathonCreateModal}
               >
                 <HackathonsCreateFormContent form={form} />
               </ActionModal>

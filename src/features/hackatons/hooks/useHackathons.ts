@@ -10,7 +10,7 @@ export const useHackathons = () => {
   const [allHackathons, setAllHackathons] = useState<Hackathon[]>([])
   const { toast, dismiss } = useToast()
 
-  const getAllHackathons = () => {
+  const getAllHackathons = async () => {
     getHackathonsList(undefined, {
       onSuccess: data => {
         setAllHackathons(data)
@@ -38,6 +38,7 @@ export const useHackathons = () => {
   }, [])
 
   return {
+    getAllHackathons,
     isHackathonsLoading,
     allHackathons,
   }
