@@ -5,6 +5,7 @@ export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost'
 export const USER_SERVICE_API_URL = API_URL + '/user'
 export const TEAM_SERVICE_API_URL = API_URL + '/team'
 export const HACKATHON_SERVICE_API_URL = API_URL + '/hackathon'
+export const CHAT_SERVICE_API_URL = API_URL + '/chat'
 
 // Базовые URL для админки
 export const USER_SERVICE_ADMIN_API_URL = USER_SERVICE_API_URL + '/admin'
