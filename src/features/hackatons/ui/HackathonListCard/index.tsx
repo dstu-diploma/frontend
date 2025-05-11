@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import clsx from 'clsx'
 import { Hackathon, HackathonTeam } from '../../model/types'
 import styles from './HackathonListCard.module.scss'
 import { ISOStringToDateString } from '@/shared/lib/helpers/date'
@@ -10,6 +9,8 @@ import { ConfirmModal } from '@/shared/ui/custom/ConfirmModal/'
 import { adminApi } from '@/features/admin/api'
 import { useToast } from '@/shared/hooks/use-toast'
 import { AxiosError } from 'axios'
+import { useHackathons } from '../../hooks/useHackathons'
+import clsx from 'clsx'
 
 interface HackathonListCardProps {
   hackathon: Hackathon
@@ -25,6 +26,7 @@ export const HackathonListCard = ({
   const { mutate: getHackathonTeams } = hackathonApi.getHackathonTeams()
   const { mutate: deleteHackathon } = adminApi.deleteHackathon()
   const [hackathonTeams, setHackathonTeams] = useState<HackathonTeam[]>([])
+  const { getAllHackathons } = useHackathons()
 
   useEffect(() => {
     getHackathonTeams(hackathon.id, {
@@ -34,14 +36,15 @@ export const HackathonListCard = ({
     })
   }, [])
 
-  const handleDeleteHackathon = async () => {
+  const handleDeleteHackathon = () => {
     deleteHackathon(hackathon.id, {
-      onSuccess: () => {
+      onSuccess: async () => {
         dismiss()
         toast({
           variant: 'defaultBlueSuccess',
-          description: `Хакатон ${hackathon.name} успешно удален`,
+          description: `Хакатон «${hackathon.name}» успешно удален`,
         })
+        await getAllHackathons()
       },
       onError: error => {
         dismiss()
