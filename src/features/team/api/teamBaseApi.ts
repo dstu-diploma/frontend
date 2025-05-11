@@ -39,9 +39,7 @@ export const teamBaseApi = {
   getMyTeamInfo: () => {
     return useMutation({
       mutationFn: async (): Promise<TeamInfo> => {
-        const response = await axiosInstance.get(
-          `${TEAM_SERVICE_API_URL}/info/`,
-        )
+        const response = await axiosInstance.get(`${TEAM_SERVICE_API_URL}/info`)
         return response.data
       },
     })

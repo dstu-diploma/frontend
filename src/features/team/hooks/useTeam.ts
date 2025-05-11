@@ -34,48 +34,46 @@ export const useTeam = () => {
   const getCurrentUserTeamInfo = async () => {
     setIsTeamLoading(true)
     setIsTeamMatesLoading(true)
-    getMyTeamInfo(user.id, {
-      onSuccess: data => {
-        if (data.id) {
+    getMyTeamInfo(undefined, {
+      onSuccess: (data: TeamInfo) => {
+        if (data && data.id) {
           setHasTeam(true)
+          setTeamInfo(data)
+          setTeamInfoName(data.name)
+        } else {
+          setHasTeam(false)
+          setTeamInfo(null)
+          setTeamInfoName('')
         }
-
-        if (data.mates.length === 0) {
-          return
-        }
-
-        setTeamInfo(data)
-        setTeamInfoName(data.name)
         setIsTeamLoading(false)
         setIsTeamMatesLoading(false)
       },
-      onError: error => {
+      onError: (error: Error) => {
         dismiss()
         setIsTeamLoading(false)
-
+        setIsTeamMatesLoading(false)
         const axiosError = error as AxiosError
-        let title = undefined
-
         if (axiosError.response) {
-          const data = axiosError.response.data as { detail?: string }
+          const errorData = axiosError.response.data as { detail?: string }
           if (
-            data.detail ===
+            errorData.detail ===
             'Данный пользователь не является членом какой-либо команды!'
           ) {
+            setHasTeam(false)
+            setTeamInfo(null)
+            setTeamInfoName('')
             return
           }
-          if (data.detail === 'Истек срок действия токена!') {
-            title = 'Обновите сессию'
-          }
           toast({
-            title: title,
+            title: 'Ошибка при загрузке данных команды',
             variant: 'destructive',
-            description: 'Ошибка при загрузке данных команды',
+            description: errorData.detail,
           })
         }
-
+        console.error('Ошибка при загрузке данных команды: ', error)
         setHasTeam(false)
-        console.error('Ошибка при получении данных о команде:', error)
+        setTeamInfo(null)
+        setTeamInfoName('')
       },
     })
   }
@@ -133,8 +131,8 @@ export const useTeam = () => {
   const refreshTeamMates = async (success_message: string) => {
     setIsTeamMatesLoading(true)
 
-    getMyTeamInfo(user.id, {
-      onSuccess: async data => {
+    getMyTeamInfo(undefined, {
+      onSuccess: async (data: TeamInfo) => {
         setTeamInfo(data)
         await getTeamMates()
         setIsTeamMatesLoading(false)
@@ -143,7 +141,7 @@ export const useTeam = () => {
           description: `${success_message}`,
         })
       },
-      onError: error => {
+      onError: (error: Error) => {
         console.log('getMyTeamInfo error:', error)
         setIsTeamMatesLoading(false)
         dismiss()
@@ -161,8 +159,8 @@ export const useTeam = () => {
   }
 
   const refreshTeamName = async () => {
-    getMyTeamInfo(user.id, {
-      onSuccess: data => {
+    getMyTeamInfo(undefined, {
+      onSuccess: (data: TeamInfo) => {
         setTeamInfoName(data.name)
       },
     })

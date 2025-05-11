@@ -20,6 +20,7 @@ import {
   useSetRoleModal,
   type TeamInfo,
 } from '@/features/team/'
+import TeamSingleFieldFormContent from '@/features/team/ui/modals/TeamSingleFieldFormContent'
 import styles from './team.module.scss'
 
 export default function TeamsPage() {
@@ -45,20 +46,20 @@ export default function TeamsPage() {
     refreshTeamInfo,
   })
 
-  const { role, setRole, handleMateRoleChange, handleMateRoleSave } =
-    useSetRoleModal({ refreshTeamMates, teamRole })
+  const { role, handleMateRoleChange, handleMateRoleSave } = useSetRoleModal({
+    refreshTeamMates,
+    teamRole,
+  })
 
-  const { teamName, setTeamName, handleTeamRename, handleTeamNameChange } =
-    useRenameModal({ teamInfoName, refreshTeamName })
+  const { teamName, handleTeamRename, handleTeamNameChange } = useRenameModal({
+    teamInfoName,
+    refreshTeamName,
+  })
 
-  const {
-    setNewTeamName,
-    newTeamName,
-    handleTeamCreateChange,
-    handleTeamCreate,
-  } = useCreateModal({ refreshTeamInfo })
+  const { newTeamName, handleTeamCreateChange, handleTeamCreate } =
+    useCreateModal({ refreshTeamInfo })
 
-  const { mateEmail, setMateEmail, handleTeamInviteChange, handleTeamInvite } =
+  const { mateEmail, handleTeamInviteChange, handleTeamInvite } =
     useInviteModal()
 
   return (
@@ -72,61 +73,70 @@ export default function TeamsPage() {
               <span>Вы не состоите в команде</span>
             )}
             <div className={styles.toolbarControls}>
-              {!hasTeam && !isTeamLoading && (
+              {!hasTeam && (
                 <ActionModal
                   title='Создание команды'
-                  fieldName='name'
-                  fieldValue={newTeamName}
-                  setFieldValue={setNewTeamName}
-                  fieldPlaceholder='Введите название новой команды'
                   submitButtonText='Создать команду'
-                  onChange={handleTeamCreateChange}
                   onSave={handleTeamCreate}
+                  trigger={<Button>Создать команду</Button>}
                 >
-                  <Button>Создать команду</Button>
+                  <TeamSingleFieldFormContent
+                    fieldName='name'
+                    value={newTeamName}
+                    onChange={handleTeamCreateChange}
+                    placeholder='Введите название новой команды'
+                    fieldType='text'
+                    labelText='Название команды'
+                  />
                 </ActionModal>
               )}
               {hasTeam && isCaptain && (
                 <ActionModal
-                  fieldName='name'
                   title='Обновить название команды'
-                  fieldValue={teamName}
-                  setFieldValue={setTeamName}
-                  fieldPlaceholder='Введите новое название команды'
                   submitButtonText='Изменить название'
-                  onChange={handleTeamNameChange}
                   onSave={handleTeamRename}
+                  trigger={<Button>Изменить название команды</Button>}
                 >
-                  <Button>Изменить название команды</Button>
+                  <TeamSingleFieldFormContent
+                    fieldName='name'
+                    value={teamName}
+                    onChange={handleTeamNameChange}
+                    placeholder='Введите название новой команды'
+                    fieldType='text'
+                    labelText='Название команды'
+                  />
                 </ActionModal>
               )}
               {hasTeam && (
                 <ActionModal
-                  fieldName='name'
                   title='Установить или обновить роль'
-                  fieldValue={role}
-                  setFieldValue={setRole}
-                  fieldPlaceholder='Введите Вашу текущую роль в команде'
                   submitButtonText='Установить роль'
-                  onChange={handleMateRoleChange}
                   onSave={handleMateRoleSave}
+                  trigger={<Button>Установить роль в команде</Button>}
                 >
-                  <Button>Изменить свою роль в команде</Button>
+                  <TeamSingleFieldFormContent
+                    fieldName='role'
+                    value={role}
+                    onChange={handleMateRoleChange}
+                    placeholder='Введите Вашу текущую роль в команде'
+                    fieldType='text'
+                  />
                 </ActionModal>
               )}
               {hasTeam && isCaptain && (
                 <ActionModal
-                  fieldName='email'
                   title='Пригласить участника'
-                  fieldValue={mateEmail}
-                  setFieldValue={setMateEmail}
-                  fieldType='email'
-                  fieldPlaceholder='Введите электронную почту пользователя'
                   submitButtonText='Отправить приглашение'
-                  onChange={handleTeamInviteChange}
                   onSave={handleTeamInvite}
+                  trigger={<Button>Пригласить в команду</Button>}
                 >
-                  <Button>Пригласить в команду</Button>
+                  <TeamSingleFieldFormContent
+                    fieldName='email'
+                    fieldType='email'
+                    value={mateEmail}
+                    onChange={handleTeamInviteChange}
+                    placeholder='Введите электронную почту пользователя'
+                  />
                 </ActionModal>
               )}
               {hasTeam && isCaptain && (
@@ -134,6 +144,7 @@ export default function TeamsPage() {
                   title='Вы действительно хотите снять с себя права капитана?'
                   submitButtonText='Снять права'
                   isSingleCaptainText={
+                    teamMates?.length != 1 &&
                     teamMates?.filter(mate => mate.is_captain).length == 1
                       ? 'Назначьте нового капитана, т.к. вы единственный капитан'
                       : ''
@@ -157,6 +168,7 @@ export default function TeamsPage() {
                   title='Вы действительно хотите покинуть команду?'
                   submitButtonText='Покинуть'
                   isSingleCaptainText={
+                    teamMates?.length != 1 &&
                     teamMates?.filter(mate => mate.is_captain).length == 1
                       ? 'Назначьте нового капитана, т.к. вы единственный капитан'
                       : ''
