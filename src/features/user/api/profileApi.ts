@@ -47,7 +47,7 @@ export const profileApi = {
     })
   },
   getAvatar: (user_id: number) => {
-    return API_URL + '/uploads/avatars/' + user_id + '.jpg'
+    return API_URL + '/s3/avatars/' + user_id + '.jpg'
   },
   isAvatarExists: async (url: string): Promise<boolean> => {
     return new Promise(resolve => {
