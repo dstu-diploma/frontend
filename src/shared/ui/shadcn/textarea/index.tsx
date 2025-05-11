@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from 'react'
 import clsx from 'clsx'
-import styles from './textarea.module.css'
+import styles from './textarea.module.scss'
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
@@ -14,8 +14,8 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         {...props}
       />
     )
-  }
+  },
 )
-Textarea.displayName = "Textarea"
+Textarea.displayName = 'Textarea'
 
-export { Textarea } 
+export { Textarea }
