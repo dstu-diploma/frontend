@@ -10,6 +10,7 @@ import {
 } from '@/shared/ui/shadcn/dialog'
 import styles from './ActionModal.module.scss'
 import { Label } from '@/shared/ui/shadcn/label'
+import clsx from 'clsx'
 
 // type ActionModalFieldConfig = {
 //   fieldValue: string
@@ -28,6 +29,7 @@ interface ActionModalProps {
   type?: 'actionWithField' | 'actionChoose'
   submitButtonText: string
   onSave: (event: React.FormEvent) => void
+  contentClassName?: string
 }
 
 export const ActionModal = (props: ActionModalProps) => {
@@ -48,7 +50,7 @@ export const ActionModal = (props: ActionModalProps) => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{props.trigger}</DialogTrigger>
       <DialogContent
-        className={styles.dialogContent}
+        className={clsx(styles.dialogContent, props.contentClassName)}
         onOpenAutoFocus={preventAutoInputSelection}
       >
         <form
@@ -63,7 +65,9 @@ export const ActionModal = (props: ActionModalProps) => {
               <h4>{props.title}</h4>
             </DialogTitle>
           </DialogHeader>
-          <div className={styles.dialogFormContent}>
+          <div
+            className={clsx(styles.dialogFormContent, props.contentClassName)}
+          >
             {/* {props.singleFieldConfig && (
               <div className={styles.dialogFormContentItem}>
                 {props.singleFieldConfig.labelText && (
