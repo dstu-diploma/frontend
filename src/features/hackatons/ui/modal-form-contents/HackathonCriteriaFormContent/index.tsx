@@ -7,10 +7,12 @@ import { UseFormReturn } from 'react-hook-form'
 
 interface HackathonCriteriaFormContentProps {
   form: UseFormReturn<CriterionFormData>
+  deletion?: boolean
 }
 
 const HackathonCriteriaFormContent = ({
   form,
+  deletion,
 }: HackathonCriteriaFormContentProps) => {
   return (
     <div className={styles.dialogFormContentContainer}>
@@ -29,21 +31,23 @@ const HackathonCriteriaFormContent = ({
           </p>
         )}
       </div>
-      <div className={styles.dialogFormContentItem}>
-        <Label htmlFor='weight'>Вес критерия</Label>
-        <Input
-          id='name'
-          type='text'
-          className={styles.dialogFormInput}
-          {...form.register('weight')}
-          placeholder='Введите вес критерия (от 0 до 1)'
-        />
-        {form.formState.errors.weight && (
-          <p className={styles.errorMessage}>
-            {form.formState.errors.weight.message}
-          </p>
-        )}
-      </div>
+      {!deletion && (
+        <div className={styles.dialogFormContentItem}>
+          <Label htmlFor='weight'>Вес критерия</Label>
+          <Input
+            id='name'
+            type='text'
+            className={styles.dialogFormInput}
+            {...form.register('weight')}
+            placeholder='Введите вес критерия (от 0 до 1)'
+          />
+          {form.formState.errors.weight && (
+            <p className={styles.errorMessage}>
+              {form.formState.errors.weight.message}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   )
 }
