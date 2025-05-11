@@ -68,6 +68,10 @@
   gap: 1rem;
 }
 
+.accordionBlockFormInput {
+  background-color: white !important;
+}
+
 .accordionBlockFormInput:focus {
   outline: none;
   border-color: #3182ce;
