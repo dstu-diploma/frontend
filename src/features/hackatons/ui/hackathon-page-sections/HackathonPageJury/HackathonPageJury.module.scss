@@ -1,0 +1,29 @@
+.hackathonSectionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hackathonJury {
+  display: flex;
+  justify-content: flex-start !important;
+  padding: 1.25rem;
+}
+
+.hackathonJuryContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.hackathonJuryActions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.hackathonJuryList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
