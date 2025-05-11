@@ -23,11 +23,41 @@ export const hackathonBaseApi = {
       },
     })
   },
+  getMyHackathonTeam: () => {
+    return useMutation({
+      mutationFn: async (hackathon_id: number) => {
+        const response = await axiosInstance.get(
+          `${HACKATHON_SERVICE_API_URL}/${hackathon_id}/my`,
+        )
+        return response.data
+      },
+    })
+  },
   getHackathonTeams: () => {
     return useMutation({
       mutationFn: async (hackathon_id: number) => {
         const response = await axiosInstance.get(
           `${HACKATHON_SERVICE_API_URL}/hackathon/${hackathon_id}/teams`,
+        )
+        return response.data
+      },
+    })
+  },
+  getCriteriaList: () => {
+    return useMutation({
+      mutationFn: async (hackathon_id: number) => {
+        const response = await axiosInstance.get(
+          `${HACKATHON_SERVICE_API_URL}/${hackathon_id}/criteria`,
+        )
+        return response.data
+      },
+    })
+  },
+  getJuryList: () => {
+    return useMutation({
+      mutationFn: async (hackathon_id: number) => {
+        const response = await axiosInstance.get(
+          `${HACKATHON_SERVICE_API_URL}/${hackathon_id}/judges`,
         )
         return response.data
       },

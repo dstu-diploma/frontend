@@ -56,14 +56,15 @@ export const criterionFormSchema = z.object({
     .max(100, 'Название не должно превышать 100 символов'),
   weight: z
     .string()
+    .refine(val => !isNaN(parseFloat(val)), 'Вес должен быть числом')
     .transform(val => parseFloat(val))
-    .pipe(
-      z
-        .number()
-        .min(0, 'Вес не может быть меньше 0')
-        .max(1, 'Вес не может быть больше 1'),
-    ),
+    .refine(val => val >= 0 && val <= 1, 'Вес должен быть от 0 до 1'),
+})
+
+export const juryFormSchema = z.object({
+  email: z.string().email('Некорректный email'),
 })
 
 export type HackathonFormData = z.output<typeof hackathonFormSchema>
 export type CriterionFormData = z.output<typeof criterionFormSchema>
+export type JuryFormData = z.output<typeof juryFormSchema>
