@@ -1,23 +1,19 @@
-'use client';
+'use client'
 
-import { Camera, Trash2 } from 'lucide-react';
-import {
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-} from '@/shared/ui/shadcn/avatar';
+import { Camera, Trash2 } from 'lucide-react'
+import { Avatar, AvatarImage, AvatarFallback } from '@/shared/ui/shadcn/avatar'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from '@/shared/ui/shadcn/dropdown';
-import { User } from '../../../model/types';
-import { useProfileAvatar } from '../../../hooks/profile/useProfileAvatar';
-import styles from './ProfileAvatar.module.scss';
+} from '@/shared/ui/shadcn/dropdown'
+import { User } from '../../../model/types'
+import { useProfileAvatar } from '../../../hooks/profile/useProfileAvatar'
+import styles from './ProfileAvatar.module.scss'
 
 interface ProfileAvatarProps {
-  profile: User;
+  profile: User
 }
 
 export function ProfileAvatar({ profile }: ProfileAvatarProps) {
@@ -25,9 +21,10 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
     menuOpen,
     setMenuOpen,
     fileInputRef,
-    avatarSrc, 
+    avatarSrc,
+    setAvatarSrc,
     handleAvatarChange,
-    handleDeleteAvatar
+    handleDeleteAvatar,
   } = useProfileAvatar()
 
   return (
@@ -35,18 +32,24 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
       <DropdownMenuTrigger asChild className={styles.profileAvatarTrigger}>
         <button
           className={styles.profileAvatarTriggerButton}
-          onClick={(e) => {
-            e.preventDefault();
-            setMenuOpen((prev) => !prev);
+          onClick={e => {
+            e.preventDefault()
+            setMenuOpen(prev => !prev)
           }}
         >
-          <Avatar key={avatarSrc || 'fallback'} className={styles.profileAvatarBlock}>
+          <Avatar
+            key={avatarSrc || 'fallback'}
+            className={styles.profileAvatarBlock}
+          >
             {avatarSrc ? (
               <AvatarImage
                 src={avatarSrc}
-                alt="User avatar"
+                alt='User avatar'
+                width={150}
+                height={150}
+                className={styles.profileAvatarImage}
                 onError={() => {
-                  handleDeleteAvatar();
+                  setAvatarSrc(null)
                 }}
               />
             ) : (
@@ -57,22 +60,20 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
           </Avatar>
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="start"
-      >
+      <DropdownMenuContent align='start'>
         <DropdownMenuItem
           className={styles.dropdownMenuItem}
-          onSelect={(e) => {
-            e.preventDefault();
-            fileInputRef.current?.click();
+          onSelect={e => {
+            e.preventDefault()
+            fileInputRef.current?.click()
           }}
         >
           <Camera />
           <span>Добавить фото</span>
           <input
             ref={fileInputRef}
-            type="file"
-            accept="image/*"
+            type='file'
+            accept='image/*'
             onChange={handleAvatarChange}
             className={styles.dropdownFileInput}
             style={{ display: 'none' }}
@@ -80,9 +81,9 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
         </DropdownMenuItem>
         {avatarSrc && (
           <DropdownMenuItem
-            onSelect={(e) => {
-              e.preventDefault();
-              handleDeleteAvatar();
+            onSelect={e => {
+              e.preventDefault()
+              handleDeleteAvatar()
             }}
             className={styles.dropdownMenuItem}
           >
@@ -92,5 +93,5 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
         )}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

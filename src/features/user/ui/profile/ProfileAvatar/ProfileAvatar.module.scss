@@ -17,6 +17,13 @@
     height: 100%;
 }
 
+.profileAvatarImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
 .profileAvatarFallback {
     cursor: pointer;
     border-radius: 50%;
