@@ -31,6 +31,7 @@ const HackathonPage = () => {
     hackathonInfo,
     isHackathonLoading,
     handleApplicationSubmit,
+    handleHackathonUpdate,
   } = useHackathonPage(Number(id))
 
   const {
@@ -146,6 +147,7 @@ const HackathonPage = () => {
                 hackathon={hackathonInfo}
                 editForm={editForm}
                 style={{ top: `${sidebarTop}px` }}
+                onHackathonUpdate={handleHackathonUpdate}
               />
             </div>
           </div>
