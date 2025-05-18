@@ -27,6 +27,7 @@ interface ActionModalProps {
   trigger: React.ReactNode
   children?: React.ReactNode
   type?: 'actionWithField' | 'actionChoose'
+  destructive?: boolean
   submitButtonText: string
   onSave: (event: React.FormEvent) => void
   contentClassName?: string
@@ -93,7 +94,12 @@ export const ActionModal = (props: ActionModalProps) => {
             {props.children}
           </div>
           <DialogFooter>
-            <Button type='submit'>{props.submitButtonText}</Button>
+            <Button
+              variant={props.destructive ? 'destructive' : 'default'}
+              type='submit'
+            >
+              {props.submitButtonText}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
