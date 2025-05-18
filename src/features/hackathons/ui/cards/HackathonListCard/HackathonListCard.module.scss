@@ -1,0 +1,68 @@
+.link {
+  text-decoration: none;
+}
+
+.card {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease-in-out;
+  background: white;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInadminTab 0.5s ease forwards;
+
+  &:hover {
+    text-decoration: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .infoContainer {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.125rem;
+
+      .info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+
+          .name {
+              text-decoration: none;
+              font-weight: 500;
+          }
+          
+          .param {
+              text-decoration: none;
+              font-size: 0.875rem;
+              color: #6b7280;
+          }
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+  } 
+
+  .captainControls {
+      display: flex;
+      gap: 0.5rem;
+  }
+}
+
+@keyframes fadeInadminTab {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
