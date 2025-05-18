@@ -6,15 +6,13 @@ import { HackathonFormData } from '../../../model/schemas'
 import { UseFormReturn } from 'react-hook-form'
 import { Textarea } from '@/shared/ui/shadcn/textarea'
 import clsx from 'clsx'
+import {
+  dateTimeLocalToIso,
+  isoToDateTimeLocal,
+} from '@/shared/lib/helpers/date'
 
 interface HackathonEditFormContentProps {
   form: UseFormReturn<HackathonFormData>
-}
-
-const formatDateTimeForInput = (dateString: string) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toISOString().slice(0, 16)
 }
 
 const HackathonEditFormContent = ({ form }: HackathonEditFormContentProps) => {
@@ -42,8 +40,10 @@ const HackathonEditFormContent = ({ form }: HackathonEditFormContentProps) => {
             id='startDate'
             type='datetime-local'
             className={styles.dialogFormInput}
-            {...form.register('start_date')}
-            defaultValue={formatDateTimeForInput(form.getValues('start_date'))}
+            value={isoToDateTimeLocal(form.watch('start_date'))}
+            onChange={e => {
+              form.setValue('start_date', dateTimeLocalToIso(e.target.value))
+            }}
           />
           {form.formState.errors.start_date && (
             <p className={styles.errorMessage}>
@@ -57,10 +57,13 @@ const HackathonEditFormContent = ({ form }: HackathonEditFormContentProps) => {
             id='juryStartDate'
             type='datetime-local'
             className={styles.dialogFormInput}
-            {...form.register('score_start_date')}
-            defaultValue={formatDateTimeForInput(
-              form.getValues('score_start_date'),
-            )}
+            value={isoToDateTimeLocal(form.watch('score_start_date'))}
+            onChange={e => {
+              form.setValue(
+                'score_start_date',
+                dateTimeLocalToIso(e.target.value),
+              )
+            }}
           />
           {form.formState.errors.score_start_date && (
             <p className={styles.errorMessage}>
@@ -74,8 +77,10 @@ const HackathonEditFormContent = ({ form }: HackathonEditFormContentProps) => {
             id='endDate'
             type='datetime-local'
             className={styles.dialogFormInput}
-            {...form.register('end_date')}
-            defaultValue={formatDateTimeForInput(form.getValues('end_date'))}
+            value={isoToDateTimeLocal(form.watch('end_date'))}
+            onChange={e => {
+              form.setValue('end_date', dateTimeLocalToIso(e.target.value))
+            }}
           />
           {form.formState.errors.end_date && (
             <p className={styles.errorMessage}>
