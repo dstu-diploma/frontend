@@ -8,6 +8,7 @@ export interface User {
   about: string | null
   birthday: string | null
   role: 'user' | 'admin'
+  is_banned: boolean
 }
 
 export interface UserPartial {
