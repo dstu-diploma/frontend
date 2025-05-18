@@ -60,7 +60,7 @@ const AdminContentUserForm = ({
         dismiss()
         toast({
           variant: 'defaultBlueSuccess',
-          title: `Пользователь ${entity.first_name} ${entity.last_name} успешно удален`,
+          description: `Пользователь ${entity.first_name} ${entity.last_name} успешно удален`,
         })
       },
       onError: () => {
