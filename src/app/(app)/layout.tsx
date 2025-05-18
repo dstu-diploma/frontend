@@ -1,6 +1,5 @@
-'use client'
-
-import { Suspense, useEffect } from 'react'
+import { Suspense } from 'react'
+import { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
 import { Toaster } from '@/shared/ui/shadcn/toast/toaster'
 import { QueryProvider } from '@/providers/QueryProvider'
@@ -18,13 +17,15 @@ const roboto = Roboto({
   display: 'swap',
 })
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      document.body.removeAttribute('cz-shortcut-listen')
-    }
-  }, [])
+export const metadata: Metadata = {
+  title: 'Packathon',
+  description: 'Платформа для проведения хакатонов',
+  icons: {
+    icon: '/favicon.png',
+  },
+}
 
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <html>
       <body suppressHydrationWarning={true}>
