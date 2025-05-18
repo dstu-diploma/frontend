@@ -1,30 +1,23 @@
 'use client'
 
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { Button } from '@/shared/ui/shadcn/button'
 import { ConfirmModal } from '@/shared/ui/custom/ConfirmModal'
-import { useHackathonPage } from '@/features/hackatons/hooks/useHackathonPage'
-import {
-  CriterionFormData,
-  criterionFormSchema,
-  JuryFormData,
-  juryFormSchema,
-} from '@/features/hackatons/model/schemas'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import { useHackathonCriteria } from '@/features/hackatons/hooks/useHackathonCriteria'
-import Toolbar from '@/shared/ui/custom/Toolbar/Toolbar'
-import HackathonInfoSidebar from '@/features/hackatons/ui/HackathonInfoSidebar'
-import HackathonPageDescription from '@/features/hackatons/ui/hackathon-page-sections/HackathonPageDescription'
-import HackathonPageCriteria from '@/features/hackatons/ui/hackathon-page-sections/HackathonPageCriteria'
-import HackathonPageJury from '@/features/hackatons/ui/hackathon-page-sections/HackathonPageJury'
 import { useRef, useEffect, useState } from 'react'
-import styles from './hackathonPage.module.scss'
-import { useHackathonJury } from '@/features/hackatons/hooks/useHackathonJury'
-import { HackathonPageTeams } from '@/features/hackatons/ui/hackathon-page-sections/HackathonPageTeams'
 import { ActionModal } from '@/shared/ui/custom/ActionModal'
-import Link from 'next/link'
+import { useHackathonForms } from '@/features/hackathons/hooks/useHackathonForms'
+import { useHackathonCriteria } from '@/features/hackathons/hooks/useHackathonCriteria'
+import { useHackathonJury } from '@/features/hackathons/hooks/useHackathonJury'
+import { useHackathonPage } from '@/features/hackathons/hooks/useHackathonPage'
+import Toolbar from '@/shared/ui/custom/Toolbar/Toolbar'
+import HackathonInfoSidebar from '@/features/hackathons/ui/HackathonInfoSidebar'
+import HackathonPageCriteria from '@/features/hackathons/ui/page-sections/HackathonPageCriteria'
+import HackathonPageDescription from '@/features/hackathons/ui/page-sections/HackathonPageDescription'
+import HackathonPageJury from '@/features/hackathons/ui/page-sections/HackathonPageJury'
+import { HackathonPageTeams } from '@/features/hackathons/ui/page-sections/HackathonPageTeams'
+import styles from './hackathonPage.module.scss'
 
 const HackathonPage = () => {
   const { id } = useParams()
@@ -51,20 +44,22 @@ const HackathonPage = () => {
     Number(id),
   )
 
-  const criterionForm = useForm<CriterionFormData>({
-    resolver: zodResolver(criterionFormSchema),
-    defaultValues: {
-      name: '',
-      weight: 0,
-    },
-  })
+  const { criterionForm, juryForm, editForm } = useHackathonForms(hackathonInfo)
 
-  const juryForm = useForm<JuryFormData>({
-    resolver: zodResolver(juryFormSchema),
-    defaultValues: {
-      email: '',
-    },
-  })
+  // Обновляем значения формы при изменении информации о хакатоне
+  useEffect(() => {
+    if (hackathonInfo) {
+      editForm.reset({
+        name: hackathonInfo.name,
+        max_participant_count: hackathonInfo.max_participant_count,
+        max_team_mates_count: hackathonInfo.max_team_mates_count,
+        description: hackathonInfo.description,
+        start_date: hackathonInfo.start_date,
+        score_start_date: hackathonInfo.score_start_date,
+        end_date: hackathonInfo.end_date,
+      })
+    }
+  }, [hackathonInfo])
 
   useEffect(() => {
     const updateSidebarPosition = () => {
@@ -149,6 +144,7 @@ const HackathonPage = () => {
               </div>
               <HackathonInfoSidebar
                 hackathon={hackathonInfo}
+                editForm={editForm}
                 style={{ top: `${sidebarTop}px` }}
               />
             </div>

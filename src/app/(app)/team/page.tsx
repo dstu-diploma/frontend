@@ -22,6 +22,7 @@ import {
 } from '@/features/team/'
 import TeamSingleFieldFormContent from '@/features/team/ui/modals/TeamSingleFieldFormContent'
 import styles from './team.module.scss'
+import EntityLoading from '@/shared/ui/custom/EntityLoading'
 
 export default function TeamsPage() {
   const user = cookiesApi.getUser()
@@ -207,11 +208,7 @@ export default function TeamsPage() {
               <div className={styles.teamMembers}>
                 <div className={styles.members}>
                   {isTeamMatesLoading ? (
-                    <div className={styles.skeletonContainer}>
-                      <UserCardSkeleton />
-                      <UserCardSkeleton />
-                      <UserCardSkeleton />
-                    </div>
+                    <EntityLoading />
                   ) : teamMates && teamMates?.length > 0 ? (
                     teamMates?.map((member: UserPartial) => (
                       <Link

@@ -4,22 +4,21 @@ import Link from 'next/link'
 import Toolbar from '@/shared/ui/custom/Toolbar/Toolbar'
 import { Button } from '@/shared/ui/shadcn/button'
 import { ActionModal } from '@/shared/ui/custom/ActionModal'
-import { HackathonListCard } from '@/features/hackatons/ui/HackathonListCard'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  hackathonFormSchema,
-  type HackathonFormData,
-} from '@/features/hackatons/model/schemas'
-import HackathonsCreateFormContent from '@/features/hackatons/ui/modal-form-contents/HackathonsCreateFormContent'
-import { useHackathons } from '@/features/hackatons/hooks/useHackathons'
 import { adminApi } from '@/features/admin/api'
-import { toast, useToast } from '@/shared/hooks/use-toast'
+import { useToast } from '@/shared/hooks/use-toast'
 import { AxiosError } from 'axios'
 import UserCardSkeleton from '@/shared/ui/custom/UserCardSkeleton'
 import styles from './hackathons.module.scss'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import { useSetRoleModal } from '@/features/team'
+import { useHackathons } from '@/features/hackathons/hooks/useHackathons'
+import {
+  HackathonFormData,
+  hackathonFormSchema,
+} from '@/features/hackathons/model/schemas'
+import { HackathonListCard } from '@/features/hackathons/ui/cards/HackathonListCard'
+import HackathonEditFormContent from '@/features/hackathons/ui/modal-form-contents/HackathonEditFormContent'
 
 const HackathonsPage = () => {
   const user = cookiesApi.getUser()
@@ -28,7 +27,7 @@ const HackathonsPage = () => {
   const { allHackathons, isHackathonsLoading, getAllHackathons } =
     useHackathons()
 
-  const form = useForm<HackathonFormData>({
+  const editForm = useForm<HackathonFormData>({
     resolver: zodResolver(hackathonFormSchema),
     defaultValues: {
       name: '',
@@ -80,11 +79,11 @@ const HackathonsPage = () => {
                 submitButtonText='Объявить'
                 onSave={e => {
                   e.preventDefault()
-                  form.handleSubmit(onSubmit)(e)
+                  editForm.handleSubmit(onSubmit)(e)
                 }}
                 contentClassName={styles.hackathonCreateModal}
               >
-                <HackathonsCreateFormContent form={form} />
+                <HackathonEditFormContent form={editForm} />
               </ActionModal>
             </div>
           </Toolbar>

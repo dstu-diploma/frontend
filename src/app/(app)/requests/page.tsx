@@ -14,9 +14,16 @@ import {
 import { useRequests } from '@/features/requests/hooks/useRequests'
 import CreateRequestFormContent from '@/features/requests/ui/modal-form-contents'
 import RequestCard from '@/features/requests/ui/RequestCard'
+import EntityLoading from '@/shared/ui/custom/EntityLoading'
 
 const MyRequestsPage = () => {
-  const { requests, handleCreateRequest } = useRequests()
+  const {
+    requests,
+    isLoadingRequests,
+    isAllRequestsLoaded,
+    loadingRequestIds,
+    handleCreateRequest,
+  } = useRequests()
 
   const createRequestForm = useForm<CreateRequestFormData>({
     resolver: zodResolver(createRequestFormSchema),
@@ -46,14 +53,21 @@ const MyRequestsPage = () => {
         <div className={styles.requestsListContainer}>
           <h3>Список обращений</h3>
           <div className={styles.requestsList}>
-            {requests.length > 0 ? (
+            {isLoadingRequests ? (
+              <EntityLoading />
+            ) : !isAllRequestsLoaded ? (
+              <EntityLoading />
+            ) : requests.length > 0 ? (
               requests.map(request => (
                 <Link
                   className={styles.requestLink}
                   href={`/requests/${request.id}`}
                   key={request.id}
                 >
-                  <RequestCard request={request} />
+                  <RequestCard
+                    request={request}
+                    isLoading={loadingRequestIds.has(request.id)}
+                  />
                 </Link>
               ))
             ) : (
