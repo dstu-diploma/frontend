@@ -1,10 +1,13 @@
 import React from 'react'
+import clsx from 'clsx'
 import styles from './LoadingSpinner.module.css'
 
-const LoadingSpinner = () => {
-  return (
-    <div className={styles.loadingSpinner} />
-  )
+interface LoadingSpinnerProps {
+  className?: string
+}
+
+const LoadingSpinner = ({ className }: LoadingSpinnerProps) => {
+  return <div className={clsx(styles.loadingSpinner, className)} />
 }
 
 export default LoadingSpinner

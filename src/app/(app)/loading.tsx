@@ -1,7 +1,10 @@
-import LoadingSpinner from "@/shared/ui/custom/LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from '@/shared/ui/custom/LoadingSpinner/LoadingSpinner'
+import styles from './loading.module.scss'
 
 export default function Loading() {
   return (
-    <LoadingSpinner />
-  );
-} 
+    <div className={styles.loadingContainer}>
+      <LoadingSpinner className={styles.loadingSpinner} />
+    </div>
+  )
+}
