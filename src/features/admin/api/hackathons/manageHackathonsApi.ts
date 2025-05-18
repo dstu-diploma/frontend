@@ -35,7 +35,7 @@ export const manageHackathonsApi = {
         data: Hackathon
       }) => {
         const response = await axiosInstance.patch(
-          `${HACKATHON_SERVICE_MANAGE_API_URL}/${hackathon_id}`,
+          `${HACKATHON_SERVICE_MANAGE_API_URL}/hackathon/${hackathon_id}`,
           data,
         )
         return response.data
