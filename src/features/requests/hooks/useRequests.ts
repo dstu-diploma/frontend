@@ -6,7 +6,8 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import { Request } from '../model/types'
 
 export const useRequests = () => {
-  const { mutate: getAllRequests } = requestsApi.getAllRequests()
+  const { mutate: getAllRequests, isPending: isLoadingRequests } =
+    requestsApi.getAllRequests()
   const { mutate: createRequest } = requestsApi.createRequest()
   const { mutate: closeRequest } = requestsApi.closeRequest()
   const { mutate: getRequestById } = requestsApi.getRequestById()
@@ -14,16 +15,21 @@ export const useRequests = () => {
   const [requests, setRequests] = useState<Request[]>([])
   const [currentRequest, setCurrentRequest] = useState<Request | null>(null)
   const [isCurrentRequestLoaded, setIsCurrentRequestLoaded] = useState(false)
-  const loadingRequestId = useRef<number | null>(null)
+  const [isAllRequestsLoaded, setIsAllRequestsLoaded] = useState(false)
+  const [loadingRequestIds, setLoadingRequestIds] = useState<Set<number>>(
+    new Set(),
+  )
   const initialLoadDone = useRef(false)
   const { toast, dismiss } = useToast()
 
   // Функция для загрузки всех обращений
   const loadRequests = useCallback(async () => {
+    setIsAllRequestsLoaded(false)
     getAllRequests(undefined, {
       onSuccess: data => {
         setRequests(data)
         initialLoadDone.current = true
+        setIsAllRequestsLoaded(true)
       },
       onError: error => {
         dismiss()
@@ -37,6 +43,7 @@ export const useRequests = () => {
           })
           console.error('Ошибка при загрузке обращений:', errorData)
         }
+        setIsAllRequestsLoaded(false)
       },
     })
   }, [getAllRequests, dismiss, toast])
@@ -44,11 +51,16 @@ export const useRequests = () => {
   // Функция для загрузки обращения по id
   const loadRequestById = useCallback(
     async (requestId: number) => {
+      setLoadingRequestIds(prev => new Set(prev).add(requestId))
       getRequestById(requestId, {
         onSuccess: data => {
           setCurrentRequest(data)
           setIsCurrentRequestLoaded(true)
-          loadingRequestId.current = null
+          setLoadingRequestIds(prev => {
+            const newSet = new Set(prev)
+            newSet.delete(requestId)
+            return newSet
+          })
         },
         onError: error => {
           console.error('Error loading request:', requestId, error)
@@ -67,11 +79,15 @@ export const useRequests = () => {
             )
           }
           setIsCurrentRequestLoaded(false)
-          loadingRequestId.current = null
+          setLoadingRequestIds(prev => {
+            const newSet = new Set(prev)
+            newSet.delete(requestId)
+            return newSet
+          })
         },
       })
     },
-    [getRequestById, dismiss, toast, isCurrentRequestLoaded, currentRequest],
+    [getRequestById, dismiss, toast],
   )
 
   useEffect(() => {
@@ -152,8 +168,11 @@ export const useRequests = () => {
 
   return {
     requests,
+    isLoadingRequests,
+    isAllRequestsLoaded,
     currentRequest,
     isCurrentRequestLoaded,
+    loadingRequestIds,
     loadRequestById,
     handleCreateRequest,
     handleCloseRequest,
