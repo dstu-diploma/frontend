@@ -94,9 +94,9 @@ const HackathonInfoSidebar = ({
               title='Редактирование хакатона'
               trigger={<Button>Редактировать</Button>}
               submitButtonText='Сохранить'
-              onSave={e => {
-                e.preventDefault()
-                editForm.handleSubmit(onHackathonUpdate)(e)
+              form={editForm}
+              onSave={async e => {
+                await editForm.handleSubmit(onHackathonUpdate)(e)
               }}
               contentClassName={styles.editHackathonModal}
             >
