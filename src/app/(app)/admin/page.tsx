@@ -29,9 +29,6 @@ const AdminPage = () => {
             <TabsTrigger className={styles.tabsTrigger} value='hackathonTeams'>
               Хакатоновские команды
             </TabsTrigger>
-            <TabsTrigger className={styles.tabsTrigger} value='hackathons'>
-              Хакатоны
-            </TabsTrigger>
           </TabsList>
           <TabsContent className={styles.tabContent} value='users'>
             <AdminTab tab='users' />
@@ -41,9 +38,6 @@ const AdminPage = () => {
           </TabsContent>
           <TabsContent className={styles.tabContent} value='hackathonTeams'>
             <AdminTab tab='hackathonTeams' />
-          </TabsContent>
-          <TabsContent className={styles.tabContent} value='hackathons'>
-            <AdminTab tab='hackathons' />
           </TabsContent>
         </Tabs>
       </div>
