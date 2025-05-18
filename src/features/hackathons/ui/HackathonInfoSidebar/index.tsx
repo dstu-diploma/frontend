@@ -8,22 +8,21 @@ import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
 import HackathonEditFormContent from '../modal-form-contents/HackathonEditFormContent'
 import { UseFormReturn } from 'react-hook-form'
 import { HackathonFormData } from '../../model/schemas'
-import { useHackathonPage } from '../../hooks/useHackathonPage'
 
 interface HackathonInfoSidebarProps {
   hackathon: DetailedHackathon | null
   editForm: UseFormReturn<HackathonFormData>
   style?: React.CSSProperties
+  onHackathonUpdate: (data: HackathonFormData) => Promise<void>
 }
 
 const HackathonInfoSidebar = ({
   hackathon,
   editForm,
   style,
+  onHackathonUpdate,
 }: HackathonInfoSidebarProps) => {
   if (!hackathon) return null
-
-  const { handleHackathonUpdate } = useHackathonPage(hackathon.id)
 
   return (
     <div className={styles.sidebar} style={style}>
@@ -67,6 +66,26 @@ const HackathonInfoSidebar = ({
                 {hackathon.max_team_mates_count}
               </span>
             </div>
+            <div className={styles.sidebarInfoItem}>
+              <span className={styles.sidebarInfoLabel}>
+                Записавшихся команд:
+              </span>
+              <span className={styles.sidebarInfoValue}>
+                {hackathon.teams.length}
+              </span>
+            </div>
+            <div className={styles.sidebarInfoItem}>
+              <span className={styles.sidebarInfoLabel}>Критериев оценки:</span>
+              <span className={styles.sidebarInfoValue}>
+                {hackathon.criteria.length}
+              </span>
+            </div>
+            <div className={styles.sidebarInfoItem}>
+              <span className={styles.sidebarInfoLabel}>Членов жюри:</span>
+              <span className={styles.sidebarInfoValue}>
+                {hackathon.judges.length}
+              </span>
+            </div>
           </div>
         </div>
         {isPrivilegedRole() && (
@@ -75,9 +94,9 @@ const HackathonInfoSidebar = ({
               title='Редактирование хакатона'
               trigger={<Button>Редактировать</Button>}
               submitButtonText='Сохранить'
-              onSave={e => {
-                e.preventDefault()
-                editForm.handleSubmit(handleHackathonUpdate)(e)
+              form={editForm}
+              onSave={async e => {
+                await editForm.handleSubmit(onHackathonUpdate)(e)
               }}
               contentClassName={styles.editHackathonModal}
             >

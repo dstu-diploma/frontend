@@ -35,3 +35,18 @@ export const ISOStringToDateString = (
 
   return `${day}.${month}.${year}`
 }
+
+export const isoToDateTimeLocal = (isoString: string) => {
+  if (!isoString) return ''
+  const date = new Date(isoString)
+  if (isNaN(date.getTime())) return ''
+
+  const pad = (num: number) => num.toString().padStart(2, '0')
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+export const dateTimeLocalToIso = (localString: string) => {
+  if (!localString) return ''
+  return new Date(localString).toISOString()
+}

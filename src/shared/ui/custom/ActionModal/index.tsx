@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { Button } from '@/shared/ui/shadcn/button'
 import { DialogHeader, DialogFooter } from '@/shared/ui/shadcn/dialog'
-import { Input } from '@/shared/ui/shadcn/input'
 import {
   Dialog,
   DialogTrigger,
@@ -9,18 +8,8 @@ import {
   DialogTitle,
 } from '@/shared/ui/shadcn/dialog'
 import styles from './ActionModal.module.scss'
-import { Label } from '@/shared/ui/shadcn/label'
 import clsx from 'clsx'
-
-// type ActionModalFieldConfig = {
-//   fieldValue: string
-//   fieldName: string
-//   fieldPlaceholder: string
-//   labelText?: string
-//   fieldType?: 'text' | 'email'
-//   setFieldValue: React.Dispatch<React.SetStateAction<string>>
-//   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-// }
+import { UseFormReturn } from 'react-hook-form'
 
 interface ActionModalProps {
   title: string
@@ -29,14 +18,16 @@ interface ActionModalProps {
   type?: 'actionWithField' | 'actionChoose'
   destructive?: boolean
   submitButtonText: string
-  onSave: (event: React.FormEvent) => void
+  onSave: (event: React.FormEvent) => Promise<void> | void
   contentClassName?: string
+  form?: UseFormReturn<any>
 }
 
 export const ActionModal = (props: ActionModalProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // Запрет на автоматический выбор текста в инпутах
   const preventAutoInputSelection = (e: Event) => {
     e.preventDefault()
     if (inputRef.current) {
@@ -47,6 +38,22 @@ export const ActionModal = (props: ActionModalProps) => {
     }
   }
 
+  // Обработка отправки формы. Если форма не валидна,
+  // то не отправляем форму (и не закрываем модалку)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (props.form) {
+      const isValid = await props.form.trigger()
+      if (!isValid) {
+        return
+      }
+    }
+
+    await props.onSave(e)
+    setIsOpen(false)
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{props.trigger}</DialogTrigger>
@@ -54,13 +61,7 @@ export const ActionModal = (props: ActionModalProps) => {
         className={clsx(styles.dialogContent, props.contentClassName)}
         onOpenAutoFocus={preventAutoInputSelection}
       >
-        <form
-          onSubmit={e => {
-            props.onSave(e)
-            setIsOpen(false)
-          }}
-          className={styles.dialogForm}
-        >
+        <form onSubmit={handleSubmit} className={styles.dialogForm}>
           <DialogHeader>
             <DialogTitle>
               <h4>{props.title}</h4>
@@ -69,28 +70,6 @@ export const ActionModal = (props: ActionModalProps) => {
           <div
             className={clsx(styles.dialogFormContent, props.contentClassName)}
           >
-            {/* {props.singleFieldConfig && (
-              <div className={styles.dialogFormContentItem}>
-                {props.singleFieldConfig.labelText && (
-                  <Label htmlFor={props.singleFieldConfig.fieldName}>
-                    {props.singleFieldConfig.labelText}
-                  </Label>
-                )}
-                <Input
-                  ref={inputRef}
-                  id={props.singleFieldConfig.fieldName}
-                  type={
-                    props.singleFieldConfig.fieldType === 'email'
-                      ? 'email'
-                      : 'text'
-                  }
-                  className={styles.dialogFormInput}
-                  value={props.singleFieldConfig.fieldValue}
-                  onChange={props.singleFieldConfig.onChange}
-                  placeholder={props.singleFieldConfig.fieldPlaceholder}
-                />
-              </div>
-            )} */}
             {props.children}
           </div>
           <DialogFooter>

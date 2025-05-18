@@ -6,32 +6,8 @@ export const hackathonFormSchema = z
       .string()
       .min(3, 'Название должно содержать минимум 3 символа')
       .max(100, 'Название не должно превышать 100 символов'),
-    max_participant_count: z
-      .string()
-      .refine(val => !isNaN(Number(val)), {
-        message: 'Введите число от 0 до 1',
-      })
-      .pipe(
-        z
-          .number()
-          .int('Количество участников должно быть целым числом')
-          .min(1, 'Минимальное количество участников - 1')
-          .max(1000, 'Максимальное количество участников - 1000'),
-      )
-      .transform(val => String(val)),
-    max_team_mates_count: z
-      .string()
-      .refine(val => !isNaN(Number(val)), {
-        message: 'Введите число от 0 до 1',
-      })
-      .pipe(
-        z
-          .number()
-          .int('Размер команды должен быть целым числом')
-          .min(1, 'Минимальный размер команды - 1')
-          .max(10, 'Максимальный размер команды - 10'),
-      )
-      .transform(val => String(val)),
+    max_participant_count: z.coerce.number(),
+    max_team_mates_count: z.coerce.number(),
     description: z
       .string()
       .min(10, 'Описание должно содержать минимум 10 символов')
@@ -46,6 +22,17 @@ export const hackathonFormSchema = z
       message: 'Дата окончания должна быть в будущем',
     }),
   })
+  .refine(
+    data => {
+      const maxParticipants = Number(data.max_participant_count)
+      const maxTeamMates = Number(data.max_team_mates_count)
+      return maxTeamMates <= maxParticipants
+    },
+    {
+      message: 'Размер команды не может быть больше общего числа участников',
+      path: ['max_team_mates_count'],
+    },
+  )
   .refine(data => new Date(data.score_start_date) > new Date(data.start_date), {
     message: 'Дата начала оценок должна быть позже даты начала хакатона',
     path: ['score_start_date'],
@@ -60,10 +47,15 @@ export const criterionFormSchema = z.object({
     .string()
     .min(3, 'Название должно содержать минимум 3 символа')
     .max(100, 'Название не должно превышать 100 символов'),
-  weight: z
-    .number()
-    .min(0, 'Вес должен быть не меньше 0')
-    .max(1, 'Вес должен быть не больше 1'),
+  weight: z.string().refine(
+    val => {
+      const num = Number(val)
+      return num >= 0 && num <= 1
+    },
+    {
+      message: 'Введите целое число от 0 до 1',
+    },
+  ),
 })
 
 export const juryFormSchema = z.object({

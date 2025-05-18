@@ -1,7 +1,7 @@
 import { teamApi } from '@/features/team'
 import { useToast } from '@/shared/hooks/use-toast'
 import { AxiosError } from 'axios'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { hackathonApi } from '../api'
 import { DetailedHackathon } from '../model/types'
 import { adminApi } from '@/features/admin/api'
@@ -23,12 +23,28 @@ export const useHackathonPage = (page_id: number) => {
   const [isUserTeamApplied, setIsUserTeamApplied] = useState<boolean>(false)
   const [mateIds, setMateIds] = useState<number[]>([])
 
-  // Получение информации о хакатоне
-  useEffect(() => {
+  // Функция для загрузки и обновления информации о хакатоне
+  const loadHackathonInfo = useCallback(async () => {
     getHackathonById(Number(page_id), {
       onSuccess: data => setHackathonInfo(data),
+      onError: error => {
+        const axiosError = error as AxiosError
+        if (axiosError.response) {
+          const errorData = axiosError.response.data as { detail: string }
+          toast({
+            variant: 'destructive',
+            title: 'Ошибка при получении информации о хакатоне',
+            description: errorData.detail,
+          })
+        }
+      },
     })
-  }, [page_id])
+  }, [page_id, getHackathonById, toast])
+
+  // Получение информации о хакатоне при монтировании компонента
+  useEffect(() => {
+    loadHackathonInfo()
+  }, [loadHackathonInfo])
 
   // Получение информации об участниках команды текущего пользователя
   useEffect(() => {
@@ -62,7 +78,7 @@ export const useHackathonPage = (page_id: number) => {
         },
       })
     }
-  }, [])
+  }, [mateIds, page_id, getMyHackathonTeam])
 
   // Отправка заявки на участие в хакатоне
   const handleApplicationSubmit = async () => {
@@ -71,12 +87,13 @@ export const useHackathonPage = (page_id: number) => {
       mate_user_ids: mateIds,
     }
     applyToHackathon(requestBody, {
-      onSuccess: () => {
+      onSuccess: async () => {
         dismiss()
         toast({
           variant: 'defaultBlueSuccess',
           description: `Заявка на участие в хакатоне ${hackathonInfo?.name} отправлена`,
         })
+        await loadHackathonInfo()
       },
       onError: error => {
         dismiss()
@@ -95,7 +112,7 @@ export const useHackathonPage = (page_id: number) => {
   }
 
   // Обновление информации о хакатоне
-  const handleHackathonUpdate = (data: HackathonFormData) => {
+  const handleHackathonUpdate = async (data: HackathonFormData) => {
     console.log(data)
     updateHackathon(
       {
@@ -107,16 +124,13 @@ export const useHackathonPage = (page_id: number) => {
         },
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           dismiss()
           toast({
             variant: 'defaultBlueSuccess',
             description: `Информация о хакатоне успешно обновлена`,
           })
-          // Обновляем информацию о хакатоне после успешного обновления
-          getHackathonById(Number(page_id), {
-            onSuccess: data => setHackathonInfo(data),
-          })
+          await loadHackathonInfo()
         },
         onError: error => {
           dismiss()
