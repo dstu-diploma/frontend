@@ -1,39 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import { navigationItems, NavItem } from '../configs/navItemsConfig'
-import styles from './Sidebar.module.css'
 import clsx from 'clsx'
+import styles from './Sidebar.module.scss'
+import { useSidebar } from '../hooks/useSidebar'
 
 export const Sidebar = () => {
-  const pathname = usePathname()
-  const router = useRouter()
-  const user = cookiesApi.getUser()
-
-  const handleLogout = () => {
-    cookiesApi.removeAuthCookies()
-    router.push('/login')
-  }
-
-  const processNavigationItems = navigationItems.filter((item: NavItem) => {
-    if (item.href === '/admin' && user.role !== 'admin') {
-      return false
-    }
-
-    if (item.href === '/team' && user.role !== 'user') {
-      return false
-    }
-
-    return true
-  })
+  const { pathname, handleLogout, processedNavigationItems } = useSidebar()
 
   return (
     <aside className={styles.sidebar}>
       <nav className={styles.navigation}>
         <ul className={styles.navList}>
-          {processNavigationItems.map(item => (
+          {processedNavigationItems.map(item => (
             <li key={item.href} className={styles.navItem}>
               <Link
                 href={item.href}
