@@ -5,13 +5,15 @@ import { Request } from '../../model/types'
 import { ISOStringToDateString } from '@/shared/lib/helpers/date'
 import { userApi } from '@/features/user/api'
 import { UserPartial } from '@/features/user/model/types'
+import EntityLoading from '@/shared/ui/custom/EntityLoading'
 
 interface RequestCardProps {
   request: Request
   className?: string
+  isLoading?: boolean
 }
 
-const RequestCard = ({ request, className }: RequestCardProps) => {
+const RequestCard = ({ request, className, isLoading }: RequestCardProps) => {
   const [author, setAuthor] = useState<UserPartial | null>(null)
   const { mutate: getSingleUser } = userApi.getSingleUser()
 
@@ -22,6 +24,14 @@ const RequestCard = ({ request, className }: RequestCardProps) => {
       },
     })
   }, [request.author_user_id])
+
+  if (isLoading) {
+    return (
+      <div className={clsx(styles.card, className)}>
+        <EntityLoading />
+      </div>
+    )
+  }
 
   return (
     <div className={clsx(styles.card, className)}>
