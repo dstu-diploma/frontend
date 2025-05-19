@@ -10,6 +10,12 @@ export const formatDate = (dateString: string): string => {
   return `${day}.${month}.${year}, ${hours}:${minutes}`
 }
 
+export const formatDateForInput = (dateString?: string) => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  return date.toISOString().slice(0, 16)
+}
+
 export const dateStringToISO = (
   dateString: string | undefined,
 ): string | null => {
