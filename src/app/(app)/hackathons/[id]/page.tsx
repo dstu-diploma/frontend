@@ -32,6 +32,7 @@ const HackathonPage = () => {
     isHackathonLoading,
     handleApplicationSubmit,
     handleHackathonUpdate,
+    handleEditHackathonDescription,
   } = useHackathonPage(Number(id))
 
   const {
@@ -45,7 +46,8 @@ const HackathonPage = () => {
     Number(id),
   )
 
-  const { criterionForm, juryForm, editForm } = useHackathonForms(hackathonInfo)
+  const { criterionForm, juryForm, editForm, editDescriptionForm } =
+    useHackathonForms(hackathonInfo)
 
   // Обновляем значения формы при изменении информации о хакатоне
   useEffect(() => {
@@ -58,6 +60,9 @@ const HackathonPage = () => {
         start_date: hackathonInfo.start_date,
         score_start_date: hackathonInfo.score_start_date,
         end_date: hackathonInfo.end_date,
+      })
+      editDescriptionForm.reset({
+        description: hackathonInfo.description,
       })
     }
   }, [hackathonInfo])
@@ -92,7 +97,7 @@ const HackathonPage = () => {
               hasTeam ? (
                 <Toolbar className={styles.hackathonPageInfoToolbar}>
                   <div className={styles.hackathonPageInfoToolbarButtons}>
-                    {!isUserTeamApplied && (
+                    {isUserTeamApplied && (
                       <ConfirmModal
                         title={`Подать заявку на участие в хакатоне ${hackathonInfo?.name}?`}
                         submitButtonText='Подать'
@@ -101,7 +106,7 @@ const HackathonPage = () => {
                         <Button>Подать заявку на участие</Button>
                       </ConfirmModal>
                     )}
-                    {isUserTeamApplied && (
+                    {!isUserTeamApplied && (
                       <ActionModal
                         title='Загрузка вложения'
                         submitButtonText='Загрузить'
@@ -112,7 +117,7 @@ const HackathonPage = () => {
                         }}
                       ></ActionModal>
                     )}
-                    {isUserTeamApplied && (
+                    {!isUserTeamApplied && (
                       <Link href={`/hackathons/${id}/team`}>
                         <Button>Моя команда</Button>
                       </Link>
@@ -127,7 +132,11 @@ const HackathonPage = () => {
             ) : null}
             <div className={styles.hackathonInfo} ref={infoRef}>
               <div className={styles.hackathonDetailedInfo}>
-                <HackathonPageDescription hackathonInfo={hackathonInfo} />
+                <HackathonPageDescription
+                  hackathonInfo={hackathonInfo}
+                  form={editDescriptionForm}
+                  onSave={handleEditHackathonDescription}
+                />
                 <HackathonPageCriteria
                   criteria={criteria}
                   criterionForm={criterionForm}
