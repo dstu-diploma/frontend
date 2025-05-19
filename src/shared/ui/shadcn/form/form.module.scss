@@ -1,0 +1,56 @@
+.form {
+  width: 100%;
+}
+
+.formItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--foreground);
+
+  &.error {
+    color: var(--destructive);
+  }
+}
+
+.formControl {
+  width: 100%;
+}
+
+.formDescription {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+.formMessage {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--destructive);
+  margin-top: 0.25rem;
+}
+
+// Стили для состояний
+.error {
+  color: var(--destructive);
+}
+
+// Стили для доступности
+.ariaInvalid {
+  &[aria-invalid='true'] {
+    border-color: var(--destructive);
+  }
+}
+
+.ariaDescribedBy {
+  &[aria-describedby] {
+    &:focus {
+      outline: 2px solid var(--ring);
+      outline-offset: 2px;
+    }
+  }
+}
