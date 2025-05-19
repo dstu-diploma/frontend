@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { hackathonApi } from '../api'
 import { DetailedHackathon } from '../model/types'
 import { adminApi } from '@/features/admin/api'
-import { HackathonFormData } from '../model/schemas'
+import { DescriptionFormData, HackathonFormData } from '../model/schemas'
 
 export const useHackathonPage = (page_id: number) => {
   const { toast, dismiss } = useToast()
@@ -152,6 +152,43 @@ export const useHackathonPage = (page_id: number) => {
     )
   }
 
+  // Обновление описания хакатона
+  const handleEditHackathonDescription = async (data: DescriptionFormData) => {
+    console.log(data)
+    updateHackathon(
+      {
+        hackathon_id: Number(page_id),
+        data: { description: data.description },
+      },
+      {
+        onSuccess: async () => {
+          dismiss()
+          toast({
+            variant: 'defaultBlueSuccess',
+            description: `Описание хакатона успешно обновлено`,
+          })
+          await loadHackathonInfo()
+        },
+        onError: error => {
+          dismiss()
+          const axiosError = error as AxiosError
+          if (axiosError.response) {
+            const errorData = axiosError.response.data as { detail: string }
+            toast({
+              variant: 'destructive',
+              title: 'Ошибка при обновлении описания хакатона',
+              description: errorData.detail,
+            })
+            console.error(
+              'Ошибка при обновлении информации о хакатоне:',
+              errorData,
+            )
+          }
+        },
+      },
+    )
+  }
+
   return {
     hasTeam,
     isUserTeamApplied,
@@ -159,5 +196,6 @@ export const useHackathonPage = (page_id: number) => {
     isHackathonLoading,
     handleApplicationSubmit,
     handleHackathonUpdate,
+    handleEditHackathonDescription,
   }
 }

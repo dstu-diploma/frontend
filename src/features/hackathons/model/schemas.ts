@@ -42,6 +42,12 @@ export const hackathonFormSchema = z
     path: ['end_date'],
   })
 
+export const descriptionFormSchema = z.object({
+  description: z
+    .string()
+    .max(1000, 'Описание не должно превышать 1000 символов'),
+})
+
 export const criterionFormSchema = z.object({
   name: z
     .string()
@@ -65,3 +71,4 @@ export const juryFormSchema = z.object({
 export type HackathonFormData = z.infer<typeof hackathonFormSchema>
 export type CriterionFormData = z.infer<typeof criterionFormSchema>
 export type JuryFormData = z.infer<typeof juryFormSchema>
+export type DescriptionFormData = z.infer<typeof descriptionFormSchema>

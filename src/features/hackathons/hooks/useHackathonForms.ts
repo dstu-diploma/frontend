@@ -7,14 +7,11 @@ import {
   juryFormSchema,
   HackathonFormData,
   hackathonFormSchema,
+  DescriptionFormData,
+  descriptionFormSchema,
 } from '../model/schemas'
 import { DetailedHackathon } from '../model/types'
-
-function formatDateForInput(dateString?: string) {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toISOString().slice(0, 16)
-}
+import { formatDateForInput } from '@/shared/lib/helpers/date'
 
 export const useHackathonForms = (hackathonInfo: DetailedHackathon | null) => {
   const criterionForm = useForm<CriterionFormData>({
@@ -47,9 +44,17 @@ export const useHackathonForms = (hackathonInfo: DetailedHackathon | null) => {
     },
   })
 
+  const editDescriptionForm = useForm<DescriptionFormData>({
+    resolver: zodResolver(descriptionFormSchema),
+    defaultValues: {
+      description: hackathonInfo?.description || '',
+    },
+  })
+
   return {
     criterionForm,
     juryForm,
     editForm,
+    editDescriptionForm,
   }
 }
