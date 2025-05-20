@@ -12,12 +12,13 @@ import { useHackathonCriteria } from '@/features/hackathons/hooks/useHackathonCr
 import { useHackathonJury } from '@/features/hackathons/hooks/useHackathonJury'
 import { useHackathonPage } from '@/features/hackathons/hooks/useHackathonPage'
 import Toolbar from '@/shared/ui/custom/Toolbar/Toolbar'
-import HackathonInfoSidebar from '@/features/hackathons/ui/HackathonInfoSidebar'
+import HackathonInfoSidebar from '@/features/hackathons/ui/sidebar/HackathonInfoSidebar'
 import HackathonPageCriteria from '@/features/hackathons/ui/page-sections/HackathonPageCriteria'
 import HackathonPageDescription from '@/features/hackathons/ui/page-sections/HackathonPageDescription'
 import HackathonPageJury from '@/features/hackathons/ui/page-sections/HackathonPageJury'
 import { HackathonPageTeams } from '@/features/hackathons/ui/page-sections/HackathonPageTeams'
 import styles from './hackathonPage.module.scss'
+import HackathonAttachmentsSidebar from '@/features/hackathons/ui/sidebar/HackathonAttachmentsSidebar'
 
 const HackathonPage = () => {
   const { id } = useParams()
@@ -152,12 +153,15 @@ const HackathonPage = () => {
                 />
                 <HackathonPageTeams hackathonInfo={hackathonInfo} />
               </div>
-              <HackathonInfoSidebar
-                hackathon={hackathonInfo}
-                editForm={editForm}
-                style={{ top: `${sidebarTop}px` }}
-                onHackathonUpdate={handleHackathonUpdate}
-              />
+              <div className={styles.hackathonSidebars}>
+                <HackathonInfoSidebar
+                  hackathon={hackathonInfo}
+                  editForm={editForm}
+                  style={{ top: `${sidebarTop}px` }}
+                  onHackathonUpdate={handleHackathonUpdate}
+                />
+                <HackathonAttachmentsSidebar />
+              </div>
             </div>
           </div>
         </div>
