@@ -1,14 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { useUsername } from '@/providers/UsernameContext'
-import { userApi } from '@/features/user'
-import { cookiesApi } from '@/shared/lib/helpers/cookies'
+import { Username, useUsername } from '@/providers/UsernameContext'
 import UserAvatar from './UserAvatar/UserAvatar'
 import styles from './Header.module.css'
+import { useState, useEffect } from 'react'
 
 export const Header = () => {
-  const { username } = useUsername()
+  const { username: contextUsername } = useUsername()
+  const [username, setUsername] = useState<Username | null>(null)
+
+  useEffect(() => {
+    setUsername(contextUsername)
+  }, [contextUsername])
 
   return (
     <header className={styles.header}>

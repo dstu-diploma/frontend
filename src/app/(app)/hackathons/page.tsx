@@ -101,6 +101,7 @@ const HackathonsPage = () => {
               {allHackathons.length > 0 ? (
                 allHackathons.map(hackathon => (
                   <Link
+                    key={hackathon.id}
                     href={`/hackathons/${hackathon.id}`}
                     className={styles.hackathonLink}
                   >
