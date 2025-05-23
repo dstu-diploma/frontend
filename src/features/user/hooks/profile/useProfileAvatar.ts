@@ -1,21 +1,21 @@
 import { useState, useRef, useEffect } from 'react'
-import { useToast } from '@/shared/hooks/use-toast'
 import { userApi } from '../../api'
 import { useAvatar } from '../../context/AvatarContext'
-import { AxiosError } from 'axios'
+import { useCustomToast } from '@/shared/lib/helpers/toast'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
 
 export const useProfileAvatar = () => {
+  const user = cookiesApi.getUser()
+  const { showToastSuccess, showToastError } = useCustomToast()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [isAvatarDeleted, setAvatarDeleted] = useState<boolean>(false)
   const { avatarSrc, setAvatarSrc } = useAvatar()
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const objectUrlRef = useRef<string | null>(null)
-  const { toast, dismiss } = useToast()
 
   const { mutate: setOrUpdateAvatar } = userApi.setOrUpdateAvatar()
   const { mutate: deleteAvatar } = userApi.deleteAvatar()
-
-  useEffect(() => {}, [])
 
   useEffect(() => {
     return () => {
@@ -25,6 +25,7 @@ export const useProfileAvatar = () => {
     }
   }, [])
 
+  // Обработка обновления файла аватарки
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !file.type.startsWith('image/')) return
@@ -36,29 +37,22 @@ export const useProfileAvatar = () => {
 
     setOrUpdateAvatar(file, {
       onSuccess: data => {
-        dismiss()
+        setAvatarDeleted(false)
         setAvatarSrc(data.url)
+        if (user) {
+          user.uploads = [data]
+          cookiesApi.setUserCookie(user)
+        }
         setMenuOpen(false)
-        toast({
-          variant: 'defaultBlueSuccess',
-          description: 'Аватар успешно изменен!',
-        })
+        showToastSuccess(`Аватар успешно изменён`)
       },
       onError: error => {
-        dismiss()
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const errorData = axiosError.response?.data as { detail?: string }
-          toast({
-            title: 'Ошибка при изменении аватара',
-            description: errorData.detail,
-            variant: 'destructive',
-          })
-        }
+        showToastError(error, `Ошибка при изменении аватара`)
       },
     })
   }
 
+  // Обработка удаления аватарки
   const handleDeleteAvatar = () => {
     if (objectUrlRef.current) {
       URL.revokeObjectURL(objectUrlRef.current)
@@ -74,24 +68,16 @@ export const useProfileAvatar = () => {
     deleteAvatar(undefined, {
       onSuccess: () => {
         setMenuOpen(false)
-        dismiss()
-        toast({
-          variant: 'defaultBlueSuccess',
-          description: 'Аватар успешно удалён!',
-        })
+        if (user) {
+          user.uploads = null
+          cookiesApi.setUserCookie(user)
+        }
+        setAvatarDeleted(true)
+        showToastSuccess(`Аватар успешно удалён!`)
         setAvatarSrc(null)
       },
       onError: error => {
-        dismiss()
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const errorData = axiosError.response?.data as { detail?: string }
-          toast({
-            title: 'Ошибка при удалении аватара',
-            description: errorData.detail,
-            variant: 'destructive',
-          })
-        }
+        showToastError(error, `Ошибка при удалении аватара`)
       },
     })
   }
@@ -101,6 +87,7 @@ export const useProfileAvatar = () => {
     setMenuOpen,
     fileInputRef,
     avatarSrc,
+    isAvatarDeleted,
     setAvatarSrc,
     handleAvatarChange,
     handleDeleteAvatar,
