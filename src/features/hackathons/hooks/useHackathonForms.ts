@@ -12,6 +12,8 @@ import {
 } from '../model/schemas'
 import { DetailedHackathon } from '../model/types'
 import { formatDateForInput } from '@/shared/lib/helpers/date'
+import { useCustomToast } from '@/shared/lib/helpers/toast'
+import { hackathonApi } from '../api'
 
 export const useHackathonForms = (hackathonInfo: DetailedHackathon | null) => {
   const criterionForm = useForm<CriterionFormData>({

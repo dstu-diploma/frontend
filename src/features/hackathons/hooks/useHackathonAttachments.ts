@@ -1,54 +1,38 @@
-import { adminApi } from '@/features/admin/api'
 import {
   Attachment,
   DeleteHackathonAttachmentRequestBody,
   UploadHackathonAttachmentRequestBody,
 } from '@/features/hackathons/model/types'
-import { useToast } from '@/shared/hooks/use-toast'
 import {
   isAllowedMimeType,
   MimeType,
 } from '@/shared/lib/helpers/attachmentMapping'
-import { AxiosError } from 'axios'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { hackathonApi } from '../api'
+import { useCustomToast } from '@/shared/lib/helpers/toast'
 
 export const useHackathonAttachments = (page_id: number) => {
-  const [attachments, setAttachments] = useState<Attachment[]>([])
-  const { mutate: getHackathonAttachmentsList } =
-    adminApi.getAllHackathonAttachments()
+  const { showToastSuccess, showToastError, showRawToastError } =
+    useCustomToast()
+  const hackathonId = Number(page_id)
+  const { data: attachments, error: attachmentsLoadError } =
+    hackathonApi.useGetHackathonAttachments(hackathonId)
   const { mutate: uploadHackathonAttachment } =
-    adminApi.uploadHackathonAttachment()
+    hackathonApi.useUploadHackathonAttachment(hackathonId)
   const { mutate: deleteHackathonAttachment } =
-    adminApi.deleteHackathonAttachment()
+    hackathonApi.useDeleteHackathonAttachment(hackathonId)
 
   const hackathon_id = Number(page_id)
-  const { toast, dismiss } = useToast()
 
-  // Функция для получения списка документов хакатона
-  const getHackathonAttachments = async () => {
-    getHackathonAttachmentsList(hackathon_id, {
-      onSuccess: data => {
-        setAttachments(data)
-      },
-      onError: error => {
-        dismiss()
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const errorData = axiosError.response.data as { detail: string }
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка при получении документов хакатона',
-            description: errorData.detail,
-          })
-        }
-      },
-    })
-  }
-
-  // Получение списка документов хакатона при открытии страницы
+  // Вывод ошибок при получении списка жюри
   useEffect(() => {
-    getHackathonAttachments()
-  }, [page_id])
+    if (attachmentsLoadError) {
+      showToastError(
+        attachmentsLoadError,
+        `Ошибка при получении cписка приложений к хакатону`,
+      )
+    }
+  }, [attachmentsLoadError])
 
   // Проверка на длину имени файла
   const isFileNameLong = (fileName: string | undefined) => {
@@ -66,11 +50,10 @@ export const useHackathonAttachments = (page_id: number) => {
       : file?.name
 
     if (!isAllowedMimeType(file.type as MimeType)) {
-      toast({
-        variant: 'destructive',
-        title: 'Ошибка при загрузке приложения',
-        description: 'Разрешенные форматы: doc, docx, ppt, pptx, txt, jpg, png',
-      })
+      showRawToastError(
+        'Ошибка при загрузке приложения',
+        'Разрешенные форматы: doc, docx, ppt, pptx, txt, jpg, png',
+      )
       return
     }
 
@@ -80,25 +63,9 @@ export const useHackathonAttachments = (page_id: number) => {
     }
 
     uploadHackathonAttachment(requestBody, {
-      onSuccess: async () => {
-        toast({
-          variant: 'defaultBlueSuccess',
-          description: `Приложение "${fileName}" успешно загружено`,
-        })
-        await getHackathonAttachments()
-      },
-      onError: error => {
-        dismiss()
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const errorData = axiosError.response.data as { detail: string }
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка загрузки приложения',
-            description: errorData.detail,
-          })
-        }
-      },
+      onSuccess: async () =>
+        showToastSuccess(`Приложение "${fileName}" успешно загружено`),
+      onError: error => showToastError(error, `Ошибка загрузки приложения`),
     })
   }
 
@@ -109,32 +76,15 @@ export const useHackathonAttachments = (page_id: number) => {
       file_id: attachment.id,
     }
     deleteHackathonAttachment(requestBody, {
-      onSuccess: async () => {
-        dismiss()
-        toast({
-          variant: 'defaultBlueSuccess',
-          description: `Приложение "${attachment.name}" успешно удалено`,
-        })
-        await getHackathonAttachments()
-      },
-      onError: error => {
-        dismiss()
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const errorData = axiosError.response.data as { detail: string }
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка при удалении приложения к хакатону',
-            description: errorData.detail,
-          })
-        }
-      },
+      onSuccess: async () =>
+        showToastSuccess(`Приложение "${attachment.name}" успешно удалено`),
+      onError: error =>
+        showToastError(error, `Ошибка при удалении приложения к хакатону`),
     })
   }
 
   return {
     attachments,
-    getHackathonAttachments,
     handleUpload,
     handleDelete,
   }

@@ -1,84 +1,50 @@
 import { teamApi } from '@/features/team'
-import { useToast } from '@/shared/hooks/use-toast'
-import { AxiosError } from 'axios'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { hackathonApi } from '../api'
-import { DetailedHackathon } from '../model/types'
-import { adminApi } from '@/features/admin/api'
 import { DescriptionFormData, HackathonFormData } from '../model/schemas'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useCustomToast } from '@/shared/lib/helpers/toast'
 
 export const useHackathonPage = (page_id: number) => {
-  const { toast, dismiss } = useToast()
-  const { mutate: getHackathonById, isPending: isHackathonLoading } =
-    hackathonApi.getHackathonById()
-  const { mutate: getMyHackathonTeam } = hackathonApi.getMyHackathonTeam()
-  const { mutate: getMyTeamInfo } = teamApi.getMyTeamInfo()
-  const { mutate: applyToHackathon } = teamApi.applyToHackathon()
-  const { mutate: updateHackathon } = adminApi.updateHackathonInfo()
+  const { showToastSuccess, showToastError } = useCustomToast()
+  const queryClient = useQueryClient()
 
-  const [hackathonInfo, setHackathonInfo] = useState<DetailedHackathon | null>(
-    null,
-  )
+  // Полученные данные о сущностях
+  const {
+    data: hackathonInfo,
+    isPending: isHackathonLoading,
+    error: hackathonLoadError,
+  } = hackathonApi.useGetHackathonById(Number(page_id))
+  const { data: myTeamInfo, isSuccess: isMyTeamInfoLoaded } =
+    teamApi.useGetMyTeamInfo()
+
+  // Мутация для изменения данных о хакатоне
+  const { mutate: applyToHackathon } = useMutation({
+    mutationFn: teamApi.applyToHackathon,
+  })
+  const { mutate: updateHackathon } = hackathonApi.useUpdateHackathonInfo()
+
+  const [mateIds, setMateIds] = useState<number[]>([])
   const [hasTeam, setHasTeam] = useState<boolean>(false)
   const [isUserTeamApplied, setIsUserTeamApplied] = useState<boolean>(false)
-  const [mateIds, setMateIds] = useState<number[]>([])
 
   // Функция для загрузки и обновления информации о хакатоне
-  const loadHackathonInfo = useCallback(async () => {
-    getHackathonById(Number(page_id), {
-      onSuccess: data => setHackathonInfo(data),
-      onError: error => {
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const errorData = axiosError.response.data as { detail: string }
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка при получении информации о хакатоне',
-            description: errorData.detail,
-          })
-        }
-      },
-    })
-  }, [page_id, getHackathonById, toast])
-
-  // Получение информации о хакатоне при монтировании компонента
   useEffect(() => {
-    loadHackathonInfo()
-  }, [loadHackathonInfo])
-
-  // Получение информации об участниках команды текущего пользователя
-  useEffect(() => {
-    getMyTeamInfo(undefined, {
-      onSuccess: data => {
-        setMateIds(data.mates.map(mate => mate.user_id))
-      },
-    })
-  }, [])
-
-  // Установка флага наличия команды
-  useEffect(() => {
-    if (mateIds.length > 0) {
-      setHasTeam(true)
+    if (hackathonLoadError) {
+      showToastError(
+        hackathonLoadError,
+        `Ошибка при получении информации о хакатоне`,
+      )
     }
-  }, [mateIds])
+  }, [page_id])
 
   // Установка флага участия в хакатоне
   useEffect(() => {
-    if (mateIds.length > 0) {
-      getMyHackathonTeam(Number(page_id), {
-        onSuccess: () => {
-          setIsUserTeamApplied(true)
-        },
-        onError: error => {
-          console.error(
-            'Ошибка при получении информации об участниках команды:',
-            error,
-          )
-          setIsUserTeamApplied(false)
-        },
-      })
+    if (isMyTeamInfoLoaded && myTeamInfo && myTeamInfo.mates.length > 0) {
+      setHasTeam(true)
+      setMateIds(myTeamInfo?.mates.map(mate => mate.user_id))
     }
-  }, [mateIds, page_id, getMyHackathonTeam])
+  }, [page_id])
 
   // Отправка заявки на участие в хакатоне
   const handleApplicationSubmit = async () => {
@@ -88,26 +54,13 @@ export const useHackathonPage = (page_id: number) => {
     }
     applyToHackathon(requestBody, {
       onSuccess: async () => {
-        dismiss()
-        toast({
-          variant: 'defaultBlueSuccess',
-          description: `Заявка на участие в хакатоне ${hackathonInfo?.name} отправлена`,
-        })
-        await loadHackathonInfo()
+        showToastSuccess(
+          `Заявка на участие в хакатоне ${hackathonInfo?.name} отправлена`,
+        )
+        setIsUserTeamApplied(true)
       },
-      onError: error => {
-        dismiss()
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const errorData = axiosError.response.data as { detail: string }
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка при отправлении заявки на хакатон',
-            description: errorData.detail,
-          })
-          console.error('Ошибка при отправлении заявки на хакатон:', errorData)
-        }
-      },
+      onError: error =>
+        showToastError(error, `Ошибка при отправлении заявки на хакатон`),
     })
   }
 
@@ -125,28 +78,11 @@ export const useHackathonPage = (page_id: number) => {
       },
       {
         onSuccess: async () => {
-          dismiss()
-          toast({
-            variant: 'defaultBlueSuccess',
-            description: `Информация о хакатоне успешно обновлена`,
-          })
-          await loadHackathonInfo()
+          queryClient.invalidateQueries({ queryKey: ['hackathonById'] })
+          showToastSuccess(`Информация о хакатоне успешно обновлена`)
         },
         onError: error => {
-          dismiss()
-          const axiosError = error as AxiosError
-          if (axiosError.response) {
-            const errorData = axiosError.response.data as { detail: string }
-            toast({
-              variant: 'destructive',
-              title: 'Ошибка при обновлении информации о хакатоне',
-              description: errorData.detail,
-            })
-            console.error(
-              'Ошибка при обновлении информации о хакатоне:',
-              errorData,
-            )
-          }
+          showToastError(error, `Ошибка при обновлении информации о хакатоне`)
         },
       },
     )
@@ -162,28 +98,11 @@ export const useHackathonPage = (page_id: number) => {
       },
       {
         onSuccess: async () => {
-          dismiss()
-          toast({
-            variant: 'defaultBlueSuccess',
-            description: `Описание хакатона успешно обновлено`,
-          })
-          await loadHackathonInfo()
+          queryClient.invalidateQueries({ queryKey: ['hackathonById'] })
+          showToastSuccess(`Описание хакатона успешно обновлено`)
         },
         onError: error => {
-          dismiss()
-          const axiosError = error as AxiosError
-          if (axiosError.response) {
-            const errorData = axiosError.response.data as { detail: string }
-            toast({
-              variant: 'destructive',
-              title: 'Ошибка при обновлении описания хакатона',
-              description: errorData.detail,
-            })
-            console.error(
-              'Ошибка при обновлении информации о хакатоне:',
-              errorData,
-            )
-          }
+          showToastError(error, `Ошибка при обновлении описания хакатона`)
         },
       },
     )
