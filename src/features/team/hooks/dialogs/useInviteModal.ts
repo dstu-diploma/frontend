@@ -1,21 +1,19 @@
-import { useToast } from '@/shared/hooks/use-toast'
 import { teamApi } from '../../api'
 import { useState } from 'react'
 import { userApi } from '@/features/user'
 import { UserByEmail } from '@/features/user/model/types'
-import { AxiosError } from 'axios'
+import { useCustomToast } from '@/shared/lib/helpers/toast'
 
 export const useInviteModal = () => {
+  const { showToastSuccess, showToastError } = useCustomToast()
   const [mateEmail, setMateEmail] = useState('')
-  const { mutate: searchByEmail } = userApi.searchByEmail()
-  const { mutate: sendInvite } = teamApi.sendInvite()
-  const { toast, dismiss } = useToast()
+  const { mutate: searchByEmail } = userApi.useSearchByEmail()
+  const { mutate: sendInvite } = teamApi.useSendInvite()
 
   const handleTeamInviteChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const newValue = e.target.value
-    setMateEmail(newValue)
+    setMateEmail(e.target.value)
   }
 
   const sendInvintation = async (
@@ -24,26 +22,12 @@ export const useInviteModal = () => {
     last_name: string,
   ) => {
     sendInvite(user_id, {
-      onSuccess: () => {
-        dismiss()
-        toast({
-          variant: 'defaultBlueSuccess',
-          description: `Заявка отправлена пользователю ${first_name} ${last_name}`,
-        })
-      },
-      onError: (error: Error) => {
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const data = axiosError.response.data as { detail?: string }
-          console.error('Ошибка отправки приглашения: ', data.detail)
-          dismiss()
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка отправки приглашения',
-            description: data.detail,
-          })
-        }
-      },
+      onSuccess: () =>
+        showToastSuccess(
+          `Заявка отправлена пользователю ${first_name} ${last_name}`,
+        ),
+      onError: (error: Error) =>
+        showToastError(error, `Ошибка отправки приглашения`),
     })
   }
 
@@ -54,17 +38,7 @@ export const useInviteModal = () => {
         sendInvintation(data.id, data.first_name, data.last_name)
       },
       onError: error => {
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const data = axiosError.response.data as { detail?: string }
-          console.error('Ошибка при поиске участника: ', data.detail)
-          dismiss()
-          toast({
-            title: 'Ошибка при поиске участника',
-            variant: 'destructive',
-            description: data.detail,
-          })
-        }
+        showToastError(error, `Ошибка при поиске участника`)
       },
     })
   }

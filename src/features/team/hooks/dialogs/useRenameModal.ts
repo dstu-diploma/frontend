@@ -1,60 +1,38 @@
-import { useToast } from '@/shared/hooks/use-toast'
 import { teamApi } from '../../api'
-import { AxiosError } from 'axios'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { TeamInfo } from '../../model/types'
+import { useCustomToast } from '@/shared/lib/helpers/toast'
 
-interface useRenameModalProps {
-  teamInfoName: string
-  refreshTeamName: () => Promise<void>
-}
-
-export const useRenameModal = ({
-  teamInfoName,
-  refreshTeamName,
-}: useRenameModalProps) => {
-  const { mutate: renameTeam } = teamApi.renameTeam()
-  const { toast, dismiss } = useToast()
-  const [teamName, setTeamName] = useState(teamInfoName)
-
-  useEffect(() => {
-    setTeamName(teamInfoName)
-  }, [teamInfoName])
+export const useRenameModal = () => {
+  const { showToastSuccess, showToastError } = useCustomToast()
+  const queryClient = useQueryClient()
+  const teamInfo = queryClient.getQueryData(['myTeamInfo']) as
+    | TeamInfo
+    | undefined
+  const currentTeamName = teamInfo?.name
+  const { mutate: renameTeam } = teamApi.useRenameTeam()
+  const [teamName, setTeamName] = useState(currentTeamName)
 
   const handleTeamNameChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const newValue = e.target.value
-    setTeamName(newValue)
+    setTeamName(e.target.value)
   }
 
   const handleTeamRename = async (e: React.FormEvent) => {
     e.preventDefault()
-    const requestBody = { name: teamName }
-    renameTeam(requestBody, {
-      onSuccess: async () => {
-        dismiss()
-        toast({
-          variant: 'defaultBlueSuccess',
-          description: 'Название команды изменено',
-        })
-        await refreshTeamName()
+    if (!teamName) {
+      return
+    }
+    renameTeam(
+      { name: teamName },
+      {
+        onSuccess: async () => showToastSuccess('Название команды изменено'),
+        onError: error =>
+          showToastError(error, 'Ошибка при переименовании команды'),
       },
-      onError: error => {
-        dismiss()
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const data = axiosError.response.data as { detail?: string }
-          console.error('Ошибка при переименовании команды: ', data.detail)
-          dismiss()
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка при переименовании команды',
-            description: data.detail,
-          })
-        }
-        console.error('Ошибка при переименовании команды: ', error)
-      },
-    })
+    )
   }
 
   return {

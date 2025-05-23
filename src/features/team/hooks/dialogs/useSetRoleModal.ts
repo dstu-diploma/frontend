@@ -1,55 +1,36 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { teamApi } from '../../api'
-import { useToast } from '@/shared/hooks/use-toast'
-import { AxiosError } from 'axios'
+import { useQueryClient } from '@tanstack/react-query'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
+import { TeamMateRef } from '../../model/types'
+import { useCustomToast } from '@/shared/lib/helpers/toast'
 
-interface useSetRoleModalProps {
-  refreshTeamMates: (success_message: string) => Promise<void>
-  teamRole: string
-}
+export const useSetRoleModal = () => {
+  const { showToastSuccess, showToastError } = useCustomToast()
+  const queryClient = useQueryClient()
+  const user = cookiesApi.getUser()
+  const teamMates = queryClient.getQueryData(['teamMates']) as
+    | TeamMateRef[]
+    | undefined
+  const currentUserRole =
+    teamMates?.find(mate => mate.user_id === user?.id)?.role_desc || ''
 
-export const useSetRoleModal = ({
-  refreshTeamMates,
-  teamRole,
-}: useSetRoleModalProps) => {
-  const [role, setRole] = useState(teamRole)
-  const { mutate: setTeamMateRole } = teamApi.setTeamMateRole()
-  const { toast, dismiss } = useToast()
-
-  useEffect(() => {
-    setRole(teamRole)
-  }, [teamRole])
+  const { mutate: setTeamMateRole } = teamApi.useSetTeamMateRole()
+  const [role, setRole] = useState(currentUserRole)
 
   const handleMateRoleChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const newValue = e.target.value
-    setRole(newValue)
+    setRole(e.target.value)
   }
 
   const handleMateRoleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    const requestBody = { role_desc: role }
-    setTeamMateRole(requestBody, {
+    setTeamMateRole(role, {
       onSuccess: async () => {
-        dismiss()
-        await refreshTeamMates(`Ваша роль в команде успешно изменена`)
+        showToastSuccess(`Ваша роль в команде успешно изменена`)
       },
-      onError: error => {
-        dismiss()
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const data = axiosError.response.data as { detail?: string }
-          console.error('Ошибка при изменении роли: ', data.detail)
-          dismiss()
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка при изменении роли',
-            description: data.detail,
-          })
-        }
-        console.error('Ошибка при изменении роли: ', error)
-      },
+      onError: error => showToastError(error, `Ошибка при изменении роли`),
     })
   }
 

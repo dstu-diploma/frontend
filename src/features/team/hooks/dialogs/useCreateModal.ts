@@ -1,45 +1,29 @@
-import { useToast } from '@/shared/hooks/use-toast'
 import { teamApi } from '../../api'
 import { useState } from 'react'
-import { AxiosError } from 'axios'
+import { useCustomToast } from '@/shared/lib/helpers/toast'
 
-interface useCreateModalProps {
-  refreshTeamInfo: (success_message: string) => Promise<void>
-}
+export const useCreateModal = () => {
+  const { showToastSuccess, showToastError } = useCustomToast()
 
-export const useCreateModal = ({ refreshTeamInfo }: useCreateModalProps) => {
   const [newTeamName, setNewTeamName] = useState('')
-  const { mutate: createTeam } = teamApi.createTeam()
-  const { toast, dismiss } = useToast()
+  const { mutate: createTeam } = teamApi.useCreateTeam()
 
   const handleTeamCreateChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const newValue = e.target.value
-    setNewTeamName(newValue)
+    setNewTeamName(e.target.value)
   }
 
   const handleTeamCreate = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!newTeamName) {
+      return
+    }
     const requestBody = { name: newTeamName }
     createTeam(requestBody, {
-      onSuccess: async () => {
-        dismiss()
-        await refreshTeamInfo(`Команда ${newTeamName} успешно создана`)
-      },
-      onError: error => {
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const data = axiosError.response.data as { detail?: string }
-          console.error('Ошибка при создании команды: ', data.detail)
-          dismiss()
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка при создании команды',
-            description: data.detail,
-          })
-        }
-      },
+      onSuccess: async () =>
+        showToastSuccess(`Команда ${newTeamName} успешно создана`),
+      onError: error => showToastError(error, `Ошибка при создании команды`),
     })
   }
 
