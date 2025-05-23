@@ -1,31 +1,38 @@
 import axiosInstance from '@/shared/api/axios'
 import { HACKATHON_SERVICE_API_URL } from '@/shared/api/basePaths'
-import { useMutation } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
+import { Hackathon } from '../model/types'
+import { TeamInfo } from '@/features/team'
 
 export const hackathonBaseApi = {
-  getHackathonsList: () => {
-    return useMutation({
-      mutationFn: async () => {
+  useGetHackathonList: () => {
+    return useQuery<Hackathon[]>({
+      queryKey: ['hackathonList'],
+      queryFn: async () => {
         const response = await axiosInstance.get(
           `${HACKATHON_SERVICE_API_URL}/hackathon/`,
         )
         return response.data
       },
+      staleTime: 60 * 10 * 1000,
     })
   },
-  getHackathonById: () => {
-    return useMutation({
-      mutationFn: async (hackathon_id: number) => {
+  useGetHackathonById: (hackathon_id: number) => {
+    return useQuery<Hackathon>({
+      queryKey: ['hackathonById', hackathon_id],
+      queryFn: async () => {
         const response = await axiosInstance.get(
           `${HACKATHON_SERVICE_API_URL}/hackathon/${hackathon_id}`,
         )
         return response.data
       },
+      staleTime: 60 * 10 * 1000,
     })
   },
-  getMyHackathonTeam: () => {
-    return useMutation({
-      mutationFn: async (hackathon_id: number) => {
+  useGetMyHackathonTeam: (hackathon_id: number) => {
+    return useQuery<TeamInfo>({
+      queryKey: ['hackathonTeam', hackathon_id],
+      queryFn: async () => {
         const response = await axiosInstance.get(
           `${HACKATHON_SERVICE_API_URL}/${hackathon_id}/my`,
         )
@@ -33,9 +40,10 @@ export const hackathonBaseApi = {
       },
     })
   },
-  getHackathonTeams: () => {
-    return useMutation({
-      mutationFn: async (hackathon_id: number) => {
+  useGetHackathonTeams: (hackathon_id: number) => {
+    return useQuery<TeamInfo[]>({
+      queryKey: ['hackathonTeams', hackathon_id],
+      queryFn: async () => {
         const response = await axiosInstance.get(
           `${HACKATHON_SERVICE_API_URL}/hackathon/${hackathon_id}/teams`,
         )
@@ -43,9 +51,10 @@ export const hackathonBaseApi = {
       },
     })
   },
-  getCriteriaList: () => {
-    return useMutation({
-      mutationFn: async (hackathon_id: number) => {
+  useGetCriteriaList: (hackathon_id: number) => {
+    return useQuery<TeamInfo>({
+      queryKey: ['criteriaList', hackathon_id],
+      queryFn: async () => {
         const response = await axiosInstance.get(
           `${HACKATHON_SERVICE_API_URL}/${hackathon_id}/criteria`,
         )
@@ -53,9 +62,10 @@ export const hackathonBaseApi = {
       },
     })
   },
-  getJuryList: () => {
-    return useMutation({
-      mutationFn: async (hackathon_id: number) => {
+  useGetJuryList: (hackathon_id: number) => {
+    return useQuery<TeamInfo>({
+      queryKey: ['judgesList', hackathon_id],
+      queryFn: async () => {
         const response = await axiosInstance.get(
           `${HACKATHON_SERVICE_API_URL}/${hackathon_id}/judges`,
         )

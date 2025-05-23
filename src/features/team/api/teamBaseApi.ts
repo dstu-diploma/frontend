@@ -1,103 +1,148 @@
 import axiosInstance from '@/shared/api/axios'
 import { TEAM_SERVICE_API_URL } from '@/shared/api/basePaths'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   TeamCaptainRequestBody,
-  TeamCaptainResponseBody,
   TeamCreateRequestBody,
-  TeamCreateResponseBody,
   TeamInfo,
+  TeamMateRef,
   TeamRenameRequestBody,
-  TeamRenameResponseBody,
-  TeamRole,
 } from '../model/types'
+import { AxiosError } from 'axios'
 
 export const teamBaseApi = {
-  createTeam: () => {
+  useCreateTeam: () => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (
-        data: TeamCreateRequestBody,
-      ): Promise<TeamCreateResponseBody> => {
-        const response = await axiosInstance.post(
-          `${TEAM_SERVICE_API_URL}/`,
-          data,
-        )
-        return response.data
+      mutationFn: async (data: TeamCreateRequestBody) =>
+        await axiosInstance.post(`${TEAM_SERVICE_API_URL}/`, data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['myTeamInfo'] })
+        queryClient.invalidateQueries({ queryKey: ['teamMates'] })
+      },
+      onError: (error: AxiosError<{ detail?: string }>) => {
+        if (error.response?.status === 400) {
+          const errorMessage =
+            error.response.data?.detail || 'Некорректный запрос'
+          console.warn('Ошибка создания команды:', errorMessage)
+          return
+        }
+        console.error('Ошибка создания команды:', error.message)
       },
     })
   },
-  getTeamInfo: () => {
+  useGetTeamMates: () => {
+    return useQuery<TeamMateRef[] | null>({
+      queryKey: ['teamMates'],
+      queryFn: async () => {
+        try {
+          const response = await axiosInstance.get(
+            `${TEAM_SERVICE_API_URL}/mate`,
+          )
+          return response.data ?? null
+        } catch (error) {
+          const axiosError = error as AxiosError<{ detail?: string }>
+          if (axiosError.response?.status === 400) {
+            console.warn(
+              'Нет данных о команде:',
+              axiosError.response.data?.detail,
+            )
+            return []
+          }
+          throw error
+        }
+      },
+      staleTime: 60 * 1000 * 10,
+      retry: (failureCount, error) => {
+        const axiosError = error as AxiosError
+        return axiosError.response?.status !== 400 && failureCount < 3
+      },
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+    })
+  },
+  useGetMyTeamInfo: () => {
+    return useQuery<TeamInfo>({
+      queryKey: ['myTeamInfo'],
+      queryFn: async () => {
+        try {
+          const response = await axiosInstance.get(
+            `${TEAM_SERVICE_API_URL}/info`,
+          )
+          return response.data ?? null
+        } catch (error) {
+          const axiosError = error as AxiosError
+          if (axiosError.response?.status === 400) {
+            return null
+          }
+          throw error
+        }
+      },
+      staleTime: 60 * 1000 * 10,
+      retry: (failureCount, error) => {
+        const axiosError = error as AxiosError
+        return axiosError.response?.status !== 400 && failureCount < 3
+      },
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+    })
+  },
+  useRenameTeam: () => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (team_id: number): Promise<TeamInfo> => {
-        const response = await axiosInstance.get(
-          `${TEAM_SERVICE_API_URL}/info/${team_id}`,
-        )
-        return response.data
+      mutationFn: async (team_name: TeamRenameRequestBody) => {
+        await axiosInstance.post(`${TEAM_SERVICE_API_URL}/name`, team_name)
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['teamInfo'] })
       },
     })
   },
-  getMyTeamInfo: () => {
+  useLeaveTeam: () => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (): Promise<TeamInfo> => {
-        const response = await axiosInstance.get(`${TEAM_SERVICE_API_URL}/info`)
-        return response.data
+      mutationFn: async () =>
+        await axiosInstance.delete(`${TEAM_SERVICE_API_URL}/mate/`),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['myTeamInfo'] })
+        queryClient.invalidateQueries({ queryKey: ['teamMates'] })
       },
     })
   },
-  renameTeam: () => {
+  useKickMate: () => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (
-        team_name: TeamRenameRequestBody,
-      ): Promise<TeamRenameResponseBody> => {
-        const response = await axiosInstance.post(
-          `${TEAM_SERVICE_API_URL}/name`,
-          team_name,
-        )
-        return response.data
+      mutationFn: (member: TeamMateRef) =>
+        axiosInstance.delete(`${TEAM_SERVICE_API_URL}/mate/${member.user_id}`),
+      onSuccess: async () => {
+        queryClient.invalidateQueries({ queryKey: ['teamMates'] })
       },
     })
   },
-  leaveTeam: () => {
+  useSetTeamMateRole: () => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async () => {
-        const response = await axiosInstance.delete(
-          `${TEAM_SERVICE_API_URL}/mate/`,
-        )
-        return response.data
+      mutationFn: async (role_desc: string) =>
+        await axiosInstance.put(`${TEAM_SERVICE_API_URL}/mate/role-desc`, {
+          role_desc: role_desc,
+        }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['teamMates'] })
       },
     })
   },
-  kickMate: () => {
+  useSetCaptainRights: () => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (user_id: number) => {
-        const response = await axiosInstance.delete(
-          `${TEAM_SERVICE_API_URL}/mate/${user_id}`,
-        )
-        return response.data
-      },
-    })
-  },
-  setTeamMateRole: () => {
-    return useMutation({
-      mutationFn: async (role_desc: TeamRole) => {
-        const response = await axiosInstance.put(
-          `${TEAM_SERVICE_API_URL}/mate/role-desc`,
-          role_desc,
-        )
-        return response.data
-      },
-    })
-  },
-  setCaptainRights: () => {
-    return useMutation({
-      mutationFn: async (
-        captainInfo: TeamCaptainRequestBody,
-      ): Promise<TeamCaptainResponseBody> => {
-        const response = await axiosInstance.put(
+      mutationFn: async (captainInfo: TeamCaptainRequestBody) =>
+        await axiosInstance.put(
           `${TEAM_SERVICE_API_URL}/mate/captain-rights/`,
           captainInfo,
-        )
-        return response.data
+        ),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['teamMates'] })
       },
     })
   },

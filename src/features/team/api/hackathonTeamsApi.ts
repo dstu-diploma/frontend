@@ -1,25 +1,29 @@
 import axiosInstance from '@/shared/api/axios'
 import { TEAM_SERVICE_HACKATHON_TEAM_API_URL } from '@/shared/api/basePaths'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const hackathonTeamsApi = {
-  applyToHackathon: () => {
+  useApplyToHackathon: (hackathon_id: number) => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (data: {
-        hackathon_id: number
-        mate_user_ids: number[]
-      }) => {
+      mutationFn: async (data: { mate_user_ids: number[] }) => {
         const response = await axiosInstance.post(
           `${TEAM_SERVICE_HACKATHON_TEAM_API_URL}/`,
           data,
         )
         return response.data
       },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['hackathonById', hackathon_id],
+        })
+      },
     })
   },
-  getMyHackathonTeamInfo: () => {
-    return useMutation({
-      mutationFn: async (hackathon_id: number) => {
+  useGetMyHackathonTeamInfo: (hackathon_id: number) => {
+    return useQuery({
+      queryKey: ['myHackathonTeam', hackathon_id],
+      queryFn: async () => {
         const response = await axiosInstance.get(
           `${TEAM_SERVICE_HACKATHON_TEAM_API_URL}/${hackathon_id}/my`,
         )
@@ -27,7 +31,7 @@ export const hackathonTeamsApi = {
       },
     })
   },
-  setHackathonTeamRole: () => {
+  useSetHackathonTeamRole: () => {
     return useMutation({
       mutationFn: async (hackathon_id: number) => {
         const response = await axiosInstance.put(
