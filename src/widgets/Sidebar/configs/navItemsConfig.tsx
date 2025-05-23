@@ -25,7 +25,7 @@ export const navigationItems: NavItem[] = [
     isIconFillable: true,
   },
   {
-    label: 'Моя команда',
+    label: 'Мой бренд',
     href: '/team',
     icon: <RiTeamLine />,
     isIconFillable: true,
