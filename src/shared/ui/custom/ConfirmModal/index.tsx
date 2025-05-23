@@ -2,21 +2,20 @@
 
 import React, { useState } from 'react'
 import { Button } from '@/shared/ui/shadcn/button'
-import { DialogHeader, DialogFooter } from '@/shared/ui/shadcn/dialog'
 import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
+  DialogHeader,
+  DialogFooter,
   DialogTitle,
 } from '@/shared/ui/shadcn/dialog'
+import { Dialog, DialogTrigger, DialogContent } from '@/shared/ui/shadcn/dialog'
+import { ModalWarningObject } from '@/features/team/configs/confirmModalWarnings'
 import styles from './ConfirmModal.module.scss'
 
 interface ConfirmModalProps {
   children: React.ReactNode
   title: string
   submitButtonText: string
-  isCaptainText?: string | undefined
-  isSingleCaptainText?: string | undefined
+  warning?: ModalWarningObject
   onConfirm: (event: React.FormEvent) => void
 }
 
@@ -34,19 +33,15 @@ export const ConfirmModal = (props: ConfirmModalProps) => {
           className={styles.dialogForm}
         >
           <DialogHeader className={styles.dialogConfirmHeader}>
-            <DialogTitle className={styles.dialogConfirmTitle}>
+            <DialogTitle></DialogTitle>
+            <div className={styles.dialogConfirmTitle}>
               <h4 className={styles.dialogConfirmTitleText}>{props.title}</h4>
-              {props.isCaptainText && (
-                <p className={styles.dangerWarning}>{props.isCaptainText}</p>
+              {props.warning && (
+                <p className={styles.dangerWarning}>{props.warning.message}</p>
               )}
-              {props.isSingleCaptainText && (
-                <p className={styles.dangerWarning}>
-                  {props.isSingleCaptainText}
-                </p>
-              )}
-            </DialogTitle>
+            </div>
           </DialogHeader>
-          {!props.isSingleCaptainText && (
+          {props.warning?.type !== 'restricted' && (
             <DialogFooter className={styles.dialogActions}>
               <Button
                 onClick={e => {

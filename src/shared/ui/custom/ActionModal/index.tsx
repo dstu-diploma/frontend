@@ -1,15 +1,16 @@
+'use client'
+
 import React, { useState, useRef } from 'react'
+import { UseFormReturn } from 'react-hook-form'
 import { Button } from '@/shared/ui/shadcn/button'
-import { DialogHeader, DialogFooter } from '@/shared/ui/shadcn/dialog'
 import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
+  DialogHeader,
+  DialogFooter,
   DialogTitle,
 } from '@/shared/ui/shadcn/dialog'
+import { Dialog, DialogTrigger, DialogContent } from '@/shared/ui/shadcn/dialog'
 import styles from './ActionModal.module.scss'
 import clsx from 'clsx'
-import { UseFormReturn } from 'react-hook-form'
 
 interface ActionModalProps {
   title: string
@@ -63,9 +64,8 @@ export const ActionModal = (props: ActionModalProps) => {
       >
         <form onSubmit={handleSubmit} className={styles.dialogForm}>
           <DialogHeader>
-            <DialogTitle>
-              <h4>{props.title}</h4>
-            </DialogTitle>
+            <DialogTitle></DialogTitle>
+            <h4>{props.title}</h4>
           </DialogHeader>
           <div
             className={clsx(styles.dialogFormContent, props.contentClassName)}
