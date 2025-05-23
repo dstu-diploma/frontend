@@ -27,7 +27,17 @@ export interface UserProfile extends Omit<User, 'id'> {
   role: 'user' | 'admin'
 }
 
-export type BaseUserType = {
+export interface UserUpload {
+  user_id: number
+  type: 'avatar'
+  s3_key: string
+  content_type: string
+  uploaded_at: string
+  url: string
+}
+
+export type FullUser = {
+  id: number
   first_name: string
   last_name: string
   email: string
@@ -36,6 +46,8 @@ export type BaseUserType = {
   birthday?: string | undefined
   role?: string | undefined
   registerDate?: Date | undefined
+  is_banned: boolean
+  uploads: UserUpload[]
 }
 
 export interface RegisterRequestBody {
@@ -47,7 +59,7 @@ export interface RegisterRequestBody {
 }
 
 export interface AuthResponseBody {
-  user: BaseUserType
+  user: FullUser
   access_token: string
   refresh_token: string
 }

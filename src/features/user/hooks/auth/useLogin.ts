@@ -1,31 +1,41 @@
-import { useToast } from "@/shared/hooks/use-toast";
-import { cookiesApi } from "@/shared/lib/helpers/cookies";
-import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { userApi } from "../../api";
-import { LoginFormData } from "../../model/schemas";
+import { useToast } from '@/shared/hooks/use-toast'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
+import { AxiosError } from 'axios'
+import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { userApi } from '../../api'
+import { LoginFormData } from '../../model/schemas'
 
 export const useLogin = () => {
-  const router = useRouter();
-  const { toast } = useToast();
-  const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { mutate: loginUser, isPending: isSubmitting } = userApi.useLogin();
+  const router = useRouter()
+  const { toast } = useToast()
+  const [hasCheckedAuth, setHasCheckedAuth] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null)
+
+  const { mutate: loginUser, isPending: isSubmitting } = userApi.useLogin()
+  const { data: userInfo } = userApi.useGetSingleUser(loggedInUserId!)
 
   useEffect(() => {
-    const redirectReason = localStorage.getItem('login_redirect_reason');
+    const redirectReason = localStorage.getItem('login_redirect_reason')
     if (redirectReason === 'session_expired') {
-      console.log('got it')
       toast({
         title: 'Сессия истекла',
         description: 'Пожалуйста, войдите снова',
         variant: 'destructive',
-      });
-      localStorage.removeItem('login_redirect_reason');
+      })
+      localStorage.removeItem('login_redirect_reason')
     }
-    setHasCheckedAuth(true);
-  }, [toast]);
+    setHasCheckedAuth(true)
+  }, [toast])
+
+  // Обрабатываем получение данных пользователя после установки ID
+  useEffect(() => {
+    if (userInfo && loggedInUserId) {
+      cookiesApi.setUserCookie(userInfo)
+      router.push('/hackathons')
+    }
+  }, [userInfo, loggedInUserId, router])
 
   const handleLogin = async (data: LoginFormData) => {
     loginUser(
@@ -34,34 +44,38 @@ export const useLogin = () => {
         password: data.password,
       },
       {
-        onSuccess: (response) => {
-          setError(null);
-          cookiesApi.setAuthCookies(response.user, response.access_token, response.refresh_token);
-          router.push('/hackathons');
+        onSuccess: response => {
+          setError(null)
+          setLoggedInUserId(response.user.id)
+          cookiesApi.setAccessToken(response.access_token)
+          cookiesApi.setRefreshToken(response.refresh_token)
         },
         onError: (error: Error) => {
-          const axiosError = error as AxiosError;
+          const axiosError = error as AxiosError
           if (axiosError.response) {
-            const data = axiosError.response.data as { detail?: string };
-            
-            if (data.detail?.toLowerCase().includes('логин') && data.detail?.toLowerCase().includes('пароль')) {
-              setError('Неверный логин или пароль');
+            const data = axiosError.response.data as { detail?: string }
+
+            if (
+              data.detail?.toLowerCase().includes('логин') &&
+              data.detail?.toLowerCase().includes('пароль')
+            ) {
+              setError('Неверный логин или пароль')
             } else {
-              setError('Ошибка сервера при авторизации');
+              setError('Ошибка сервера при авторизации')
             }
           } else {
-            setError('Ошибка сервера при авторизации!');
+            setError('Ошибка сервера при авторизации!')
           }
-          console.error('Login failed:', error);
+          console.error('Login failed:', error)
         },
-      }
-    );
-  };
+      },
+    )
+  }
 
   return {
     hasCheckedAuth,
     handleLogin,
     error,
-    isSubmitting
+    isSubmitting,
   }
 }

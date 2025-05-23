@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { userApi } from '@/features/user'
 import { Username } from '@/providers/UsernameContext'
 import { useAvatar } from '@/features/user/context/AvatarContext'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import styles from './UserAvatar.module.css'
 
 interface UserAvatarProps {
@@ -13,43 +13,37 @@ interface UserAvatarProps {
 }
 
 export default function UserAvatar({ username }: UserAvatarProps) {
-  const [avatarExists, setAvatarExists] = useState<boolean | null>(null)
-  const { avatarSrc } = useAvatar()
+  const { avatarSrc, isAvatarDeleted } = useAvatar()
+  const user = cookiesApi.getUser()
 
-  useEffect(() => {
-    const checkAvatar = async () => {
-      if (!avatarSrc) {
-        setAvatarExists(false)
-        return
-      }
-
-      try {
-        const exists = await userApi.isAvatarExists(avatarSrc)
-        console.log('Avatar src:', avatarSrc)
-        setAvatarExists(exists)
-      } catch (error) {
-        console.error('Failed to check avatar:', error)
-        setAvatarExists(false)
-      }
+  const avatarLink = useMemo(() => {
+    if (isAvatarDeleted) {
+      return null
     }
-    checkAvatar()
-  }, [avatarSrc])
+    if (avatarSrc) {
+      return avatarSrc
+    }
+    if (user && 'uploads' in user) {
+      return user?.uploads?.[0]?.url || null
+    }
+  }, [isAvatarDeleted, avatarSrc, user])
 
   return (
     <div className={styles.avatarWrapper}>
-      {avatarExists ? (
+      {avatarLink ? (
         <Link href='/profile'>
           <Image
-            src={avatarSrc || ''}
+            src={avatarLink || ''}
             alt='avatar'
             width={40}
             height={40}
             className={styles.avatar}
+            priority
           />
         </Link>
       ) : (
         <Link href='/profile' className={styles.avatarPlaceholder}>
-          {username?.first_name.charAt(0).toUpperCase()}
+          {username?.first_name?.charAt(0).toUpperCase() || 'U'}
         </Link>
       )}
     </div>
