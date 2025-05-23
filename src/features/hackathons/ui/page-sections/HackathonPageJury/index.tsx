@@ -36,7 +36,7 @@ export const HackathonPageJury: FC<HackathonPageJuryProps> = ({
         <h4>Состав членов жюри</h4>
         <div className={styles.hackathonJuryContent}>
           <div className={styles.hackathonJuryList}>
-            {juryInfo?.length > 0 ? (
+            {juryInfo && juryInfo?.length > 0 ? (
               juryInfo.map(judge => (
                 <Link href={`/user/${judge.id}`}>
                   <HackathonPageOptionCard key={judge.id} item={judge} />

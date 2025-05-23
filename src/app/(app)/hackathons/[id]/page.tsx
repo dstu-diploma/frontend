@@ -27,8 +27,8 @@ const HackathonPage = () => {
   const [sidebarTop, setSidebarTop] = useState(84)
 
   const {
-    isUserTeamApplied,
     hasTeam,
+    isUserTeamApplied,
     hackathonInfo,
     isHackathonLoading,
     handleApplicationSubmit,

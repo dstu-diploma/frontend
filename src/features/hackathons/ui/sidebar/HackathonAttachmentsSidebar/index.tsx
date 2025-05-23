@@ -6,7 +6,6 @@ import styles from './HackathonAttachmentsSidebar.module.scss'
 import { useParams } from 'next/navigation'
 import { useHackathonAttachments } from '@/features/hackathons/hooks/useHackathonAttachments'
 import AttachmentRow from './AttachmentRow'
-import Link from 'next/link'
 
 const HackathonAttachmentsSidebar = () => {
   const { id } = useParams()
@@ -41,7 +40,7 @@ const HackathonAttachmentsSidebar = () => {
       }
     >
       <div className={styles.hackathonAttachments}>
-        {attachments.length > 0 ? (
+        {attachments && attachments.length > 0 ? (
           attachments.map(attachment => (
             <AttachmentRow
               key={attachment.id}

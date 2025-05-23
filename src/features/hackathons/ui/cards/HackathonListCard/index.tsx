@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styles from './HackathonListCard.module.scss'
 import { ISOStringToDateString } from '@/shared/lib/helpers/date'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { Button } from '@/shared/ui/shadcn/button/'
 import { ConfirmModal } from '@/shared/ui/custom/ConfirmModal/'
-import { adminApi } from '@/features/admin/api'
-import { useToast } from '@/shared/hooks/use-toast'
-import { AxiosError } from 'axios'
 import clsx from 'clsx'
 import { hackathonApi } from '@/features/hackathons/api'
-import { useHackathons } from '@/features/hackathons/hooks/useHackathons'
-import { Hackathon, HackathonTeam } from '@/features/hackathons/model/types'
+import { Hackathon } from '@/features/hackathons/model/types'
+import { useCustomToast } from '@/shared/lib/helpers/toast'
 
 interface HackathonListCardProps {
   hackathon: Hackathon
@@ -21,43 +18,20 @@ export const HackathonListCard = ({
   hackathon,
   className,
 }: HackathonListCardProps) => {
+  const { showToastSuccess, showToastError } = useCustomToast()
   const user = cookiesApi.getUser()
-  const { toast, dismiss } = useToast()
-  const { mutate: getHackathonTeams } = hackathonApi.getHackathonTeams()
-  const { mutate: deleteHackathon } = adminApi.deleteHackathon()
-  const [hackathonTeams, setHackathonTeams] = useState<HackathonTeam[]>([])
-  const { getAllHackathons } = useHackathons()
-
-  useEffect(() => {
-    getHackathonTeams(hackathon.id, {
-      onSuccess: data => {
-        setHackathonTeams(data)
-      },
-    })
-  }, [])
+  const { data: hackathonTeams } = hackathonApi.useGetHackathonTeams(
+    hackathon.id,
+  )
+  const { mutate: deleteHackathon } = hackathonApi.useDeleteHackathon()
 
   const handleDeleteHackathon = () => {
     deleteHackathon(hackathon.id, {
       onSuccess: async () => {
-        dismiss()
-        toast({
-          variant: 'defaultBlueSuccess',
-          description: `Хакатон «${hackathon.name}» успешно удален`,
-        })
-        await getAllHackathons()
+        showToastSuccess(`Хакатон «${hackathon.name}» успешно удален`)
       },
       onError: error => {
-        dismiss()
-        const axiosError = error as AxiosError
-        if (axiosError.response) {
-          const errorData = axiosError.response.data as { detail: string }
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка при удалении хакатона',
-            description: errorData.detail,
-          })
-          console.error('Ошибка при удалении хакатона:', errorData.detail)
-        }
+        showToastError(error, 'Ошибка при удалении хакатона')
       },
     })
   }
@@ -71,7 +45,7 @@ export const HackathonListCard = ({
             Дата начала: {ISOStringToDateString(hackathon.start_date)}
           </span>
           <span className={styles.param}>
-            Участвует команд: {hackathonTeams.length}
+            Участвует команд: {hackathonTeams && hackathonTeams?.length}
           </span>
         </div>
         {user.role !== 'user' && (
