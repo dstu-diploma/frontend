@@ -1,0 +1,13 @@
+.toolbarContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  .toolbarControls {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+  }
+}
