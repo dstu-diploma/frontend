@@ -9,16 +9,17 @@ export interface TeamInfo {
 export interface TeamMateRef {
   team_id: number
   user_id: number
+  user_name: string
   is_captain: boolean
   role_desc: string
 }
 
 // Объект участника команды
 export interface TeamMate {
-  id: number,
-  first_name: string,
-  last_name: string,
-  patronymic: string,
+  id: number
+  first_name: string
+  last_name: string
+  patronymic: string
   register_date: string
   is_captain: boolean
 }
@@ -27,11 +28,8 @@ export interface TeamMate {
 export interface TeamInvite {
   team_id: number
   user_id: number
-}
-
-// Объект роли в команде
-export interface TeamRole {
-  role_desc: string
+  team_name: string
+  user_name: string
 }
 
 // Объект запроса и ответа для смены капитана
@@ -57,10 +55,9 @@ export interface TeamCreateResponseBody {
 
 // Объекта запроса и ответа для смены имени команды
 export interface TeamRenameRequestBody {
-    name: string
+  name: string
 }
 export interface TeamRenameResponseBody {
-    id: number
-    name: string
+  id: number
+  name: string
 }
-
