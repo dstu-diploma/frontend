@@ -6,6 +6,7 @@ import {
   AuthResponseBody,
   LoginRequestBody,
   UserPartial,
+  FullUser,
 } from '../model/types'
 
 console.log(USER_SERVICE_API_URL)
@@ -45,7 +46,7 @@ export const userBaseApi = {
     })
   },
   useGetSingleUser: (user_id: number) => {
-    return useQuery<UserPartial>({
+    return useQuery<FullUser>({
       queryKey: ['singleUser', user_id],
       queryFn: async () => {
         const response = await axiosInstance.get(
