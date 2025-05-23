@@ -11,6 +11,9 @@ import {
 import { User } from '../../../model/types'
 import { useProfileAvatar } from '../../../hooks/profile/useProfileAvatar'
 import styles from './ProfileAvatar.module.scss'
+import { useMemo } from 'react'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
+import { useAvatar } from '@/features/user/context/AvatarContext'
 
 interface ProfileAvatarProps {
   profile: User
@@ -26,6 +29,39 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
     handleAvatarChange,
     handleDeleteAvatar,
   } = useProfileAvatar()
+  const { isAvatarDeleted } = useAvatar()
+  const user = cookiesApi.getUser()
+
+  const avatarLink = useMemo(() => {
+    if (isAvatarDeleted) {
+      return null
+    }
+    if (avatarSrc) {
+      return avatarSrc
+    }
+    if (user && 'uploads' in user) {
+      return user?.uploads?.[0]?.url
+    }
+    return null
+  }, [avatarSrc, isAvatarDeleted, user])
+
+  const profileData = useMemo(() => {
+    if (!profile) {
+      return {
+        register_date: '',
+        role: '',
+        birthday: '',
+        about: '',
+        first_name: '',
+        last_name: '',
+        patronymic: '',
+        email: '',
+      }
+    }
+    return {
+      ...profile,
+    }
+  }, [profile])
 
   return (
     <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
@@ -38,12 +74,12 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
           }}
         >
           <Avatar
-            key={avatarSrc || 'fallback'}
+            key={avatarLink || 'fallback'}
             className={styles.profileAvatarBlock}
           >
-            {avatarSrc ? (
+            {avatarLink ? (
               <AvatarImage
-                src={avatarSrc}
+                src={avatarLink}
                 alt='User avatar'
                 width={150}
                 height={150}
@@ -54,7 +90,7 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
               />
             ) : (
               <AvatarFallback className={styles.profileAvatarFallback}>
-                <span>{profile.first_name?.[0]?.toUpperCase() || '?'}</span>
+                <span>{profileData.first_name?.[0]?.toUpperCase() || '?'}</span>
               </AvatarFallback>
             )}
           </Avatar>
@@ -79,7 +115,7 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
             style={{ display: 'none' }}
           />
         </DropdownMenuItem>
-        {avatarSrc && (
+        {avatarLink && (
           <DropdownMenuItem
             onSelect={e => {
               e.preventDefault()
