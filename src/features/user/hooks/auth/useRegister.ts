@@ -7,7 +7,7 @@ import { useToast } from '@/shared/hooks/use-toast'
 
 export const useRegister = () => {
   const router = useRouter()
-  const { mutate: registerUser } = userApi.register()
+  const { mutate: registerUser } = userApi.useRegister()
   const [error, setError] = useState<string | null>(null)
   const { toast, dismiss } = useToast()
 

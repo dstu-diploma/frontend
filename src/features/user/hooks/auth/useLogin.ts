@@ -11,7 +11,7 @@ export const useLogin = () => {
   const { toast } = useToast();
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { mutate: loginUser, isPending: isSubmitting } = userApi.login();
+  const { mutate: loginUser, isPending: isSubmitting } = userApi.useLogin();
 
   useEffect(() => {
     const redirectReason = localStorage.getItem('login_redirect_reason');

@@ -65,3 +65,12 @@ export interface TokensObject {
   accessToken: string
   refreshToken: string
 }
+
+export interface AvatarObject {
+  user_id: number
+  type: string
+  s3_key: string
+  content_type: string
+  uploaded_at: string
+  url: string
+}

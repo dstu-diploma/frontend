@@ -1,7 +1,7 @@
 import axiosInstance, { API_URL } from '@/shared/api/axios'
 import { useMutation } from '@tanstack/react-query'
 import { ProfileFormData } from '../model/schemas'
-import { RefreshResponseBody } from '../model/types'
+import { AvatarObject } from '../model/types'
 import { USER_SERVICE_API_URL } from '@/shared/api/basePaths'
 
 export const profileApi = {
@@ -20,7 +20,7 @@ export const profileApi = {
   },
   setOrUpdateAvatar: () => {
     return useMutation({
-      mutationFn: async (file: File): Promise<RefreshResponseBody> => {
+      mutationFn: async (file: File): Promise<AvatarObject> => {
         const formData = new FormData()
         formData.append('file', file)
         const response = await axiosInstance.put(

@@ -1,6 +1,6 @@
 import axiosInstance from '@/shared/api/axios'
 import { USER_SERVICE_API_URL } from '@/shared/api/basePaths'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   RegisterRequestBody,
   AuthResponseBody,
@@ -11,7 +11,7 @@ import {
 console.log(USER_SERVICE_API_URL)
 
 export const userBaseApi = {
-  register: () => {
+  useRegister: () => {
     return useMutation({
       mutationFn: async (
         data: RegisterRequestBody,
@@ -24,7 +24,7 @@ export const userBaseApi = {
       },
     })
   },
-  login: () => {
+  useLogin: () => {
     return useMutation({
       mutationFn: async (data: LoginRequestBody): Promise<AuthResponseBody> => {
         const formData = new URLSearchParams()
@@ -44,9 +44,10 @@ export const userBaseApi = {
       },
     })
   },
-  getSingleUser: () => {
-    return useMutation({
-      mutationFn: async (user_id: number) => {
+  useGetSingleUser: (user_id: number) => {
+    return useQuery<UserPartial>({
+      queryKey: ['singleUser', user_id],
+      queryFn: async () => {
         const response = await axiosInstance.get(
           `${USER_SERVICE_API_URL}/info/${user_id}`,
         )
@@ -54,18 +55,20 @@ export const userBaseApi = {
       },
     })
   },
-  getUsers: () => {
-    return useMutation({
-      mutationFn: async (ids: number[]): Promise<UserPartial[]> => {
+  useGetUsers: (userIds: number[]) => {
+    return useQuery<UserPartial[]>({
+      queryKey: ['users', userIds],
+      queryFn: async (): Promise<UserPartial[]> => {
         const response = await axiosInstance.post(
           `${USER_SERVICE_API_URL}/info-many`,
-          ids,
+          { ids: userIds },
         )
         return response.data
       },
+      enabled: !!userIds.length,
     })
   },
-  searchByEmail: () => {
+  useSearchByEmail: () => {
     return useMutation({
       mutationFn: async (email: string) => {
         const response = await axiosInstance.get(
