@@ -1,40 +1,42 @@
-import React from 'react';
-import { Button } from '@/shared/ui/shadcn/button';
+import React from 'react'
+import { Button } from '@/shared/ui/shadcn/button'
 import styles from './TeamInviteCard.module.scss'
-import { TeamInfo } from '../../../model/types';
+import { TeamInvite } from '@/features/team/model/types'
 
 interface TeamInviteCardProps {
-  team: TeamInfo
-  onAccept: (team_id: number) => void;
-  onReject: (team_id: number) => void;
-};
+  invite: TeamInvite
+  onAccept: (team_id: number) => void
+  onReject: (team_id: number) => void
+}
 
 export const TeamInviteCard: React.FC<TeamInviteCardProps> = ({
-  team,
+  invite,
   onAccept,
   onReject,
 }) => {
   return (
     <div className={styles.card}>
       <div className={styles.userData}>
-        <span className={styles.username}>Приглашение в команду {team.name}</span>
+        <span className={styles.username}>
+          Приглашение в команду {invite.team_name}
+        </span>
       </div>
       <div className={styles.inviteControls}>
         <Button
           value='submit'
           size='sm'
-          onClick={() => onAccept(team.id)}
+          onClick={() => onAccept(invite.team_id)}
         >
           Принять
         </Button>
         <Button
           variant='destructive'
           size='sm'
-          onClick={() => onReject(team.id)}
+          onClick={() => onReject(invite.team_id)}
         >
           Отклонить
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}

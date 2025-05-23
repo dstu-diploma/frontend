@@ -1,49 +1,42 @@
-import { UserPartial } from '@/features/user/model/types'
 import TeamMemberCardAvatar from './TeamMemberCardAvatar'
 import { Button } from '@/shared/ui/shadcn/button'
-import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { ConfirmModal } from '../../../../../shared/ui/custom/ConfirmModal'
-import { useTeam } from '@/features/team/hooks/useTeam'
 import styles from './TeamMemberCard.module.scss'
-import { useEffect, useState } from 'react'
+import { TeamMateRef } from '@/features/team/model/types'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
 
 interface TeamMemberCardProps {
-  member: UserPartial
   isCaptain: boolean
+  member: TeamMateRef
+  onChangeRights: (e: React.FormEvent, member: TeamMateRef) => void
+  onKick: (e: React.FormEvent, member: TeamMateRef) => void
 }
 
-export const TeamMemberCard = ({ member, isCaptain }: TeamMemberCardProps) => {
+export const TeamMemberCard = ({
+  isCaptain,
+  member,
+  onChangeRights,
+  onKick,
+}: TeamMemberCardProps) => {
   const user = cookiesApi.getUser()
-  const { handleTeamKick, handleChangeCaptain, updateKey, teamMates } =
-    useTeam()
-  const [localMember, setLocalMember] = useState(member)
-
-  useEffect(() => {
-    if (teamMates) {
-      const updatedMember = teamMates.find(m => m.id === member.id)
-      if (updatedMember) {
-        setLocalMember(updatedMember)
-      }
-    }
-  }, [teamMates, member.id])
-
+  if (!user) {
+    return
+  }
   return (
-    <div className={styles.card} key={`${localMember.id}-${updateKey}`}>
+    <div className={styles.card}>
       <div className={styles.mateInfo}>
-        <TeamMemberCardAvatar member={localMember} />
+        <TeamMemberCardAvatar member={member} />
         <div className={styles.info}>
-          <h4 className={styles.name}>
-            {localMember.first_name} {localMember.last_name}
-          </h4>
+          <h4 className={styles.name}>{member.user_name}</h4>
           <p className={styles.role}>
-            {localMember.is_captain && 'Капитан, '}
-            {localMember?.role_desc
-              ? localMember?.role_desc
+            {member.is_captain && 'Капитан, '}
+            {member?.role_desc
+              ? member?.role_desc
               : 'Роль в команде не указана'}
           </p>
         </div>
       </div>
-      {localMember.id !== user.id && isCaptain && (
+      {member.user_id !== user.id && isCaptain && (
         <div
           className={styles.captainControls}
           onClick={e => {
@@ -51,32 +44,28 @@ export const TeamMemberCard = ({ member, isCaptain }: TeamMemberCardProps) => {
             e.preventDefault()
           }}
         >
-          {!localMember.is_captain && (
+          {!member.is_captain && (
             <ConfirmModal
-              title={`Назначить пользователя ${localMember.first_name} ${localMember.last_name} капитаном?`}
+              title={`Назначить пользователя ${member.user_name} капитаном?`}
               submitButtonText='Назначить'
-              onConfirm={(e: React.FormEvent) =>
-                handleChangeCaptain(e, localMember)
-              }
+              onConfirm={(e: React.FormEvent) => onChangeRights(e, member)}
             >
               <Button>Установить капитаном</Button>
             </ConfirmModal>
           )}
-          {localMember.is_captain && (
+          {member.is_captain && (
             <ConfirmModal
-              title={`Снять права капитана с пользователя ${localMember.first_name} ${localMember.last_name}?`}
+              title={`Снять права капитана с пользователя ${member.user_name}?`}
               submitButtonText='Cнять права'
-              onConfirm={(e: React.FormEvent) =>
-                handleChangeCaptain(e, localMember)
-              }
+              onConfirm={(e: React.FormEvent) => onChangeRights(e, member)}
             >
               <Button>Снять права капитана</Button>
             </ConfirmModal>
           )}
           <ConfirmModal
-            title={`Вы действительно хотите исключить пользователя ${localMember.first_name} ${localMember.last_name}?`}
+            title={`Вы действительно хотите исключить пользователя ${member.user_name}?`}
             submitButtonText='Исключить'
-            onConfirm={event => handleTeamKick(event, localMember)}
+            onConfirm={event => onKick(event, member)}
           >
             <Button variant='destructive' className={styles.kickButton}>
               Исключить

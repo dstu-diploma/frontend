@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
 import Image from 'next/image'
-import { UserPartial } from '@/features/user/model/types'
 import { userApi } from '@/features/user'
 import styles from './TeamMemberCardAvatar.module.scss'
+import { TeamMateRef } from '@/features/team/model/types'
 
 interface TeamMemberCardAvatarProps {
-  member: UserPartial
+  member: TeamMateRef
 }
 
 export const TeamMemberCardAvatar = ({ member }: TeamMemberCardAvatarProps) => {
@@ -15,12 +15,12 @@ export const TeamMemberCardAvatar = ({ member }: TeamMemberCardAvatarProps) => {
 
   const avatarUrl = useMemo(() => {
     if (!isPathValid) return ''
-    return userApi.getAvatar(member.id)
-  }, [isPathValid, member.id])
+    return userApi.getAvatar(member.user_id)
+  }, [isPathValid, member.user_id])
 
   useEffect(() => {
     const checkAvatarPath = async () => {
-      const avatarPath = userApi.getAvatar(member.id)
+      const avatarPath = userApi.getAvatar(member.user_id)
 
       if (isFirstRender.current) {
         const pathIsValid = await userApi.isAvatarExists(avatarPath)
@@ -38,7 +38,7 @@ export const TeamMemberCardAvatar = ({ member }: TeamMemberCardAvatarProps) => {
   const handleImageError = () => {
     if (isPathValid) {
       const timestamp = Date.now()
-      const avatarPath = userApi.getAvatar(member.id)
+      const avatarPath = userApi.getAvatar(member.user_id)
       const urlWithTimestamp = `${avatarPath}?t=${timestamp}`
       const img = new window.Image()
       img.src = urlWithTimestamp
@@ -55,7 +55,7 @@ export const TeamMemberCardAvatar = ({ member }: TeamMemberCardAvatarProps) => {
       {showImage ? (
         <Image
           src={avatarUrl}
-          alt={`${member.first_name} ${member.last_name}`}
+          alt={`${member.user_name}`}
           className={styles.avatarImage}
           width={200}
           height={200}
@@ -65,8 +65,8 @@ export const TeamMemberCardAvatar = ({ member }: TeamMemberCardAvatarProps) => {
         />
       ) : (
         <div className={styles.avatarPlaceholder}>
-          {member.first_name.charAt(0)}
-          {member.last_name.charAt(0)}
+          {member.user_name.split(' ')[0].charAt(0)}
+          {member.user_name.split(' ')[1].charAt(0)}
         </div>
       )}
     </div>
