@@ -23,9 +23,13 @@ export default function UserAvatar({ username }: UserAvatarProps) {
     if (avatarSrc) {
       return avatarSrc
     }
-    if (user && 'uploads' in user) {
-      return user?.uploads?.[0]?.url || null
+    if (user?.uploads) {
+      const avatarUpload = user.uploads.find(
+        (upload: { type?: string }) => upload.type === 'avatar',
+      )
+      return avatarUpload?.url || null
     }
+    return null
   }, [isAvatarDeleted, avatarSrc, user])
 
   return (

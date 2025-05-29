@@ -9,14 +9,30 @@ export const useProfileAvatar = () => {
   const user = cookiesApi.getUser()
 
   const [menuOpen, setMenuOpen] = useState(false)
-  const [isAvatarDeleted, setAvatarDeleted] = useState<boolean>(false)
-  const { avatarSrc, setAvatarSrc } = useAvatar()
+  const { avatarSrc, setAvatarSrc, isAvatarDeleted, setAvatarDeleted } =
+    useAvatar()
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const objectUrlRef = useRef<string | null>(null)
 
   const { mutate: setOrUpdateAvatar } = userApi.useSetOrUpdateAvatar()
   const { mutate: deleteAvatar } = userApi.useDeleteAvatar()
+
+  // Инициализация состояния аватара
+  useEffect(() => {
+    if (user?.uploads) {
+      const avatarUpload = user.uploads.find(
+        (upload: { type?: string }) => upload.type === 'avatar',
+      )
+      if (avatarUpload?.url) {
+        setAvatarSrc(avatarUpload.url)
+        setAvatarDeleted(false)
+      } else {
+        setAvatarSrc(null)
+        setAvatarDeleted(true)
+      }
+    }
+  }, [user?.uploads, setAvatarSrc, setAvatarDeleted])
 
   useEffect(() => {
     return () => {
@@ -41,7 +57,16 @@ export const useProfileAvatar = () => {
         setAvatarDeleted(false)
         setAvatarSrc(data.url)
         if (user) {
-          user.uploads = [data]
+          const currentUploads = user.uploads || []
+          const avatarUpload = currentUploads.find(
+            (upload: { type?: string }) => upload.type === 'avatar',
+          )
+          if (avatarUpload) {
+            avatarUpload.url = data.url
+          } else {
+            currentUploads.push({ ...data, type: 'avatar' })
+          }
+          user.uploads = currentUploads
           cookiesApi.setUserCookie(user)
         }
         setMenuOpen(false)
@@ -66,18 +91,36 @@ export const useProfileAvatar = () => {
       fileInputRef.current.value = ''
     }
 
+    // Сначала обновим локальное состояние
+    if (user) {
+      const currentUploads = user.uploads || []
+      const coverUploads = currentUploads.filter(
+        (upload: { type?: string }) => upload.type === 'cover',
+      )
+      user.uploads = coverUploads
+      cookiesApi.setUserCookie(user)
+    }
+    setAvatarDeleted(true)
+    setAvatarSrc(null)
+
+    // Затем отправим запрос на удаление
     deleteAvatar(undefined, {
       onSuccess: () => {
         setMenuOpen(false)
-        if (user) {
-          user.uploads = null
-          cookiesApi.setUserCookie(user)
-        }
-        setAvatarDeleted(true)
         notificationService.success(`Аватар успешно удалён!`)
-        setAvatarSrc(null)
       },
       onError: error => {
+        // В случае ошибки восстанавливаем предыдущее состояние
+        if (user) {
+          const currentUploads = user.uploads || []
+          const avatarUpload = currentUploads.find(
+            (upload: { type?: string }) => upload.type === 'avatar',
+          )
+          if (avatarUpload) {
+            setAvatarSrc(avatarUpload.url)
+            setAvatarDeleted(false)
+          }
+        }
         notificationService.error(error, `Ошибка при удалении аватара`)
       },
     })

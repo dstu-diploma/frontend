@@ -22,6 +22,7 @@ export default function ProfilePage() {
     handleCoverClick,
     handleCoverDelete,
     coverUrl,
+    isLoading,
   } = useProfileCover()
 
   const {
@@ -89,8 +90,12 @@ export default function ProfilePage() {
             </div>
           </div>
           {coverUrl && (
-            <Button variant='destructive' onClick={handleCoverDelete}>
-              Удалить обложку
+            <Button
+              variant='destructive'
+              onClick={handleCoverDelete}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Загрузка...' : 'Удалить обложку'}
             </Button>
           )}
         </div>

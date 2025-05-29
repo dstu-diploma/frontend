@@ -8,6 +8,23 @@ const COOKIE_OPTIONS = {
   sameSite: 'strict' as const,
 }
 
+const validateUploads = (user: FullUser) => {
+  if (!user.uploads) return user
+
+  const validTypes = ['avatar', 'cover']
+  const validatedUploads = user.uploads.filter(
+    upload => upload && upload.type && validTypes.includes(upload.type),
+  )
+
+  const avatar = validatedUploads.find(upload => upload.type === 'avatar')
+  const cover = validatedUploads.find(upload => upload.type === 'cover')
+
+  return {
+    ...user,
+    uploads: [avatar, cover].filter(Boolean),
+  }
+}
+
 export const cookiesApi = {
   setAccessToken: (accessToken: string) => {
     Cookies.set('access_token', accessToken, COOKIE_OPTIONS)
@@ -16,7 +33,8 @@ export const cookiesApi = {
     Cookies.set('refresh_token', refreshToken, COOKIE_OPTIONS)
   },
   setUserCookie: (user: FullUser) => {
-    Cookies.set('user', JSON.stringify(user), COOKIE_OPTIONS)
+    const validatedUser = validateUploads(user)
+    Cookies.set('user', JSON.stringify(validatedUser), COOKIE_OPTIONS)
   },
   setTokensCookie: (tokens: TokensObject) => {
     Cookies.set('access_token', tokens.accessToken)
@@ -27,7 +45,8 @@ export const cookiesApi = {
     accessToken: string,
     refreshToken: string,
   ) => {
-    Cookies.set('user', JSON.stringify(user), COOKIE_OPTIONS)
+    const validatedUser = validateUploads(user)
+    Cookies.set('user', JSON.stringify(validatedUser), COOKIE_OPTIONS)
     Cookies.set('access_token', accessToken, COOKIE_OPTIONS)
     Cookies.set('refresh_token', refreshToken, COOKIE_OPTIONS)
   },
