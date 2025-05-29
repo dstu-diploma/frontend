@@ -1,35 +1,37 @@
 import axiosInstance from '@/shared/api/axios'
 import { TEAM_SERVICE_ADMIN_API_URL } from '@/shared/api/basePaths'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const adminHackathonTeamsApi = {
-  getAllHackathonTeams: () => {
-    return useMutation({
-      mutationFn: async (hackathon_id: number) => {
+  useGetAllHackathonTeams: (hackathonId: number) => {
+    return useQuery({
+      queryKey: ['allHackathonTeams'],
+      queryFn: async () => {
         const response = await axiosInstance.get(
-          `${TEAM_SERVICE_ADMIN_API_URL}/hackathon/${hackathon_id}`,
+          `${TEAM_SERVICE_ADMIN_API_URL}/hackathon/${hackathonId}`,
         )
         return response.data
       },
     })
   },
-  getHackathonTeamFullInfo: () => {
-    return useMutation({
-      mutationFn: async ({
-        hackathon_id,
-        team_id,
-      }: {
-        hackathon_id: number
-        team_id: number
-      }) => {
+  useGetHackathonTeamFullInfo: ({
+    hackathonId,
+    teamId,
+  }: {
+    hackathonId: number
+    teamId: number
+  }) => {
+    return useQuery({
+      queryKey: ['hackathonTeamInfo', hackathonId, teamId],
+      queryFn: async () => {
         const response = await axiosInstance.get(
-          `${TEAM_SERVICE_ADMIN_API_URL}/hackathon/${hackathon_id}/team/${team_id}`,
+          `${TEAM_SERVICE_ADMIN_API_URL}/hackathon/${hackathonId}/team/${teamId}`,
         )
         return response.data
       },
     })
   },
-  deleteHackathonTeam: () => {
+  useDeleteHackathonTeam: () => {
     return useMutation({
       mutationFn: async ({
         hackathon_id,
@@ -45,7 +47,7 @@ export const adminHackathonTeamsApi = {
       },
     })
   },
-  setHackathonTeamRole: () => {
+  useSetHackathonTeamRole: () => {
     return useMutation({
       mutationFn: async ({
         hackathon_id,
@@ -61,7 +63,7 @@ export const adminHackathonTeamsApi = {
       },
     })
   },
-  setHackathonTeamCaptainRights: () => {
+  useSetHackathonTeamCaptainRights: () => {
     return useMutation({
       mutationFn: async ({
         hackathon_id,
@@ -77,7 +79,7 @@ export const adminHackathonTeamsApi = {
       },
     })
   },
-  deleteHackathonTeamMate: () => {
+  useDeleteHackathonTeamMate: () => {
     return useMutation({
       mutationFn: async ({
         hackathon_id,
@@ -93,7 +95,7 @@ export const adminHackathonTeamsApi = {
       },
     })
   },
-  addHackathonTeamMate: () => {
+  useAddHackathonTeamMate: () => {
     return useMutation({
       mutationFn: async ({
         hackathon_id,
