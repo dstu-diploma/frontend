@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 import { QueryProvider } from '@/providers/QueryProvider'
 import { Roboto } from 'next/font/google'
 import { Toaster } from '@/shared/ui/shadcn/toast/toaster'
-import LayoutFallback from '@/shared/ui/custom/LayoutFallback/LayoutFallback'
+import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
 import styles from './layout.module.scss'
 import '@/shared/styles/globals.scss'
 

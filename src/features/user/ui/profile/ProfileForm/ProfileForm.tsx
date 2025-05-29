@@ -4,20 +4,16 @@ import { Button } from '@/shared/ui/shadcn/button/'
 import { Input } from '@/shared/ui/shadcn/input/'
 import { Label } from '@/shared/ui/shadcn/label/'
 import { Textarea } from '@/shared/ui/shadcn/textarea/'
-import { ProfileFormData } from '@/features/user/'
 import { formatDate, ISOStringToDateString } from '@/shared/lib/helpers/date'
 import { ProfileAvatar } from '../ProfileAvatar/ProfileAvatar'
-import LoadingSpinner from '@/shared/ui/custom/LoadingSpinner/LoadingSpinner'
+import LoadingSpinner from '@/shared/ui/custom/fallback/LoadingSpinner/LoadingSpinner'
 import { useProfileForm } from '../../../hooks/profile/useProfileForm'
 import { mapRole } from '@/shared/lib/helpers/roleMapping'
 import styles from './ProfileForm.module.scss'
 import { useMemo } from 'react'
+import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
 
-interface ProfileFormProps {
-  onSubmit: (data: ProfileFormData) => void
-}
-
-export const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
+export const ProfileForm = () => {
   const {
     isLocalLoading,
     submitHandler,
@@ -25,7 +21,7 @@ export const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
     errors,
     isSubmitting,
     profile,
-  } = useProfileForm({ onSubmit })
+  } = useProfileForm()
 
   const profileData = useMemo(() => {
     if (!profile) {
@@ -44,6 +40,10 @@ export const ProfileForm = ({ onSubmit }: ProfileFormProps) => {
       ...profile,
     }
   }, [profile])
+
+  if (!profile) {
+    return <LayoutFallback text='Загрузка профиля...' />
+  }
 
   return (
     <div className={styles.profileFormContainer}>

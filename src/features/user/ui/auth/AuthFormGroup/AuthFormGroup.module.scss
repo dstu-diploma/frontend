@@ -1,0 +1,54 @@
+.formGroup {
+  position: relative;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  background-color: #f8fafc;
+  color: #1a202c;
+}
+
+.formGroup input:hover {
+  border-color: #cbd5e0;
+  background-color: #fff;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+  background-color: #fff;
+}
+
+.errorInput {
+  border-color: #fc8181 !important;
+  background-color: #fff5f5 !important;
+}
+
+.errorInput:focus {
+  box-shadow: 0 0 0 3px rgba(252, 129, 129, 0.1) !important;
+}
+
+.errorText {
+  color: #e53e3e;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  display: block;
+  padding-left: 0.5rem;
+  position: absolute;
+  animation: slideIn 0.2s ease-out;
+}

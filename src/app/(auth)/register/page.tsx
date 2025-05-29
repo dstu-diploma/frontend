@@ -1,17 +1,9 @@
-'use client';
+import { RegisterForm } from '@/features/user'
 
-import { RegisterForm } from '@/features/user';
-import { useRegister } from '@/features/user/hooks/auth/useRegister';
-
-export default function RegisterPage() {
-  const {
-    handleRegister,
-    error
-  } = useRegister()
-
+export default async function RegisterPage() {
   return (
-    <div className="container">
-      <RegisterForm onSubmit={handleRegister} error={error} />
+    <div className='container'>
+      <RegisterForm />
     </div>
-  );
-} 
+  )
+}

@@ -13,7 +13,7 @@ import { useProfileAvatar } from '../../../hooks/profile/useProfileAvatar'
 import styles from './ProfileAvatar.module.scss'
 import { useMemo } from 'react'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import { useAvatar } from '@/features/user/context/AvatarContext'
+import { useAvatar } from '@/providers/AvatarProvider'
 
 interface ProfileAvatarProps {
   profile: User
