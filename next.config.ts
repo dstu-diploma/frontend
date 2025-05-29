@@ -5,6 +5,18 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   images: {
     domains: ['localhost', 'pakosti.online'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'pakosti.online',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/**',
+      },
+    ],
   },
   serverRuntimeConfig: {
     suppressAxiosErrors: true,
