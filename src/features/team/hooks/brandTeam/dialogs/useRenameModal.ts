@@ -1,18 +1,16 @@
-import { teamApi } from '../../api'
+import { teamApi } from '../../../api'
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { TeamInfo } from '../../model/types'
-import { useCustomToast } from '@/shared/lib/helpers/toast'
+import { TeamInfo } from '../../../model/types'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
 export const useRenameModal = () => {
-  const { showToastSuccess, showToastError } = useCustomToast()
   const queryClient = useQueryClient()
   const teamInfo = queryClient.getQueryData(['myTeamInfo']) as
     | TeamInfo
     | undefined
-  const currentTeamName = teamInfo?.name
   const { mutate: renameTeam } = teamApi.useRenameTeam()
-  const [teamName, setTeamName] = useState(currentTeamName)
+  const [teamName, setTeamName] = useState(teamInfo?.name)
 
   const handleTeamNameChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -28,15 +26,16 @@ export const useRenameModal = () => {
     renameTeam(
       { name: teamName },
       {
-        onSuccess: async () => showToastSuccess('Название команды изменено'),
+        onSuccess: async () =>
+          notificationService.success('Название команды изменено'),
         onError: error =>
-          showToastError(error, 'Ошибка при переименовании команды'),
+          notificationService.error(error, 'Ошибка при переименовании команды'),
       },
     )
   }
 
   return {
-    teamName,
+    currentTeamName: teamName,
     setTeamName,
     handleTeamRename,
     handleTeamNameChange,

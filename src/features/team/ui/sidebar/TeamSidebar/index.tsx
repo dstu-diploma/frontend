@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { TeamInfo } from '../../../model/types'
 import styles from './TeamSidebar.module.scss'
 
@@ -6,7 +7,7 @@ interface TeamSidebarProps {
   teamName: string | undefined
 }
 
-export const TeamSidebar = ({ team, teamName }: TeamSidebarProps) => {
+export const TeamSidebar = memo(({ team, teamName }: TeamSidebarProps) => {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.sidebarBlock}>
@@ -34,4 +35,6 @@ export const TeamSidebar = ({ team, teamName }: TeamSidebarProps) => {
       </div>
     </aside>
   )
-}
+})
+
+TeamSidebar.displayName = 'TeamSidebar'

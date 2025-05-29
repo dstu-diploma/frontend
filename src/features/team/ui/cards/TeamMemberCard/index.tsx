@@ -1,6 +1,6 @@
 import TeamMemberCardAvatar from './TeamMemberCardAvatar'
 import { Button } from '@/shared/ui/shadcn/button'
-import { ConfirmModal } from '../../../../../shared/ui/custom/ConfirmModal'
+import { ConfirmModal } from '../../../../../shared/ui/custom/modals/ConfirmModal'
 import styles from './TeamMemberCard.module.scss'
 import { TeamMateRef } from '@/features/team/model/types'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'

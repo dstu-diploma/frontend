@@ -1,11 +1,10 @@
-import { teamApi } from '../../api'
+import { teamApi } from '../../../api'
 import { useState } from 'react'
 import { userApi } from '@/features/user'
 import { UserByEmail } from '@/features/user/model/types'
-import { useCustomToast } from '@/shared/lib/helpers/toast'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
 export const useInviteModal = () => {
-  const { showToastSuccess, showToastError } = useCustomToast()
   const [mateEmail, setMateEmail] = useState('')
   const { mutate: searchByEmail } = userApi.useSearchByEmail()
   const { mutate: sendInvite } = teamApi.useSendInvite()
@@ -23,11 +22,11 @@ export const useInviteModal = () => {
   ) => {
     sendInvite(user_id, {
       onSuccess: () =>
-        showToastSuccess(
+        notificationService.success(
           `Заявка отправлена пользователю ${first_name} ${last_name}`,
         ),
       onError: (error: Error) =>
-        showToastError(error, `Ошибка отправки приглашения`),
+        notificationService.error(error, `Ошибка отправки приглашения`),
     })
   }
 
@@ -38,7 +37,7 @@ export const useInviteModal = () => {
         sendInvintation(data.id, data.first_name, data.last_name)
       },
       onError: error => {
-        showToastError(error, `Ошибка при поиске участника`)
+        notificationService.error(error, `Ошибка при поиске участника`)
       },
     })
   }

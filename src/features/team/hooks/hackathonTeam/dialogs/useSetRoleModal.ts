@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import { teamApi } from '../../api'
+import { teamApi } from '../../../api'
 import { useQueryClient } from '@tanstack/react-query'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import { TeamMateRef } from '../../model/types'
-import { useCustomToast } from '@/shared/lib/helpers/toast'
+import { TeamMateRef } from '../../../model/types'
 
 export const useSetRoleModal = () => {
-  const { showToastSuccess, showToastError } = useCustomToast()
   const queryClient = useQueryClient()
   const user = cookiesApi.getUser()
   const teamMates = queryClient.getQueryData(['teamMates']) as
@@ -28,9 +26,10 @@ export const useSetRoleModal = () => {
     e.preventDefault()
     setTeamMateRole(role, {
       onSuccess: async () => {
-        showToastSuccess(`Ваша роль в команде успешно изменена`)
+        notificationService.success(`Ваша роль в команде успешно изменена`)
       },
-      onError: error => showToastError(error, `Ошибка при изменении роли`),
+      onError: error =>
+        notificationService.error(error, `Ошибка при изменении роли`),
     })
   }
 
