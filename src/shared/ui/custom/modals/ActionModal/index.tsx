@@ -62,7 +62,13 @@ export const ActionModal = (props: ActionModalProps) => {
         className={clsx(styles.dialogContent, props.contentClassName)}
         onOpenAutoFocus={preventAutoInputSelection}
       >
-        <form onSubmit={handleSubmit} className={styles.dialogForm}>
+        <form
+          onSubmit={e => {
+            handleSubmit(e)
+          }}
+          className={styles.dialogForm}
+          noValidate
+        >
           <DialogHeader>
             <DialogTitle></DialogTitle>
             <h4>{props.title}</h4>
@@ -76,6 +82,13 @@ export const ActionModal = (props: ActionModalProps) => {
             <Button
               variant={props.destructive ? 'destructive' : 'default'}
               type='submit'
+              onClick={() => {
+                const form = document.querySelector('form')
+                if (form) {
+                  form.requestSubmit()
+                  form.reset()
+                }
+              }}
             >
               {props.submitButtonText}
             </Button>
