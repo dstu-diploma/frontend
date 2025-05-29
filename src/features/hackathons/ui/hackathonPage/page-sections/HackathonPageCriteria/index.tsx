@@ -1,19 +1,19 @@
 import React from 'react'
 import clsx from 'clsx'
 import { ActionModal } from '@/features/team'
-import Toolbar from '@/shared/ui/custom/Toolbar/Toolbar'
+import Toolbar from '@/shared/ui/custom/misc/Toolbar/Toolbar'
 import { Button } from '@/shared/ui/shadcn/button'
 import HackathonCriteriaFormContent from '../../modal-form-contents/HackathonCriteriaFormContent'
 import { UseFormReturn } from 'react-hook-form'
 import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
 import { CriterionFormData } from '@/features/hackathons/model/schemas'
 import { Criterion } from '@/features/hackathons/model/types'
-import { HackathonPageOptionCard } from '../../cards/HackathonPageOptionCard'
 import styles from './HackathonPageCriteria.module.scss'
+import { HackathonPageOptionCard } from '../../../cards/HackathonPageOptionCard'
 
 interface HackathonPageCriteriaProps {
-  criteria: Criterion[] | null
-  criterionForm: UseFormReturn<{ name: string; weight: number }>
+  criteria: Criterion[] | undefined
+  criterionForm: UseFormReturn<CriterionFormData>
   handleCriterionCreation: (data: CriterionFormData) => void
   handleCriterionUpdate: (data: CriterionFormData) => void
   handleCriterionDeletion: (data: CriterionFormData) => void
@@ -36,7 +36,7 @@ const HackathonPageCriteria = ({
       >
         <h4>Критерии оценивания</h4>
         <div className={styles.hackathonCriteriaInfo}>
-          {criteria?.length > 0 ? (
+          {criteria && criteria?.length > 0 ? (
             <div className={styles.hackathonCriteriaContent}>
               <div className={styles.hackathonCriteriaList}>
                 {criteria?.map((criterion: Criterion) => (
@@ -50,8 +50,8 @@ const HackathonPageCriteria = ({
                   </HackathonPageOptionCard>
                 ))}
               </div>
-              <div className={styles.hackathonCriteriaActions}>
-                {isPrivilegedRole() && (
+              {isPrivilegedRole() && (
+                <div className={styles.hackathonCriteriaActions}>
                   <ActionModal
                     title='Создать критерий'
                     trigger={<Button>Создать</Button>}
@@ -63,8 +63,6 @@ const HackathonPageCriteria = ({
                   >
                     <HackathonCriteriaFormContent form={criterionForm} />
                   </ActionModal>
-                )}
-                {isPrivilegedRole() && (
                   <ActionModal
                     title='Обновление критерия'
                     trigger={<Button>Обновить</Button>}
@@ -76,8 +74,6 @@ const HackathonPageCriteria = ({
                   >
                     <HackathonCriteriaFormContent form={criterionForm} />
                   </ActionModal>
-                )}
-                {isPrivilegedRole() && (
                   <ActionModal
                     title='Удаление критерия'
                     trigger={<Button variant='destructive'>Удалить</Button>}
@@ -93,14 +89,12 @@ const HackathonPageCriteria = ({
                       deletion={true}
                     />
                   </ActionModal>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className={styles.noCriteria}>
-              <span>
-                Критерии для оценки работ команд на данном хакатоне отсутствуют
-              </span>
+              <span>Критерии для оценки работ команд отсутствуют</span>
               <div className={styles.hackathonCriteriaActions}>
                 {isPrivilegedRole() && (
                   <ActionModal

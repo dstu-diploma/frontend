@@ -1,5 +1,6 @@
 .dialogFormContentContainer {
   display: flex;
+  flex-direction: column;
   gap: 24px;
   padding: 1rem;
   border-radius: 12px;
@@ -12,6 +13,12 @@
   flex-direction: column;
   gap: 1rem;
   height: 100%;
+}
+
+.dialogFormRow {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
 }
 
 .dialogFormContentItem {
@@ -45,19 +52,14 @@
   }
 }
 
+.markdownWrapper {
+  width: 100%;
+}
+
+.w-md-editor-toolbar {
+  background-color: #f8fafc;
+}
+
 .markdownEditor {
   width: 100%;
-  
-  :global {
-    .mdxeditor {
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      min-height: 200px;
-      
-      &:focus-within {
-        outline: 2px solid var(--ring);
-        outline-offset: 2px;
-      }
-    }
-  }
 }

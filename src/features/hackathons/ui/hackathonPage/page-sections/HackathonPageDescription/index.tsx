@@ -1,7 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 import MDEditor from '@uiw/react-md-editor'
-import Toolbar from '@/shared/ui/custom/Toolbar/Toolbar'
+import Toolbar from '@/shared/ui/custom/misc/Toolbar/Toolbar'
 import { Button } from '@/shared/ui/shadcn/button'
 import {
   Form,
@@ -10,16 +10,17 @@ import {
   FormItem,
   FormMessage,
 } from '@/shared/ui/shadcn/form'
+import { Hackathon } from '@/features/hackathons/model/types'
 import { DescriptionFormData } from '@/features/hackathons/model/schemas'
 import { UseFormReturn } from 'react-hook-form'
-import { Hackathon } from '../../../model/types'
 import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
 import '@uiw/react-md-editor/markdown-editor.css'
 import '@uiw/react-markdown-preview/markdown.css'
 import styles from './HackathonPageDescription.module.scss'
+import CustomMDEditor from '@/shared/ui/custom/misc/CustomMDEditor/CustomMDEditor'
 
 interface HackathonPageDescriptionProps {
-  hackathonInfo: Hackathon | null
+  hackathonInfo: Hackathon | undefined
   form: UseFormReturn<DescriptionFormData>
   onSave: (data: DescriptionFormData) => void
 }
@@ -49,20 +50,10 @@ const HackathonPageDescription = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <div className={styles.description}>
-                        <MDEditor
-                          value={field.value}
-                          onChange={field.onChange}
-                          height={400}
-                          preview='live'
-                          highlightEnable={true}
-                          enableScroll={true}
-                          visiableDragbar={true}
-                          minHeight={200}
-                          maxHeight={800}
-                          tabSize={2}
-                        />
-                      </div>
+                      <CustomMDEditor
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -86,6 +77,7 @@ const HackathonPageDescription = ({
               preview='preview'
               height={400}
               hideToolbar={true}
+              visiableDragbar={false}
             />
           </div>
         )}

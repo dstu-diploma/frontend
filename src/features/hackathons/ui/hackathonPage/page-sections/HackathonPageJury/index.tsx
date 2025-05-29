@@ -2,18 +2,18 @@ import React, { FC } from 'react'
 import Link from 'next/link'
 import clsx from 'clsx'
 import { ActionModal } from '@/features/team'
-import Toolbar from '@/shared/ui/custom/Toolbar/Toolbar'
+import Toolbar from '@/shared/ui/custom/misc/Toolbar/Toolbar'
 import { Button } from '@/shared/ui/shadcn/button'
 import styles from './HackathonPageJury.module.scss'
 import HackathonJuryFormContent from '../../modal-form-contents/HackathonJuryFormContent'
 import { UseFormReturn } from 'react-hook-form'
-import { UserPartial } from '@/features/user/model/types'
 import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
 import { JuryFormData } from '@/features/hackathons/model/schemas'
-import { HackathonPageOptionCard } from '../../cards/HackathonPageOptionCard'
+import { Judge } from '@/features/hackathons/model/types'
+import { HackathonPageOptionCard } from '../../../cards/HackathonPageOptionCard'
 
 interface HackathonPageJuryProps {
-  juryInfo: UserPartial[] | null
+  juryInfo: Judge[] | undefined
   juryForm: UseFormReturn<JuryFormData>
   handleJuryAddition: (data: JuryFormData) => void
   handleJuryDeletion: (data: JuryFormData) => void
@@ -35,19 +35,19 @@ export const HackathonPageJury: FC<HackathonPageJuryProps> = ({
       >
         <h4>Состав членов жюри</h4>
         <div className={styles.hackathonJuryContent}>
-          <div className={styles.hackathonJuryList}>
-            {juryInfo && juryInfo?.length > 0 ? (
-              juryInfo.map(judge => (
-                <Link href={`/user/${judge.id}`}>
-                  <HackathonPageOptionCard key={judge.id} item={judge} />
+          {juryInfo && juryInfo?.length > 0 ? (
+            <div className={styles.hackathonJuryList}>
+              {juryInfo.map(judge => (
+                <Link key={judge.id} href={`/user/${judge.user_id}`}>
+                  <HackathonPageOptionCard item={judge} />
                 </Link>
-              ))
-            ) : (
-              <span>Комиссия членов жюри отсутствует</span>
-            )}
-          </div>
-          <div className={styles.hackathonJuryActions}>
-            {isPrivilegedRole() && (
+              ))}
+            </div>
+          ) : (
+            <span>Комиссия членов жюри отсутствует</span>
+          )}
+          {isPrivilegedRole() && (
+            <div className={styles.hackathonJuryActions}>
               <ActionModal
                 title='Добавить члена жюри'
                 submitButtonText='Добавить'
@@ -59,8 +59,6 @@ export const HackathonPageJury: FC<HackathonPageJuryProps> = ({
               >
                 <HackathonJuryFormContent form={juryForm} />
               </ActionModal>
-            )}
-            {isPrivilegedRole() && (
               <ActionModal
                 title='Снятие члена жюри'
                 submitButtonText='Снять'
@@ -72,8 +70,8 @@ export const HackathonPageJury: FC<HackathonPageJuryProps> = ({
               >
                 <HackathonJuryFormContent form={juryForm} />
               </ActionModal>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </Toolbar>
