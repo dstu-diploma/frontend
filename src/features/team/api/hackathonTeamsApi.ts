@@ -41,7 +41,7 @@ export const hackathonTeamsApi = {
       },
     })
   },
-  setHackathonTeamCaptainRights: () => {
+  useSetHackathonTeamCaptainRights: () => {
     return useMutation({
       mutationFn: async (hackathon_id: number) => {
         const response = await axiosInstance.put(
@@ -51,7 +51,7 @@ export const hackathonTeamsApi = {
       },
     })
   },
-  leaveHackathonTeam: () => {
+  useLeaveHackathonTeam: () => {
     return useMutation({
       mutationFn: async (hackathon_id: number) => {
         const response = await axiosInstance.put(
@@ -61,7 +61,7 @@ export const hackathonTeamsApi = {
       },
     })
   },
-  kickHackathonTeamMate: () => {
+  useKickHackathonTeamMate: () => {
     return useMutation({
       mutationFn: async ({
         hackathon_id,
@@ -77,7 +77,7 @@ export const hackathonTeamsApi = {
       },
     })
   },
-  addHackathonTeamMate: () => {
+  useAddHackathonTeamMate: () => {
     return useMutation({
       mutationFn: async ({
         hackathon_id,
