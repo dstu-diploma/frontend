@@ -19,8 +19,8 @@ export const QueryProvider = ({ children }: QueryProviderProps) => {
               const axiosError = error as AxiosError
               return axiosError.response?.status !== 400 && failureCount < 2
             },
-            staleTime: 60 * 1000,
-            gcTime: 60 * 1000,
+            staleTime: 0,
+            gcTime: 0,
           },
           mutations: {
             onError: error => {
