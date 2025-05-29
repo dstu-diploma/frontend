@@ -1,5 +1,5 @@
 import React from 'react'
-import UserCardSkeleton from '../UserCardSkeleton'
+import UserCardSkeleton from '../../skeletons/UserCardSkeleton'
 import styles from './EntityLoading.module.scss'
 
 const EntityLoading = () => {
