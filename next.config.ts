@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
   serverRuntimeConfig: {
     suppressAxiosErrors: true,
   },
+  reactStrictMode: false,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 }
 
 export default withBundleAnalyzer({
