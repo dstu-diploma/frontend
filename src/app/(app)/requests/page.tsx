@@ -1,10 +1,9 @@
 'use client'
 
-import Link from 'next/link'
-import Toolbar from '@/shared/ui/custom/Toolbar/Toolbar'
+import Toolbar from '@/shared/ui/custom/misc/Toolbar/Toolbar'
 import { Button } from '@/shared/ui/shadcn/button'
 import styles from './requests.module.scss'
-import { ActionModal } from '@/shared/ui/custom/ActionModal'
+import { ActionModal } from '@/shared/ui/custom/modals/ActionModal'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -13,25 +12,31 @@ import {
 } from '@/features/requests/model/schemas'
 import { useRequests } from '@/features/requests/hooks/useRequests'
 import CreateRequestFormContent from '@/features/requests/ui/modal-form-contents'
-import RequestCard from '@/features/requests/ui/RequestCard'
-import EntityLoading from '@/shared/ui/custom/EntityLoading'
+import EntityLoading from '@/shared/ui/custom/fallback/EntityLoading'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@radix-ui/react-tabs'
+import RequestList from '@/features/requests/ui/RequestList'
+import { useRequestsListSocket } from '@/features/requests/hooks/useRequestsListSocket'
+import { hackathonApi } from '@/features/hackathons/api'
 
 const MyRequestsPage = () => {
+  const { data: hackathonsList } = hackathonApi.useGetHackathonList()
   const {
-    requests,
-    isLoadingRequests,
-    isAllRequestsLoaded,
-    loadingRequestIds,
+    openedRequests,
+    closedRequests,
+    isRequestsLoading,
     handleCreateRequest,
   } = useRequests()
 
   const createRequestForm = useForm<CreateRequestFormData>({
     resolver: zodResolver(createRequestFormSchema),
     defaultValues: {
+      hackathon_id: 0,
       message: '',
       subject: '',
     },
   })
+
+  useRequestsListSocket()
 
   return (
     <div className={styles.requestsContainer}>
@@ -39,7 +44,7 @@ const MyRequestsPage = () => {
       <div className={styles.requestsContent}>
         <Toolbar>
           <ActionModal
-            title='Создание обращение'
+            title='Создание обращения'
             trigger={<Button>Создать обращение</Button>}
             submitButtonText='Создать'
             onSave={e => {
@@ -47,33 +52,34 @@ const MyRequestsPage = () => {
               createRequestForm.handleSubmit(handleCreateRequest)(e)
             }}
           >
-            <CreateRequestFormContent form={createRequestForm} />
+            <CreateRequestFormContent
+              hackathonList={hackathonsList}
+              form={createRequestForm}
+            />
           </ActionModal>
         </Toolbar>
         <div className={styles.requestsListContainer}>
           <h3>Список обращений</h3>
-          <div className={styles.requestsList}>
-            {isLoadingRequests ? (
-              <EntityLoading />
-            ) : !isAllRequestsLoaded ? (
-              <EntityLoading />
-            ) : requests.length > 0 ? (
-              requests.map(request => (
-                <Link
-                  className={styles.requestLink}
-                  href={`/requests/${request.id}`}
-                  key={request.id}
-                >
-                  <RequestCard
-                    request={request}
-                    isLoading={loadingRequestIds.has(request.id)}
-                  />
-                </Link>
-              ))
-            ) : (
-              <span>Нет созданных обращений</span>
-            )}
-          </div>
+          {isRequestsLoading ? (
+            <EntityLoading />
+          ) : (
+            <Tabs defaultValue='opened' className={styles.tabs}>
+              <TabsList className={styles.tabsList}>
+                <TabsTrigger className={styles.tabsTrigger} value='opened'>
+                  Активные
+                </TabsTrigger>
+                <TabsTrigger className={styles.tabsTrigger} value='closed'>
+                  Закрытые
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent className={styles.tabContent} value='opened'>
+                <RequestList requests={openedRequests} type='opened' />
+              </TabsContent>
+              <TabsContent className={styles.tabContent} value='closed'>
+                <RequestList requests={closedRequests} type='closed' />
+              </TabsContent>
+            </Tabs>
+          )}
         </div>
       </div>
     </div>
