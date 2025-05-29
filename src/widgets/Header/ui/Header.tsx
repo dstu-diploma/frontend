@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Username, useUsername } from '@/providers/UsernameContext'
+import { Username, useUsername } from '@/providers/UsernameProvider'
 import UserAvatar from './UserAvatar/UserAvatar'
 import styles from './Header.module.css'
 import { useState, useEffect } from 'react'

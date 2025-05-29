@@ -4,7 +4,7 @@ import Link from 'next/link'
 import clsx from 'clsx'
 import styles from './Sidebar.module.scss'
 import { useSidebar } from '../hooks/useSidebar'
-import EntityLoading from '@/shared/ui/custom/EntityLoading'
+import EntityLoading from '@/shared/ui/custom/fallback/EntityLoading'
 
 export const Sidebar = () => {
   const { isClient, pathname, handleLogout, processedNavigationItems } =
