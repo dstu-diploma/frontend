@@ -28,7 +28,7 @@ export const manageCriteriaApi = {
         ),
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['hackathonCriteria', hackathon_id],
+          queryKey: ['hackathonById', hackathon_id],
         })
       },
     })
@@ -54,7 +54,7 @@ export const manageCriteriaApi = {
         ),
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['hackathonCriteria', hackathon_id],
+          queryKey: ['hackathonById', hackathon_id],
         })
       },
     })
@@ -68,7 +68,7 @@ export const manageCriteriaApi = {
         ),
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['hackathonCriteria', hackathon_id],
+          queryKey: ['hackathonById', hackathon_id],
         })
       },
     })

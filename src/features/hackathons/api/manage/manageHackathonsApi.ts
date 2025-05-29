@@ -33,20 +33,20 @@ export const manageHackathonsApi = {
       },
     })
   },
-  useUpdateHackathonInfo: () => {
+  useUpdateHackathonInfo: (hackathonId: number) => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async ({
-        hackathon_id,
-        data,
-      }: {
-        hackathon_id: number
-        data: DetailedHackathon
-      }) => {
+      mutationFn: async (data: DetailedHackathon) => {
         const response = await axiosInstance.patch(
-          `${HACKATHON_SERVICE_MANAGE_API_URL}/hackathon/${hackathon_id}`,
+          `${HACKATHON_SERVICE_MANAGE_API_URL}/hackathon/${hackathonId}`,
           data,
         )
         return response.data
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['hackathonById', hackathonId],
+        })
       },
     })
   },

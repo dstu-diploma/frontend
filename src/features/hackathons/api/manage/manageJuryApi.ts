@@ -25,7 +25,7 @@ export const manageJuryApi = {
         ),
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['hackathonJudges', hackathon_id],
+          queryKey: ['hackathonById', hackathon_id],
         })
       },
     })
@@ -40,7 +40,7 @@ export const manageJuryApi = {
         ),
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['hackathonJudges', hackathon_id],
+          queryKey: ['hackathonById', hackathon_id],
         })
       },
     })
