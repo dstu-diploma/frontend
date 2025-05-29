@@ -1,13 +1,10 @@
-"use client"
-
-import { useCustomToast } from "@/shared/lib/helpers/toast"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { hackathonApi } from "../api"
-import { HackathonFormData, hackathonFormSchema } from "../model/schemas"
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { hackathonApi } from '../api'
+import { HackathonFormData, hackathonFormSchema } from '../model/schemas'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
 export const useHackathonCreate = () => {
-  const { showToastSuccess, showToastError } = useCustomToast()
   const { mutate: createHackathon } = hackathonApi.useCreateHackathon()
 
   const createForm = useForm<HackathonFormData>({
@@ -26,10 +23,12 @@ export const useHackathonCreate = () => {
   const hackathonCreationHandler = (data: HackathonFormData) => {
     createHackathon(data, {
       onSuccess: async hackathon => {
-        showToastSuccess(`Хакатон «${hackathon.name}» успешно создан`)
+        notificationService.success(
+          `Хакатон «${hackathon.name}» успешно создан`,
+        )
       },
       onError: error => {
-        showToastError(error, `Ошибка при создании хакатона`)
+        notificationService.error(error, `Ошибка при создании хакатона`)
       },
     })
   }
