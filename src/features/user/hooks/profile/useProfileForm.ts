@@ -1,20 +1,20 @@
-import { useUsername } from '@/providers/UsernameContext'
-import { useToast } from '@/shared/hooks/use-toast'
+import { useUsername } from '@/providers/UsernameProvider'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import { ISOStringToDateString } from '@/shared/lib/helpers/date'
+import {
+  dateStringToISO,
+  ISOStringToDateString,
+} from '@/shared/lib/helpers/date'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ProfileFormData, profileSchema } from '../../model/schemas'
 import { mapRole } from '@/shared/lib/helpers/roleMapping'
+import { userApi } from '../../api'
+import { FullUser } from '../../model/types'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
-interface useProfileFormProps {
-  onSubmit: (data: ProfileFormData) => void
-}
-
-export const useProfileForm = ({ onSubmit }: useProfileFormProps) => {
+export const useProfileForm = () => {
   const profile = cookiesApi.getUser()
-  const { toast, dismiss } = useToast()
   const { setUsername } = useUsername()
   const [isLocalLoading, setIsLocalLoading] = useState(false)
 
@@ -33,6 +33,8 @@ export const useProfileForm = ({ onSubmit }: useProfileFormProps) => {
   }, [profile])
 
   const {
+    watch,
+    setValue,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -41,26 +43,42 @@ export const useProfileForm = ({ onSubmit }: useProfileFormProps) => {
     defaultValues,
   })
 
+  const { mutate: updateProfile } = userApi.useUpdateProfile()
+
+  const handleProfileFormSubmit = async (data: ProfileFormData) => {
+    updateProfile(
+      {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        patronymic: data.patronymic,
+        email: data.email,
+        about: data.about,
+        birthday: dateStringToISO(data.birthday) || '',
+      },
+      {
+        onSuccess: (data: FullUser) => {
+          cookiesApi.setUserCookie(data)
+        },
+        onError: error => {
+          console.error('Ошибка при обновлении профиля:', error)
+        },
+      },
+    )
+  }
+
   const submitHandler = handleSubmit(async data => {
     setIsLocalLoading(true)
-    dismiss()
     try {
-      await new Promise(resolve => setTimeout(resolve, 200))
-      await onSubmit(data)
-      toast({
-        variant: 'defaultBlueSuccess',
-        description: 'Данные успешно сохранены!',
-      })
+      console.log('Submitting form data:', data)
+      await handleProfileFormSubmit(data)
+      notificationService.success('Данные успешно сохранены!')
       setUsername({
         first_name: data.first_name,
         last_name: data.last_name,
       })
     } catch (error) {
-      console.error(error)
-      toast({
-        variant: 'destructive',
-        description: 'Ошибка при сохранении',
-      })
+      console.error('Error submitting form:', error)
+      notificationService.error(error, `Ошибка при сохранении данных`)
     } finally {
       setIsLocalLoading(false)
     }
@@ -68,6 +86,8 @@ export const useProfileForm = ({ onSubmit }: useProfileFormProps) => {
 
   return {
     profile,
+    watch,
+    setValue,
     isLocalLoading,
     submitHandler,
     register,

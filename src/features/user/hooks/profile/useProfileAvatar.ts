@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
 import { userApi } from '../../api'
-import { useAvatar } from '../../context/AvatarContext'
-import { useCustomToast } from '@/shared/lib/helpers/toast'
+import { useAvatar } from '../../../../providers/AvatarProvider'
+
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
 export const useProfileAvatar = () => {
   const user = cookiesApi.getUser()
-  const { showToastSuccess, showToastError } = useCustomToast()
+
   const [menuOpen, setMenuOpen] = useState(false)
   const [isAvatarDeleted, setAvatarDeleted] = useState<boolean>(false)
   const { avatarSrc, setAvatarSrc } = useAvatar()
@@ -14,8 +15,8 @@ export const useProfileAvatar = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const objectUrlRef = useRef<string | null>(null)
 
-  const { mutate: setOrUpdateAvatar } = userApi.setOrUpdateAvatar()
-  const { mutate: deleteAvatar } = userApi.deleteAvatar()
+  const { mutate: setOrUpdateAvatar } = userApi.useSetOrUpdateAvatar()
+  const { mutate: deleteAvatar } = userApi.useDeleteAvatar()
 
   useEffect(() => {
     return () => {
@@ -44,10 +45,10 @@ export const useProfileAvatar = () => {
           cookiesApi.setUserCookie(user)
         }
         setMenuOpen(false)
-        showToastSuccess(`Аватар успешно изменён`)
+        notificationService.success(`Аватар успешно изменён`)
       },
       onError: error => {
-        showToastError(error, `Ошибка при изменении аватара`)
+        notificationService.error(error, `Ошибка при изменении аватара`)
       },
     })
   }
@@ -73,11 +74,11 @@ export const useProfileAvatar = () => {
           cookiesApi.setUserCookie(user)
         }
         setAvatarDeleted(true)
-        showToastSuccess(`Аватар успешно удалён!`)
+        notificationService.success(`Аватар успешно удалён!`)
         setAvatarSrc(null)
       },
       onError: error => {
-        showToastError(error, `Ошибка при удалении аватара`)
+        notificationService.error(error, `Ошибка при удалении аватара`)
       },
     })
   }
