@@ -56,3 +56,7 @@ export const allowedMimeTypes: MimeTypeItem[] = [
 export const isAllowedMimeType = (mimeType: MimeType) => {
   return allowedMimeTypes.map(mime => mime.type).includes(mimeType)
 }
+
+export const isFileNameLong = (fileName: string | undefined) => {
+  return fileName?.length && fileName.length > 20
+}
