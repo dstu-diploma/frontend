@@ -1,0 +1,104 @@
+.selectTrigger {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #222e3a;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+
+  span {
+    font-size: 16px;
+  }
+
+  &:hover {
+    border-color: #3b82f6;
+    background-color: #f8fafc;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+}
+
+.selectValue {
+  color: #1e293b;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.selectContent {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 4px;
+  min-width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.selectGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.selectItem {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  font-family: 'Roboto Fallback';
+  font-size: 14px;
+
+  &:hover {
+    background-color: #f8fafc;
+    color: #3b82f6;
+  }
+
+  &[data-state="checked"] {
+    background-color: #3b82f6;
+    color: white;
+    font-weight: 500;
+
+    &:hover {
+      background-color: #3b82f6;
+    }
+  }
+
+  &:focus {
+    outline: none;
+    background-color: #f8fafc;
+  }
+}
+
+// Стили для скроллбара
+.selectContent {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #e2e8f0;
+    border-radius: 3px;
+
+    &:hover {
+      background-color: #94a3b8;
+    }
+  }
+}
