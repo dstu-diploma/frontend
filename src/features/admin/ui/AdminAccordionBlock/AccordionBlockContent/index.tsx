@@ -4,7 +4,11 @@ import { User } from '@/features/user'
 import AdminContentUserForm from './AdminContentUserForm'
 import AdminContentBrandTeamForm from './AdminContentBrandTeamForm'
 import { isTeam, isUser } from '@/features/admin/model/guards'
-import styles from './accordionBlockContent.module.scss'
+import {
+  AdminUserFormData,
+  AdminTeamFormData,
+} from '@/features/admin/model/schemas'
+import styles from './AccordionBlockContent.module.scss'
 
 interface AccordionBlockContentProps {
   entity: User | TeamInfo | undefined
@@ -13,6 +17,14 @@ interface AccordionBlockContentProps {
 export const AccordionBlockContent = ({
   entity,
 }: AccordionBlockContentProps) => {
+  const editUserSubmit = async (data: AdminUserFormData) => {
+    console.log(data)
+  }
+
+  const editBrandTeamSubmit = async (data: AdminTeamFormData) => {
+    // TODO: edit brand team
+  }
+
   return (
     <div className={styles.accordionBlockContent}>
       {isUser(entity) && (

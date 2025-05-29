@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import * as TabsPrimitive from "@radix-ui/react-tabs"
-import styles from "./Tabs.module.scss"
+import * as React from 'react'
+import * as TabsPrimitive from '@radix-ui/react-tabs'
+import styles from './tabs.module.scss'
 
 const Tabs = TabsPrimitive.Root
 
