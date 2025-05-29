@@ -30,9 +30,13 @@ export const adminUserFormSchema = z
       .optional(),
     birthday: z
       .string()
-      .min(10, {
-        message: 'Дата рождения должна содержать минимум 10 символов',
-      })
+      .refine(
+        val => {
+          if (!val) return true
+          return val.length >= 10
+        },
+        { message: 'Дата рождения должна содержать минимум 10 символов' },
+      )
       .optional(),
     role: z.enum(Object.values(roleMap) as [string, ...string[]], {
       message:
@@ -40,8 +44,15 @@ export const adminUserFormSchema = z
     }),
     password: z
       .string()
-      .min(8, { message: 'Пароль должен содержать минимум 8 символов' }),
-    confirmPassword: z.string(),
+      .refine(
+        val => {
+          if (!val) return true
+          return val.length >= 8
+        },
+        { message: 'Пароль должен содержать минимум 8 символов' },
+      )
+      .optional(),
+    confirmPassword: z.string().optional(),
   })
   .refine(data => data.password === data.confirmPassword, {
     message: 'Пароли не совпадают',
@@ -49,32 +60,14 @@ export const adminUserFormSchema = z
   })
 
 // Валидация формы команды
-export const adminTeamFormSchema = z
-  .object({
-    name: z
-      .string()
-      .min(3, {
-        message: 'Название команды должно содержать минимум 3 символа',
-      })
-      .max(50, { message: 'Название команды не должно превышать 50 символов' }),
-    newPassword: z
-      .string()
-      .min(8, { message: 'Пароль должен содержать минимум 8 символов' })
-      .optional(),
-    confirmPassword: z.string().optional(),
-  })
-  .refine(
-    data => {
-      if (data.newPassword || data.confirmPassword) {
-        return data.newPassword === data.confirmPassword
-      }
-      return true
-    },
-    {
-      message: 'Пароли не совпадают',
-      path: ['confirmPassword'],
-    },
-  )
+export const adminTeamFormSchema = z.object({
+  name: z
+    .string()
+    .min(3, {
+      message: 'Название команды должно содержать минимум 3 символа',
+    })
+    .max(50, { message: 'Название команды не должно превышать 50 символов' }),
+})
 
 export type AdminUserFormData = z.infer<typeof adminUserFormSchema>
 export type AdminTeamFormData = z.infer<typeof adminTeamFormSchema>
