@@ -1,0 +1,74 @@
+.link {
+  text-decoration: none;
+}
+
+.card {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease-in-out;
+  background: white;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .infoContainer {
+      flex: 1;
+      display: flex;
+      gap: 0.125rem;
+
+      .info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+
+          .name {
+              text-decoration: none;
+              font-weight: 500;
+              margin-bottom: 0.25rem;
+          }
+          
+          .paramBlock {
+            .defaultParam {
+              text-decoration: none;
+              font-weight: 500;
+              font-size: 0.875rem;
+            }
+
+            .defaultParamValue {
+              text-decoration: none;
+              color: rgb(130, 130, 130);
+              font-size: 0.875rem;
+            }
+
+            .successParamValue {
+              text-decoration: none;
+              font-weight: 500;
+              color: #72ab5b;
+              font-size: 0.875rem;
+            }
+
+            .closedParamValue {
+              text-decoration: none;
+              font-weight: 500;
+              color: rgb(255, 100, 100);
+              font-size: 0.875rem;
+            }
+          }
+      }
+  } 
+
+  .captainControls {
+      display: flex;
+      gap: 0.5rem;
+  }
+}
+
