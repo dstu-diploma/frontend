@@ -1,53 +1,60 @@
 import axiosInstance from '@/shared/api/axios'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { CHAT_SERVICE_API_URL } from '@/shared/api/basePaths'
 import {
-  CreatedRequest,
+  CreateRequestBody,
+  MinimalRequestData,
   Request,
   RequestMessage,
-  RequestWithMessages,
 } from '../model/types'
 
 export const requestsApi = {
-  getAllRequests: () => {
-    return useMutation({
-      mutationFn: async (): Promise<Request[]> => {
+  useGetAllRequests: () => {
+    return useQuery<MinimalRequestData[]>({
+      queryKey: ['allRequests'],
+      queryFn: async () => {
         const response = await axiosInstance.get(`${CHAT_SERVICE_API_URL}/`)
         return response.data
       },
     })
   },
-  createRequest: () => {
-    return useMutation({
-      mutationFn: async ({
-        message,
-        subject,
-      }: CreatedRequest): Promise<CreatedRequest> => {
-        const response = await axiosInstance.put(`${CHAT_SERVICE_API_URL}/`, {
-          message,
-          subject,
-        })
-        return response.data
-      },
-    })
-  },
-  getRequestById: () => {
-    return useMutation({
-      mutationFn: async (request_id: number): Promise<RequestWithMessages> => {
+  useGetRequestById: (requestId: number) => {
+    return useQuery({
+      queryKey: ['request', requestId],
+      queryFn: async (): Promise<Request> => {
         const response = await axiosInstance.get(
-          `${CHAT_SERVICE_API_URL}/${request_id}`,
+          `${CHAT_SERVICE_API_URL}/${requestId}`,
         )
         return response.data
       },
     })
   },
-  sendMessageInRequest: () => {
+  useCreateRequest: () => {
+    const queryClient = useQueryClient()
     return useMutation({
       mutationFn: async ({
-        request_id,
+        hackathon_id,
+        message,
+        subject,
+      }: CreateRequestBody): Promise<CreatedRequest> => {
+        const response = await axiosInstance.put(`${CHAT_SERVICE_API_URL}/`, {
+          hackathon_id,
+          message,
+          subject,
+        })
+        return response.data
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['allRequests'] })
+      },
+    })
+  },
+  useSendMessageInRequest: (request_id: number) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+      mutationFn: async ({
         message,
       }: {
-        request_id: number
         message: string
       }): Promise<RequestMessage> => {
         const response = await axiosInstance.put(
@@ -56,9 +63,12 @@ export const requestsApi = {
         )
         return response.data
       },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['request', request_id] })
+      },
     })
   },
-  closeRequest: () => {
+  useCloseRequest: () => {
     return useMutation({
       mutationFn: async (request_id: number): Promise<Request> => {
         const response = await axiosInstance.delete(
