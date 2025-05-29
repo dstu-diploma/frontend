@@ -1,7 +1,7 @@
 .dialogOverlay {
     position: fixed;
     inset: 0;
-    z-index: 50;
+    z-index: 998;
     background-color: rgba(0, 0, 0, 0.8);
   
     &[data-state='open'] {
@@ -17,7 +17,7 @@
     position: fixed;
     left: 50%;
     top: 50%;
-    z-index: 50;
+    z-index: 999;
     display: grid;
     width: 100%;
     max-width: 32rem;
