@@ -41,7 +41,7 @@ export const manageHackathonAttachmentsApi = {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['hackathonAttachments', hackathon_id],
+          queryKey: ['hackathonById', hackathon_id],
         })
       },
     })
@@ -60,7 +60,7 @@ export const manageHackathonAttachmentsApi = {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ['hackathonAttachments', hackathon_id],
+          queryKey: ['hackathonById', hackathon_id],
         })
       },
     })

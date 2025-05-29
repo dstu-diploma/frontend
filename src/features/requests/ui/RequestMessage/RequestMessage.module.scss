@@ -1,0 +1,55 @@
+.message {
+  max-width: 70%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  position: relative;
+
+  .messageUserInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .userAvatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .userNameReceived {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  .userNameSent {
+    font-size: 0.875rem;
+    color: white;
+    font-weight: 500;
+  }
+
+  &.sent {
+    align-self: flex-start;
+    background-color: #8eabea;
+    color: white;
+    border-bottom-left-radius: 0.25rem;
+  }
+
+  &.received {
+    align-self: flex-start;
+    background-color: white;
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 0.25rem;
+  }
+
+  .messageTime {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-top: 0.25rem;
+  }
+}

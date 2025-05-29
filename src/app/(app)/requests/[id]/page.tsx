@@ -1,94 +1,89 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'next/navigation'
-import { useRequests } from '@/features/requests/hooks/useRequests'
-import { useChatSocket } from '@/features/requests/hooks/useChatSocket'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import styles from './requestPage.module.scss'
 import { Button } from '@/shared/ui/shadcn/button'
-import { ConfirmModal } from '@/shared/ui/custom/ConfirmModal'
+import { ConfirmModal } from '@/shared/ui/custom/modals/ConfirmModal'
+import { useSingleRequest } from '@/features/requests/hooks/useSingleRequest'
+import styles from './requestPage.module.scss'
+import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
+import { useRequestPageSocket } from '@/features/requests/hooks/useRequestPageSocket'
+import { FullUser } from '@/features/user/model/types'
+import RequestMessage from '@/features/requests/ui/RequestMessage'
 
 const RequestPage = () => {
   const { id } = useParams()
   const requestId = Number(id)
-  const { currentRequest, loadRequestById, handleCloseRequest } = useRequests()
-  const [newMessage, setNewMessage] = useState('')
-  const currentUser = cookiesApi.getUser()
+  const { currentRequest } = useSingleRequest(requestId)
+  const [messageText, setNewMessageText] = useState('')
+  const currentUser = cookiesApi.getUser() as FullUser
+  const { handleSendMessage, handleCloseRequest } = useSingleRequest(requestId)
 
-  const { sendMessage, messages } = useChatSocket(requestId)
+  useRequestPageSocket(requestId)
 
-  useEffect(() => {
-    loadRequestById(requestId)
-  }, [])
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewMessageText(e.target.value)
+  }
 
-  const handleSendMessage = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault()
-      if (newMessage.trim()) {
-        sendMessage(newMessage)
-        setNewMessage('')
-      }
-    },
-    [newMessage, sendMessage],
-  )
-
-  const handleMessageChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setNewMessage(e.target.value)
-    },
-    [],
-  )
+  if (!currentRequest) {
+    return <LayoutFallback text='Загрузка обращения...' />
+  }
 
   return (
     <div className={styles.requestContainer}>
       <div className={styles.requestContent}>
         <div className={styles.requestContentContainer}>
           <h1 className={styles.requestTitle}>
-            Обращение «{currentRequest?.subject}»
+            Обращение «{currentRequest?.subject}» по хакатону «
+            {currentRequest?.hackathon_name}»
           </h1>
           <div className={styles.requestChatWindow}>
             <div className={styles.messagesContainer}>
-              {messages.map(message => (
-                <div
+              {currentRequest?.messages.map(message => (
+                <RequestMessage
                   key={message.id}
-                  className={`${styles.message} ${
-                    message.user_id === currentUser?.id
-                      ? styles.sent
-                      : styles.received
-                  }`}
-                >
-                  <div className={styles.messageContent}>{message.content}</div>
-                  <div className={styles.messageTime}>
-                    {new Date(message.created_at).toLocaleTimeString()}
-                  </div>
-                </div>
+                  message={message}
+                  currentUser={currentUser}
+                />
               ))}
             </div>
             <form
-              onSubmit={handleSendMessage}
-              className={styles.inputContainer}
+              onSubmit={e => {
+                e.preventDefault()
+                setNewMessageText('')
+                handleSendMessage(messageText)
+              }}
+              className={styles.inputForm}
             >
-              <textarea
-                className={styles.messageInput}
-                value={newMessage}
-                onChange={handleMessageChange}
-                placeholder='Введите сообщение...'
-                rows={1}
-              />
-              <Button type='submit'>Отправить</Button>
-              <ConfirmModal
-                title='Вы уверены, что хотите закрыть обращение?'
-                submitButtonText='Закрыть'
-                onConfirm={e =>
-                  handleCloseRequest(
-                    e as React.MouseEvent<HTMLButtonElement>,
-                    requestId,
-                  )
-                }
-              >
-                <Button variant='destructive'>Закрыть обращение</Button>
-              </ConfirmModal>
+              {!currentRequest.closed_by_user_id ? (
+                <div className={styles.inputContainer}>
+                  <textarea
+                    className={styles.messageInput}
+                    value={messageText}
+                    onChange={handleMessageChange}
+                    placeholder='Введите сообщение...'
+                    rows={1}
+                  />
+                  <Button type='submit'>Отправить</Button>
+                  <ConfirmModal
+                    title='Вы уверены, что хотите закрыть обращение?'
+                    submitButtonText='Закрыть'
+                    onConfirm={e =>
+                      handleCloseRequest(
+                        e as React.MouseEvent<HTMLButtonElement>,
+                        requestId,
+                      )
+                    }
+                  >
+                    <Button variant='destructive'>Закрыть обращение</Button>
+                  </ConfirmModal>
+                </div>
+              ) : (
+                <div className={styles.inputContainer}>
+                  <span className={styles.closed}>Обращение закрыто</span>
+                </div>
+              )}
             </form>
           </div>
         </div>

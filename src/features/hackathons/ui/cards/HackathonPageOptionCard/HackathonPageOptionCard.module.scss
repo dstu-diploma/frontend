@@ -1,4 +1,5 @@
 .item {
+  width: 200px;
   padding: 1rem;
   background: #F8FAFC;
   border-radius: 12px;
@@ -6,10 +7,12 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  width: fit-content;
+  width: -moz-fit-content;
+  width: 250px;
   border: 1px solid rgb(231, 230, 230);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  justify-content: center;
 
   &:hover {
     transform: translateY(-2px);
@@ -21,6 +24,8 @@
     flex-direction: column;
     align-items: center;
     gap: 0.75em;
+    height: 100%;
+    justify-content: space-between;
   }
 
   .avatar {
@@ -46,13 +51,34 @@
   .titleBlock {
     width: 100%;
     display: flex;
+    align-items: center;
     justify-content: center;
+    flex: 1;
 
     .personName {
       display: flex;
       justify-content: center;
-      width: 75%;
+      width: 100%;
       text-align: center;
     }
   }
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatarFallback {
+  cursor: pointer;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 }

@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import EntityLoading from '@/shared/ui/custom/EntityLoading'
+import EntityLoading from '@/shared/ui/custom/fallback/EntityLoading'
 import Link from 'next/link'
-import React from 'react'
+import { memo } from 'react'
 import { TeamMemberCard } from '../../cards/TeamMemberCard'
 import styles from './TeamMembersList.module.scss'
 import { TeamMateRef } from '@/features/team/model/types'
@@ -14,52 +14,70 @@ interface TeamMembersListProps {
     isTeamMatesLoading: boolean
     teamMates: TeamMateRef[]
     isCaptain: boolean
-    handleChangeCaptain: (event: React.FormEvent, member: TeamMateRef) => Promise<void>
-    handleTeamKick: (event: React.FormEvent, member: TeamMateRef) => Promise<void>
+    handleChangeCaptain: (
+      event: React.FormEvent,
+      member: TeamMateRef,
+    ) => Promise<void>
+    handleTeamKick: (
+      event: React.FormEvent,
+      member: TeamMateRef,
+    ) => Promise<void>
   }
 }
 
-const TeamMembersList = (props: TeamMembersListProps) => {
-  const user = props.user;
+const TeamMembersList = memo(({ user, settings }: TeamMembersListProps) => {
   const {
     isTeamMatesLoading,
     teamMates,
     isCaptain,
     handleChangeCaptain,
     handleTeamKick,
-  } = props.settings;
+  } = settings
+
+  if (isTeamMatesLoading) {
+    return (
+      <div className={styles.teamMembers}>
+        <div className={styles.members}>
+          <EntityLoading />
+        </div>
+      </div>
+    )
+  }
+
+  if (!teamMates?.length) {
+    return (
+      <div className={styles.teamMembers}>
+        <div className={styles.members}>
+          <span className={styles.noMates}>
+            В команде нет активных участников
+          </span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={styles.teamMembers}>
-                <div className={styles.members}>
-                  {isTeamMatesLoading ? (
-                    <EntityLoading />
-                  ) : teamMates && teamMates?.length > 0 ? (
-                    teamMates?.map(member => (
-                      <Link
-                        key={member.user_id}
-                        href={
-                          member.user_id === user.id
-                            ? '/profile'
-                            : `/user/${member.user_id}`
-                        }
-                        className={styles.link}
-                      >
-                        <TeamMemberCard
-                          member={member}
-                          isCaptain={isCaptain}
-                          onChangeRights={handleChangeCaptain}
-                          onKick={handleTeamKick}
-                        />
-                      </Link>
-                    ))
-                  ) : (
-                    <span className={styles.noMates}>
-                      В команде нет активных участников
-                    </span>
-                  )}
-                </div>
-              </div>
+      {teamMates.map(member => (
+        <Link
+          key={member.user_id}
+          href={
+            member.user_id === user.id ? '/profile' : `/user/${member.user_id}`
+          }
+          className={styles.link}
+        >
+          <TeamMemberCard
+            member={member}
+            isCaptain={isCaptain}
+            onChangeRights={handleChangeCaptain}
+            onKick={handleTeamKick}
+          />
+        </Link>
+      ))}
+    </div>
   )
-}
+})
+
+TeamMembersList.displayName = 'TeamMembersList'
 
 export default TeamMembersList

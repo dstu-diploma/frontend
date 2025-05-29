@@ -2,27 +2,28 @@ import { teamApi } from '@/features/team'
 import { useState, useEffect } from 'react'
 import { hackathonApi } from '../api'
 import { DescriptionFormData, HackathonFormData } from '../model/schemas'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useCustomToast } from '@/shared/lib/helpers/toast'
+import { useQueryClient } from '@tanstack/react-query'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
 export const useHackathonPage = (page_id: number) => {
-  const { showToastSuccess, showToastError } = useCustomToast()
   const queryClient = useQueryClient()
+  const hackathonId = Number(page_id)
 
-  // Полученные данные о сущностях
+  // Полученные данных о сущностях
   const {
     data: hackathonInfo,
     isPending: isHackathonLoading,
     error: hackathonLoadError,
-  } = hackathonApi.useGetHackathonById(Number(page_id))
-  const { data: myTeamInfo, isSuccess: isMyTeamInfoLoaded } =
+  } = hackathonApi.useGetHackathonById(hackathonId)
+  const { data: myTeamInfo, isSuccess: isTeamInfoLoaded } =
     teamApi.useGetMyTeamInfo()
+  const { data: myHackathonTeamInfo, isSuccess: isMyHackathonTeamInfoLoaded } =
+    teamApi.useGetMyHackathonTeamInfo(hackathonId)
 
   // Мутация для изменения данных о хакатоне
-  const { mutate: applyToHackathon } = useMutation({
-    mutationFn: teamApi.applyToHackathon,
-  })
-  const { mutate: updateHackathon } = hackathonApi.useUpdateHackathonInfo()
+  const { mutate: applyToHackathon } = teamApi.useApplyToHackathon(hackathonId)
+  const { mutate: updateHackathon } =
+    hackathonApi.useUpdateHackathonInfo(hackathonId)
 
   const [mateIds, setMateIds] = useState<number[]>([])
   const [hasTeam, setHasTeam] = useState<boolean>(false)
@@ -31,20 +32,30 @@ export const useHackathonPage = (page_id: number) => {
   // Функция для загрузки и обновления информации о хакатоне
   useEffect(() => {
     if (hackathonLoadError) {
-      showToastError(
+      notificationService.error(
         hackathonLoadError,
         `Ошибка при получении информации о хакатоне`,
       )
     }
-  }, [page_id])
+  }, [page_id, hackathonLoadError])
 
-  // Установка флага участия в хакатоне
+  // Установка флага наличия команды-бренда и флага участия в хакатоне
   useEffect(() => {
-    if (isMyTeamInfoLoaded && myTeamInfo && myTeamInfo.mates.length > 0) {
+    if (isTeamInfoLoaded && myTeamInfo) {
       setHasTeam(true)
       setMateIds(myTeamInfo?.mates.map(mate => mate.user_id))
     }
-  }, [page_id])
+
+    if (isMyHackathonTeamInfoLoaded && myHackathonTeamInfo) {
+      setIsUserTeamApplied(true)
+    }
+  }, [
+    page_id,
+    isTeamInfoLoaded,
+    myTeamInfo,
+    isMyHackathonTeamInfoLoaded,
+    myHackathonTeamInfo,
+  ])
 
   // Отправка заявки на участие в хакатоне
   const handleApplicationSubmit = async () => {
@@ -54,43 +65,42 @@ export const useHackathonPage = (page_id: number) => {
     }
     applyToHackathon(requestBody, {
       onSuccess: async () => {
-        showToastSuccess(
+        notificationService.success(
           `Заявка на участие в хакатоне ${hackathonInfo?.name} отправлена`,
         )
         setIsUserTeamApplied(true)
       },
       onError: error =>
-        showToastError(error, `Ошибка при отправлении заявки на хакатон`),
+        notificationService.error(
+          error,
+          `Ошибка при отправлении заявки на хакатон`,
+        ),
     })
   }
 
   // Обновление информации о хакатоне
   const handleHackathonUpdate = async (data: HackathonFormData) => {
-    console.log(data)
-    updateHackathon(
-      {
-        hackathon_id: Number(page_id),
-        data: {
-          ...data,
-          max_participant_count: Number(data.max_participant_count),
-          max_team_mates_count: Number(data.max_team_mates_count),
-        },
+    const requestBody = {
+      ...data,
+      max_participant_count: Number(data.max_participant_count),
+      max_team_mates_count: Number(data.max_team_mates_count),
+    }
+    updateHackathon(requestBody, {
+      onSuccess: async () => {
+        queryClient.invalidateQueries({ queryKey: ['hackathonById'] })
+        notificationService.success(`Информация о хакатоне успешно обновлена`)
       },
-      {
-        onSuccess: async () => {
-          queryClient.invalidateQueries({ queryKey: ['hackathonById'] })
-          showToastSuccess(`Информация о хакатоне успешно обновлена`)
-        },
-        onError: error => {
-          showToastError(error, `Ошибка при обновлении информации о хакатоне`)
-        },
+      onError: error => {
+        notificationService.error(
+          error,
+          `Ошибка при обновлении информации о хакатоне`,
+        )
       },
-    )
+    })
   }
 
   // Обновление описания хакатона
   const handleEditHackathonDescription = async (data: DescriptionFormData) => {
-    console.log(data)
     updateHackathon(
       {
         hackathon_id: Number(page_id),
@@ -98,11 +108,13 @@ export const useHackathonPage = (page_id: number) => {
       },
       {
         onSuccess: async () => {
-          queryClient.invalidateQueries({ queryKey: ['hackathonById'] })
-          showToastSuccess(`Описание хакатона успешно обновлено`)
+          notificationService.success(`Описание хакатона успешно обновлено`)
         },
         onError: error => {
-          showToastError(error, `Ошибка при обновлении описания хакатона`)
+          notificationService.error(
+            error,
+            `Ошибка при обновлении описания хакатона`,
+          )
         },
       },
     )

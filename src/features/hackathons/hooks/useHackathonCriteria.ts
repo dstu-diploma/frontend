@@ -1,12 +1,10 @@
 import { CriterionFormData } from '../model/schemas'
 import { useEffect } from 'react'
-import { useCustomToast } from '@/shared/lib/helpers/toast'
 import { hackathonApi } from '../api'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
 export const useHackathonCriteria = (page_id: number) => {
   const hackathonId = Number(page_id)
-  const { showToastSuccess, showToastError, showRawToastError } =
-    useCustomToast()
 
   const { data: criteria, isError: criteriaError } =
     hackathonApi.useGetCriteriaList(hackathonId)
@@ -20,7 +18,10 @@ export const useHackathonCriteria = (page_id: number) => {
   // Вывод тоста в случае ошибки получения списка критериев
   useEffect(() => {
     if (!criteriaError) {
-      showToastError(criteriaError, `Ошибка при получении списка критериев`)
+      notificationService.error(
+        criteriaError,
+        `Ошибка при получении списка критериев`,
+      )
     }
   }, [criteriaError])
 
@@ -32,8 +33,11 @@ export const useHackathonCriteria = (page_id: number) => {
     }
     createCriterion(requestBody, {
       onSuccess: () =>
-        showToastSuccess(`Критерий "${requestBody.name}" успешно создан`),
-      onError: error => showToastError(error, 'Ошибка при создании критерия'),
+        notificationService.success(
+          `Критерий "${requestBody.name}" успешно создан`,
+        ),
+      onError: error =>
+        notificationService.error(error, 'Ошибка при создании критерия'),
     })
   }
 
@@ -45,7 +49,7 @@ export const useHackathonCriteria = (page_id: number) => {
       )?.id
 
       if (!criterionId) {
-        showRawToastError(
+        notificationService.errorRaw(
           'Ошибка при обновлении критерия',
           'Критерий не найден',
         )
@@ -60,9 +64,11 @@ export const useHackathonCriteria = (page_id: number) => {
 
       updateCriterion(requestBody, {
         onSuccess: () =>
-          showToastSuccess(`Критерий "${requestBody.name}" успешно обновлен`),
+          notificationService.success(
+            `Критерий "${requestBody.name}" успешно обновлен`,
+          ),
         onError: error =>
-          showToastError(error, `Ошибка при обновлении критерия`),
+          notificationService.error(error, `Ошибка при обновлении критерия`),
       })
     }
   }
@@ -75,7 +81,10 @@ export const useHackathonCriteria = (page_id: number) => {
       )?.id
 
       if (!criterionId) {
-        showRawToastError('Ошибка при удалении критерия', 'Критерий не найден')
+        notificationService.errorRaw(
+          'Ошибка при удалении критерия',
+          'Критерий не найден',
+        )
         return
       }
 
@@ -83,9 +92,11 @@ export const useHackathonCriteria = (page_id: number) => {
         { criterion_id: criterionId },
         {
           onSuccess: () =>
-            showToastSuccess(`Критерий "${data.name}" успешно удален`),
+            notificationService.success(
+              `Критерий "${data.name}" успешно удален`,
+            ),
           onError: error =>
-            showToastError(error, `Ошибка при удалении критерия`),
+            notificationService.error(error, `Ошибка при удалении критерия`),
         },
       )
     }

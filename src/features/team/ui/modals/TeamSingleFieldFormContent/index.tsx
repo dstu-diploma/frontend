@@ -8,7 +8,7 @@ interface TeamSingleFieldFormContentProps {
   fieldType: 'text' | 'email'
   labelText?: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  value: string
+  value: string | undefined
   redText?: boolean
   placeholder: string
 }
@@ -21,7 +21,7 @@ const TeamSingleFieldFormContent = (props: TeamSingleFieldFormContentProps) => {
         id={props.fieldName}
         type={props.fieldType}
         className={styles.dialogFormInput}
-        value={props.value}
+        value={props.value || ''}
         onChange={props.onChange}
         placeholder={props.placeholder}
       />

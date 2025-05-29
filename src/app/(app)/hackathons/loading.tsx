@@ -1,10 +1,5 @@
-import LoadingSpinner from '@/shared/ui/custom/LoadingSpinner/LoadingSpinner'
-import styles from '../loading.module.scss'
+import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
 
 export default function Loading() {
-  return (
-    <div className={styles.loadingContainer}>
-      <LoadingSpinner />
-    </div>
-  )
+  return <LayoutFallback text='Загрузка списка хакатонов...' />
 }

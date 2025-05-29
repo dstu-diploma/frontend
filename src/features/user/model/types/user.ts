@@ -21,7 +21,7 @@ export interface UserPartial {
   role_desc: string
 }
 
-export interface UserByEmail extends Omit<UserPartial, 'is_captain'> {}
+export type UserByEmail = Omit<UserPartial, 'is_captain'>
 
 export interface UserProfile extends Omit<User, 'id'> {
   role: 'user' | 'admin'
@@ -29,7 +29,7 @@ export interface UserProfile extends Omit<User, 'id'> {
 
 export interface UserUpload {
   user_id: number
-  type: 'avatar'
+  type: 'avatar' | 'cover'
   s3_key: string
   content_type: string
   uploaded_at: string
@@ -45,7 +45,7 @@ export type FullUser = {
   about?: string | undefined
   birthday?: string | undefined
   role?: string | undefined
-  registerDate?: Date | undefined
+  register_date?: Date | undefined
   is_banned: boolean
   uploads: UserUpload[]
 }

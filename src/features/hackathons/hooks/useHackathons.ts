@@ -1,11 +1,8 @@
-'use client'
-
-import { useCustomToast } from '@/shared/lib/helpers/toast'
+import { notificationService } from '@/shared/lib/services/notification.service'
 import { hackathonApi } from '../api'
 import { useEffect } from 'react'
 
 export const useHackathons = () => {
-  const { showToastError } = useCustomToast()
   const {
     data: allHackathons,
     isPending: isHackathonsLoading,
@@ -15,7 +12,7 @@ export const useHackathons = () => {
 
   useEffect(() => {
     if (isHackathonsError) {
-      showToastError(error, `Ошибка при получении списка хакатонов`)
+      notificationService.error(error, `Ошибка при получении списка хакатонов`)
     }
   })
 

@@ -62,6 +62,17 @@ export const teamBaseApi = {
       refetchOnReconnect: false,
     })
   },
+  useGetTeamInfoById: (teamId: number) => {
+    return useQuery({
+      queryKey: ['teamInfo', teamId],
+      queryFn: async () => {
+        const response = await axiosInstance.get(
+          `${TEAM_SERVICE_API_URL}/info/${teamId}`,
+        )
+        return response.data
+      },
+    })
+  },
   useGetMyTeamInfo: () => {
     return useQuery<TeamInfo>({
       queryKey: ['myTeamInfo'],

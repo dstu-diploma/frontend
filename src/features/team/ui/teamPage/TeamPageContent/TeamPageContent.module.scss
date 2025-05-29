@@ -1,3 +1,10 @@
+.teamContainer {
+    width: 100%;
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
 .teamContent {
   width: 100%;
   display: flex;

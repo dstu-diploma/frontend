@@ -1,7 +1,7 @@
 import axiosInstance from '@/shared/api/axios'
 import { HACKATHON_SERVICE_API_URL } from '@/shared/api/basePaths'
 import { useQuery } from '@tanstack/react-query'
-import { Hackathon } from '../model/types'
+import { DetailedHackathon, Hackathon } from '../model/types'
 import { TeamInfo } from '@/features/team'
 
 export const hackathonBaseApi = {
@@ -18,7 +18,7 @@ export const hackathonBaseApi = {
     })
   },
   useGetHackathonById: (hackathon_id: number) => {
-    return useQuery<Hackathon>({
+    return useQuery<DetailedHackathon>({
       queryKey: ['hackathonById', hackathon_id],
       queryFn: async () => {
         const response = await axiosInstance.get(

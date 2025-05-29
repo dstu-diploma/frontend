@@ -1,3 +1,5 @@
+import { UserUpload } from '@/features/user/model/types'
+
 // Объекты с информацией о хакатонах
 export interface Hackathon {
   id: number
@@ -13,6 +15,7 @@ export interface DetailedHackathon extends Hackathon {
   teams: HackathonTeam[]
   judges: Judge[]
   criteria: Criterion[]
+  uploads: UserUpload[]
 }
 
 // Объекты с информацией о командах в хакатонах
@@ -20,6 +23,8 @@ export interface HackathonTeam {
   id: number
   hackathon_id: number
   name: string
+  hackathon_name: string
+  submission_url: string
 }
 
 // Объекты с информацией о участниках команд в хакатонах
@@ -51,6 +56,8 @@ export interface Judge {
   id: number
   hackathon_id: number
   user_id: number
+  user_name: string
+  user_uploads: UserUpload[]
 }
 
 // Объекты с информацией о судьях в хакатонах с информацией о пользователях
@@ -74,6 +81,23 @@ export interface CriterionScore {
 export interface CreateCriterion {
   name: string
   weight: number
+}
+
+// Объект оценки команды по заданному критерию
+export interface TeamScore {
+  criterion_id: number
+  score: number
+}
+
+// Объект оценки команды по критерию от члена жюри
+export interface TeamJudgeScoreObject {
+  id: number
+  team_id: number
+  team_name: string
+  criterion_id: number
+  judge_user_id: number
+  judge_user_name: string
+  score: number
 }
 
 // Объект вложения

@@ -1,7 +1,5 @@
-import LoadingSpinner from "@/shared/ui/custom/LoadingSpinner/LoadingSpinner";
+import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
 
 export default function Loading() {
-  return (
-    <LoadingSpinner />
-  );
-} 
+  return <LayoutFallback text='Загрузка данных о команде...' />
+}

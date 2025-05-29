@@ -1,32 +1,57 @@
-import { Judge } from '../model/types'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { userApi } from '@/features/user/api'
-import { JuryFormData } from '../model/schemas'
+import { JuryFormData, ScoreFormData } from '../model/schemas'
 import { hackathonApi } from '../api'
-import { useCustomToast } from '@/shared/lib/helpers/toast'
+import { useQueryClient } from '@tanstack/react-query'
+import {
+  Criterion,
+  DetailedHackathon,
+  TeamJudgeScoreObject,
+} from '../model/types'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
-export const useHackathonJury = (page_id: number) => {
-  const { showToastError, showToastSuccess, showRawToastError } =
-    useCustomToast()
+export const useHackathonJury = (
+  page_id: number,
+  hackathonInfo: DetailedHackathon | undefined,
+) => {
   const hackathonId = Number(page_id)
 
-  const { data: jury, error: juryLoadError } =
-    hackathonApi.useGetJuryList(hackathonId)
-  const judges_ids = jury?.map((judge: Judge) => judge.user_id) || []
-  const { data: juryInfo } = userApi.useGetUsers(judges_ids)
+  const { data: juryInfo } = hackathonApi.useGetJuryList(hackathonId)
 
   const { mutate: addJudge } = hackathonApi.useAddJudge(hackathonId)
   const { mutate: deleteJudge } = hackathonApi.useDeleteJudge(hackathonId)
+  const { mutate: setJuryScore } = hackathonApi.useSetJuryScore(hackathonId)
   const { mutate: searchByEmail } = userApi.useSearchByEmail()
 
   const [isLoading, setIsLoading] = useState(false)
 
-  // Вывод ошибок при получении списка жюри
+  const [myTeamScores, setMyTeamScores] = useState<
+    Record<string, TeamJudgeScoreObject[]>
+  >({})
+  const queryClient = useQueryClient()
+
+  const myTeamsScores = hackathonApi.useGetAllMyHackathonTeamScores({
+    hackathonInfo,
+    hackathonId,
+  })
+
+  const stringifiedScores = useMemo(
+    () => JSON.stringify(myTeamsScores.map(q => q.data)),
+    [myTeamsScores],
+  )
+
   useEffect(() => {
-    if (juryLoadError) {
-      showToastError(juryLoadError, `Ошибка при получении списка жюри`)
-    }
-  }, [juryLoadError])
+    const newScores: Record<string, TeamJudgeScoreObject[]> = {}
+
+    hackathonInfo?.teams?.forEach((team, index) => {
+      const query = myTeamsScores[index]
+      if (team && query?.data) {
+        newScores[team.id] = query.data
+      }
+    })
+
+    setMyTeamScores(newScores)
+  }, [hackathonInfo?.teams, stringifiedScores])
 
   // Добавление судьи в список жюри
   const handleJuryAddition = async (data: JuryFormData) => {
@@ -35,7 +60,7 @@ export const useHackathonJury = (page_id: number) => {
       searchByEmail(data.email, {
         onSuccess: data => {
           if (!data.id) {
-            showRawToastError(
+            notificationService.errorRaw(
               'Ошибка при добавлении судьи в список жюри',
               'Судья не найден',
             )
@@ -46,17 +71,18 @@ export const useHackathonJury = (page_id: number) => {
           }
           addJudge(requestBody, {
             onSuccess: async () =>
-              showToastSuccess(
+              notificationService.success(
                 `Судья ${data.first_name} ${data.last_name} успешно добавлен в список жюри`,
               ),
             onError: error =>
-              showToastError(
+              notificationService.error(
                 error,
                 `Ошибка при добавлении судьи в список жюри`,
               ),
           })
         },
-        onError: error => showToastError(error, 'Ошибка при поиске судьи'),
+        onError: error =>
+          notificationService.error(error, 'Ошибка при поиске судьи'),
       })
     } catch (error) {
       console.error('Ошибка при добавлении члена в состав жюри:', error)
@@ -72,7 +98,7 @@ export const useHackathonJury = (page_id: number) => {
       searchByEmail(data.email, {
         onSuccess: data => {
           if (!data.id) {
-            showRawToastError(
+            notificationService.errorRaw(
               'Ошибка при удалении судьи из списка жюри',
               'Судья не найден',
             )
@@ -82,12 +108,12 @@ export const useHackathonJury = (page_id: number) => {
             { judge_user_id: data.id },
             {
               onSuccess: async () => {
-                showToastSuccess(
+                notificationService.success(
                   `Судья ${data.first_name} ${data.last_name} успешно удален из состава жюри`,
                 )
               },
               onError: error => {
-                showToastError(
+                notificationService.error(
                   error,
                   'Ошибка при удалении судьи из состава жюри',
                 )
@@ -96,7 +122,7 @@ export const useHackathonJury = (page_id: number) => {
           )
         },
         onError: error => {
-          showToastError(error, 'Ошибка при поиске судьи')
+          notificationService.error(error, 'Ошибка при поиске судьи')
         },
       })
     } catch (error) {
@@ -106,11 +132,42 @@ export const useHackathonJury = (page_id: number) => {
     }
   }
 
+  // Установка жюри оценки команде по списку критериев
+  const handleSetJuryTeamScore = async (
+    team_id: number,
+    data: ScoreFormData,
+  ) => {
+    const criteria = queryClient.getQueryData([
+      'hackathonCriteria',
+      hackathonId,
+    ]) as Criterion[]
+
+    const scores = Object.entries(data.criteria).map(([name, score]) => ({
+      criterion_id: criteria.find(c => c.name === name)?.id || 0,
+      score,
+    }))
+
+    const requestBody = {
+      team_id,
+      scores,
+    }
+
+    setJuryScore(requestBody, {
+      onSuccess: () => {
+        notificationService.success(`Оценка успешно добавлена!`)
+      },
+      onError: error => {
+        notificationService.error(error, `Ошибка при добавлении оценки команде`)
+      },
+    })
+  }
+
   return {
-    jury,
     juryInfo,
     isLoading,
+    myTeamScores,
     handleJuryAddition,
     handleJuryDeletion,
+    handleSetJuryTeamScore,
   }
 }

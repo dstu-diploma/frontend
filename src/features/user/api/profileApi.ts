@@ -1,11 +1,11 @@
-import axiosInstance, { API_URL } from '@/shared/api/axios'
+import axiosInstance from '@/shared/api/axios'
 import { useMutation } from '@tanstack/react-query'
 import { ProfileFormData } from '../model/schemas'
 import { AvatarObject } from '../model/types'
 import { USER_SERVICE_API_URL } from '@/shared/api/basePaths'
 
 export const profileApi = {
-  updateProfile: () => {
+  useUpdateProfile: () => {
     return useMutation({
       mutationFn: async (
         profile: Partial<ProfileFormData>,
@@ -18,7 +18,7 @@ export const profileApi = {
       },
     })
   },
-  setOrUpdateAvatar: () => {
+  useSetOrUpdateAvatar: () => {
     return useMutation({
       mutationFn: async (file: File): Promise<AvatarObject> => {
         const formData = new FormData()
@@ -36,7 +36,7 @@ export const profileApi = {
       },
     })
   },
-  deleteAvatar: () => {
+  useDeleteAvatar: () => {
     return useMutation({
       mutationFn: async () => {
         const response = await axiosInstance.delete(
@@ -46,15 +46,32 @@ export const profileApi = {
       },
     })
   },
-  getAvatar: (user_id: number) => {
-    return API_URL + '/s3/avatars/' + user_id + '.jpg'
+  useSetOrUpdateCover: () => {
+    return useMutation({
+      mutationFn: async (file: File): Promise<AvatarObject> => {
+        const formData = new FormData()
+        formData.append('file', file)
+        const response = await axiosInstance.put(
+          `${USER_SERVICE_API_URL}/cover`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        )
+        return response.data
+      },
+    })
   },
-  isAvatarExists: async (url: string): Promise<boolean> => {
-    return new Promise(resolve => {
-      const img = new Image()
-      img.onload = () => resolve(true)
-      img.onerror = () => resolve(false)
-      img.src = url
+  useDeleteCover: () => {
+    return useMutation({
+      mutationFn: async () => {
+        const response = await axiosInstance.delete(
+          `${USER_SERVICE_API_URL}/cover`,
+        )
+        return response.data
+      },
     })
   },
 }

@@ -1,30 +1,26 @@
 'use client'
 
-import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { Button } from '@/shared/ui/shadcn/button'
-import { ConfirmModal } from '@/shared/ui/custom/ConfirmModal'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import { useRef, useEffect, useState } from 'react'
-import { ActionModal } from '@/shared/ui/custom/ActionModal'
+import { useEffect } from 'react'
 import { useHackathonForms } from '@/features/hackathons/hooks/useHackathonForms'
 import { useHackathonCriteria } from '@/features/hackathons/hooks/useHackathonCriteria'
 import { useHackathonJury } from '@/features/hackathons/hooks/useHackathonJury'
 import { useHackathonPage } from '@/features/hackathons/hooks/useHackathonPage'
-import Toolbar from '@/shared/ui/custom/Toolbar/Toolbar'
-import HackathonInfoSidebar from '@/features/hackathons/ui/sidebar/HackathonInfoSidebar'
-import HackathonPageCriteria from '@/features/hackathons/ui/page-sections/HackathonPageCriteria'
-import HackathonPageDescription from '@/features/hackathons/ui/page-sections/HackathonPageDescription'
-import HackathonPageJury from '@/features/hackathons/ui/page-sections/HackathonPageJury'
-import { HackathonPageTeams } from '@/features/hackathons/ui/page-sections/HackathonPageTeams'
+import HackathonPageMyScores from '@/features/hackathons/ui/hackathonPage/page-sections/HackathonPageMyScores'
+import HackathonPageCriteria from '@/features/hackathons/ui/hackathonPage/page-sections/HackathonPageCriteria'
+import HackathonPageDescription from '@/features/hackathons/ui/hackathonPage/page-sections/HackathonPageDescription'
+import HackathonPageJury from '@/features/hackathons/ui/hackathonPage/page-sections/HackathonPageJury'
+import { HackathonPageTeams } from '@/features/hackathons/ui/hackathonPage/page-sections/HackathonPageTeams'
+import HackathonAttachmentsSidebar from '@/features/hackathons/ui/hackathonPage/sidebar/HackathonAttachmentsSidebar'
+import HackathonInfoSidebar from '@/features/hackathons/ui/hackathonPage/sidebar/HackathonInfoSidebar'
+import HackathonPageActionsToolbar from '@/features/hackathons/ui/hackathonPage/actionsToolbar'
 import styles from './hackathonPage.module.scss'
-import HackathonAttachmentsSidebar from '@/features/hackathons/ui/sidebar/HackathonAttachmentsSidebar'
+import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
 
 const HackathonPage = () => {
   const { id } = useParams()
   const user = cookiesApi.getUser()
-  const infoRef = useRef<HTMLDivElement>(null)
-  const [sidebarTop, setSidebarTop] = useState(84)
 
   const {
     hasTeam,
@@ -37,15 +33,17 @@ const HackathonPage = () => {
   } = useHackathonPage(Number(id))
 
   const {
-    criteria,
     handleCriterionCreation,
     handleCriterionUpdate,
     handleCriterionDeletion,
   } = useHackathonCriteria(Number(id))
 
-  const { juryInfo, handleJuryAddition, handleJuryDeletion } = useHackathonJury(
-    Number(id),
-  )
+  const {
+    myTeamScores,
+    handleJuryAddition,
+    handleJuryDeletion,
+    handleSetJuryTeamScore,
+  } = useHackathonJury(Number(id), hackathonInfo)
 
   const { criterionForm, juryForm, editForm, editDescriptionForm } =
     useHackathonForms(hackathonInfo)
@@ -66,72 +64,32 @@ const HackathonPage = () => {
         description: hackathonInfo.description,
       })
     }
-  }, [hackathonInfo])
+  }, [hackathonInfo, editDescriptionForm, editForm])
 
-  useEffect(() => {
-    const updateSidebarPosition = () => {
-      if (infoRef.current) {
-        const rect = infoRef.current.getBoundingClientRect()
-        setSidebarTop(rect.top + window.scrollY + 20)
-      }
-    }
-
-    updateSidebarPosition()
-    window.addEventListener('resize', updateSidebarPosition)
-    window.addEventListener('scroll', updateSidebarPosition)
-
-    return () => {
-      window.removeEventListener('resize', updateSidebarPosition)
-      window.removeEventListener('scroll', updateSidebarPosition)
-    }
-  }, [])
+  // Права на секции
+  const canSeeScores =
+    user &&
+    hackathonInfo &&
+    user.role === 'judge' &&
+    hackathonInfo?.judges.some(judge => judge.user_id === user.id)
 
   return (
     <div className={styles.hackathonPageContainer}>
       {isHackathonLoading ? (
-        <span>Загрузка информации о хакатоне...</span>
+        <LayoutFallback text='Загрузка информации о хакатоне...' />
       ) : (
         <div className={styles.hackathonPageContent}>
           <h1>Хакатон «{hackathonInfo?.name}»</h1>
           <div className={styles.hackathonPageInfo}>
             {user.role === 'user' ? (
-              hasTeam ? (
-                <Toolbar className={styles.hackathonPageInfoToolbar}>
-                  <div className={styles.hackathonPageInfoToolbarButtons}>
-                    {isUserTeamApplied && (
-                      <ConfirmModal
-                        title={`Подать заявку на участие в хакатоне ${hackathonInfo?.name}?`}
-                        submitButtonText='Подать'
-                        onConfirm={handleApplicationSubmit}
-                      >
-                        <Button>Подать заявку на участие</Button>
-                      </ConfirmModal>
-                    )}
-                    {!isUserTeamApplied && (
-                      <ActionModal
-                        title='Загрузка вложения'
-                        submitButtonText='Загрузить'
-                        trigger={<Button>Добавить вложение</Button>}
-                        onSave={e => {
-                          e.preventDefault()
-                          juryForm.handleSubmit(handleJuryAddition)(e)
-                        }}
-                      ></ActionModal>
-                    )}
-                    {!isUserTeamApplied && (
-                      <Link href={`/hackathons/${id}/team`}>
-                        <Button>Моя команда</Button>
-                      </Link>
-                    )}
-                  </div>
-                </Toolbar>
-              ) : (
-                <Toolbar className={styles.hackathonPageInfoToolbar}>
-                  У вас нет команды для записи на данный хакатон
-                </Toolbar>
-              )
+              <HackathonPageActionsToolbar
+                hasTeam={hasTeam}
+                onHackathonApply={handleApplicationSubmit}
+                isUserTeamApplied={isUserTeamApplied}
+                hackathonInfo={hackathonInfo}
+              />
             ) : null}
-            <div className={styles.hackathonInfo} ref={infoRef}>
+            <div className={styles.hackathonInfo}>
               <div className={styles.hackathonDetailedInfo}>
                 <HackathonPageDescription
                   hackathonInfo={hackathonInfo}
@@ -139,28 +97,38 @@ const HackathonPage = () => {
                   onSave={handleEditHackathonDescription}
                 />
                 <HackathonPageCriteria
-                  criteria={criteria}
+                  criteria={hackathonInfo?.criteria}
                   criterionForm={criterionForm}
                   handleCriterionCreation={handleCriterionCreation}
                   handleCriterionUpdate={handleCriterionUpdate}
                   handleCriterionDeletion={handleCriterionDeletion}
                 />
                 <HackathonPageJury
-                  juryInfo={juryInfo}
+                  juryInfo={hackathonInfo?.judges}
                   juryForm={juryForm}
                   handleJuryAddition={handleJuryAddition}
                   handleJuryDeletion={handleJuryDeletion}
                 />
-                <HackathonPageTeams hackathonInfo={hackathonInfo} />
+                {canSeeScores && (
+                  <HackathonPageMyScores
+                    hackathonId={hackathonInfo?.id}
+                    scores={myTeamScores}
+                  />
+                )}
+                <HackathonPageTeams
+                  hackathonInfo={hackathonInfo}
+                  onSetScore={handleSetJuryTeamScore}
+                />
               </div>
               <div className={styles.hackathonSidebars}>
                 <HackathonInfoSidebar
                   hackathon={hackathonInfo}
                   editForm={editForm}
-                  style={{ top: `${sidebarTop}px` }}
                   onHackathonUpdate={handleHackathonUpdate}
                 />
-                <HackathonAttachmentsSidebar />
+                <HackathonAttachmentsSidebar
+                  attachments={hackathonInfo?.uploads}
+                />
               </div>
             </div>
           </div>

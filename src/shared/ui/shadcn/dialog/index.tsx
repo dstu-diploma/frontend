@@ -1,9 +1,10 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { X } from "lucide-react"
+import * as React from 'react'
+import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { X } from 'lucide-react'
 import styles from './dialog.module.scss'
+import { Roboto } from 'next/font/google'
 
 const Dialog = DialogPrimitive.Root
 
@@ -12,6 +13,12 @@ const DialogTrigger = DialogPrimitive.Trigger
 const DialogPortal = DialogPrimitive.Portal
 
 const DialogClose = DialogPrimitive.Close
+
+const roboto = Roboto({
+  weight: ['400', '500', '700'],
+  subsets: ['cyrillic', 'latin'],
+  display: 'swap',
+})
 
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
@@ -33,12 +40,12 @@ const DialogContent = React.forwardRef<
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
-      className={`${styles.dialogContent} ${className}`}
+      className={`${styles.dialogContent} ${className} ${roboto.className}`}
       {...props}
     >
       {children}
       <DialogPrimitive.Close className={styles.dialogClose}>
-        <X className="h-4 w-4" />
+        <X className='h-4 w-4' />
         <span className={styles.srOnly}>Close</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
@@ -50,23 +57,17 @@ const DialogHeader = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={`${styles.dialogHeader} ${className}`}
-    {...props}
-  />
+  <div className={`${styles.dialogHeader} ${className}`} {...props} />
 )
-DialogHeader.displayName = "DialogHeader"
+DialogHeader.displayName = 'DialogHeader'
 
 const DialogFooter = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={`${styles.dialogFooter} ${className}`}
-    {...props}
-  />
+  <div className={`${styles.dialogFooter} ${className}`} {...props} />
 )
-DialogFooter.displayName = "DialogFooter"
+DialogFooter.displayName = 'DialogFooter'
 
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,

@@ -1,3 +1,11 @@
+import { UserUpload } from '@/features/user/model/types'
+
+export interface TeamRef {
+  id: number
+  name: string
+  mates: TeamMate[]
+}
+
 // Объект информации о команде
 export interface TeamInfo {
   id: number
@@ -12,14 +20,13 @@ export interface TeamMateRef {
   user_name: string
   is_captain: boolean
   role_desc: string
+  user_uploads: UserUpload[]
 }
 
 // Объект участника команды
 export interface TeamMate {
   id: number
-  first_name: string
-  last_name: string
-  patronymic: string
+  user_name: number
   register_date: string
   is_captain: boolean
 }

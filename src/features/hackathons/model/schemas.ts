@@ -8,19 +8,34 @@ export const hackathonFormSchema = z
       .max(100, 'Название не должно превышать 100 символов'),
     max_participant_count: z.coerce.number(),
     max_team_mates_count: z.coerce.number(),
-    description: z
+    description: z.string(),
+    start_date: z.string(),
+    score_start_date: z.string().superRefine((date, ctx) => {
+      const startDate = new Date((ctx.path[0] as any).start_date)
+      const scoreStartDate = new Date(date)
+      if (scoreStartDate < startDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            'Дата начала оценок должна быть не раньше даты начала хакатона',
+        })
+      }
+    }),
+    end_date: z
       .string()
-      .min(10, 'Описание должно содержать минимум 10 символов')
-      .max(1000, 'Описание не должно превышать 1000 символов'),
-    start_date: z.string().refine(date => new Date(date) > new Date(), {
-      message: 'Дата начала должна быть в будущем',
-    }),
-    score_start_date: z.string().refine(date => new Date(date) > new Date(), {
-      message: 'Дата начала оценок должна быть в будущем',
-    }),
-    end_date: z.string().refine(date => new Date(date) > new Date(), {
-      message: 'Дата окончания должна быть в будущем',
-    }),
+      .refine(date => new Date(date) > new Date(), {
+        message: 'Дата окончания должна быть в будущем',
+      })
+      .superRefine((date, ctx) => {
+        const scoreStartDate = new Date((ctx.path[0] as any).score_start_date)
+        const endDate = new Date(date)
+        if (endDate < scoreStartDate) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Дата окончания должна быть не раньше даты начала оценок',
+          })
+        }
+      }),
   })
   .refine(
     data => {
@@ -33,14 +48,6 @@ export const hackathonFormSchema = z
       path: ['max_team_mates_count'],
     },
   )
-  .refine(data => new Date(data.score_start_date) > new Date(data.start_date), {
-    message: 'Дата начала оценок должна быть позже даты начала хакатона',
-    path: ['score_start_date'],
-  })
-  .refine(data => new Date(data.end_date) > new Date(data.score_start_date), {
-    message: 'Дата окончания должна быть позже даты начала оценок',
-    path: ['end_date'],
-  })
 
 export const descriptionFormSchema = z.object({
   description: z
@@ -68,7 +75,22 @@ export const juryFormSchema = z.object({
   email: z.string().email('Введите корректный email'),
 })
 
+export const scoreFormSchema = z.object({
+  criteria: z
+    .record(
+      z.string(),
+      z
+        .number()
+        .min(0, 'Значение не может быть меньше 0')
+        .max(100, 'Значение не может превышать 100'),
+    )
+    .refine(data => Object.keys(data).length > 0, {
+      message: 'Добавьте хотя бы один критерий',
+    }),
+})
+
 export type HackathonFormData = z.infer<typeof hackathonFormSchema>
 export type CriterionFormData = z.infer<typeof criterionFormSchema>
 export type JuryFormData = z.infer<typeof juryFormSchema>
 export type DescriptionFormData = z.infer<typeof descriptionFormSchema>
+export type ScoreFormData = z.infer<typeof scoreFormSchema>

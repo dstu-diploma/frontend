@@ -29,6 +29,7 @@
 .container {
     width: 100%;
     padding: 1.25rem 2rem;
+    padding-top: 0.5rem;
     background: white;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
@@ -37,9 +38,7 @@
 
 .header {
     display: flex;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
+    padding-bottom: 0.5rem;
     border-bottom: 1px solid #eee;
     text-align: center;
 }
@@ -73,6 +72,7 @@
 }
 
 .userInfo {
+    margin-top: 1.5rem;
     margin-left: 1.5rem;
     width: 100%;
     display: flex;
@@ -105,13 +105,13 @@
 }
 
 .section {
-    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
 }
 
 .sectionTitle {
     font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1ch;
     color: #333;
 }
 
@@ -120,11 +120,16 @@
     color: #444;
 }
 
+.detailsContainer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1.5rem;
+}
+
 .details {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
-    margin-top: 1rem;
 }
 
 .detailItem {
@@ -148,4 +153,31 @@
     color: #dc3545;
     font-weight: 500;
     margin-top: 0.5rem;
+}
+
+.active {
+    color: #72ab5b;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.errorBlock, .toolbarBlock {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.errorToolbar {
+    background-color: #ef4444 !important;
+
+    .errorBlock {
+        color: white;
+
+        span {
+            font-size: 12px;
+        }
+    }
+    
 }

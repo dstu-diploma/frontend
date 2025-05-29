@@ -1,51 +1,69 @@
 import React from 'react'
-import clsx from 'clsx'
+import styles from './AdminTabFilter.module.scss'
 import { Input } from '@/shared/ui/shadcn/input'
 import {
   Select,
-  SelectItem,
-  SelectGroup,
-  SelectContent,
   SelectTrigger,
   SelectValue,
+  SelectContent,
+  SelectItem,
 } from '@/shared/ui/shadcn/select'
-import styles from './AdminTabFilter.module.scss'
+import { useAdminSelect } from '@/features/admin/hooks/useAdminSelect'
+import { FilterType } from '@/features/admin/hooks/useAdminSelect'
 
 interface AdminTabFilterProps {
   className?: string
   searchInputValue: string
   setSearchInputValue: (value: string) => void
+  filterTypes: FilterType[]
+  onFilterChange: (type: FilterType, value: string) => void
 }
 
-const AdminTabFilter = ({
+export const AdminTabFilter = ({
   className,
   searchInputValue,
   setSearchInputValue,
+  filterTypes,
+  onFilterChange,
 }: AdminTabFilterProps) => {
+  const filterStates = filterTypes.map(type => useAdminSelect(type))
+
+  const filterSelects = filterStates.map(
+    ({ selectedValue, options, placeholder, handleSelectChange }, index) => {
+      const type = filterTypes[index]
+      return (
+        <Select
+          key={type}
+          value={selectedValue}
+          onValueChange={handleSelectChange}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder={placeholder} />
+          </SelectTrigger>
+          <SelectContent>
+            {options.map(option => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )
+    },
+  )
+
   return (
-    <div className={clsx(styles.adminTabFilter, className)}>
-      <Input
-        placeholder='Поиск по списку пользователей'
-        className={styles.searchInput}
-        value={searchInputValue}
-        onChange={e => setSearchInputValue(e.target.value)}
-      />
-      <Select>
-        <SelectTrigger className={styles.selectTrigger}>
-          <SelectValue
-            placeholder='Сортировка по роли'
-            className={styles.selectValue}
-          />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectItem value='admin'>Администратор</SelectItem>
-            <SelectItem value='user'>Участник</SelectItem>
-            <SelectItem value='organizer'>Организатор</SelectItem>
-            <SelectItem value='helper'>Техническая поддержка</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+    <div className={`${styles.adminTabFilter} ${className ?? ''}`}>
+      <div className={styles.adminTabFilterInputs}>
+        <Input
+          type='text'
+          placeholder='Поиск...'
+          value={searchInputValue}
+          onChange={e => setSearchInputValue(e.target.value)}
+          className={styles.adminTabFilterInput}
+        />
+        {filterSelects}
+      </div>
     </div>
   )
 }

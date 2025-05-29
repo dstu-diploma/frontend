@@ -1,17 +1,71 @@
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { CreateRequestFormData } from '../../model/schemas'
+import { CreateRequestBody } from '@/features/requests/model/types'
 import { Label } from '@/shared/ui/shadcn/label'
 import { Input } from '@/shared/ui/shadcn/input'
 import styles from './CreateRequestFormContent.module.scss'
+import { Hackathon } from '@/features/hackathons/model/types'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/ui/shadcn/select'
 
 interface CreateRequestFormContentProps {
-  form: UseFormReturn<CreateRequestFormData>
+  form: UseFormReturn<CreateRequestBody>
+  hackathonList: Hackathon[] | undefined
 }
 
-const CreateRequestFormContent = ({ form }: CreateRequestFormContentProps) => {
+const CreateRequestFormContent = ({
+  form,
+  hackathonList,
+}: CreateRequestFormContentProps) => {
+  console.log('Hackathon list:', hackathonList)
+  console.log('Current form values:', form.getValues())
+  console.log('Current hackathon_id:', form.watch('hackathon_id'))
+
   return (
     <div className={styles.requestForm}>
+      <div className={styles.requestFormItem}>
+        <Label htmlFor='hackathon_id'>Хакатон</Label>
+        <Select
+          value={form.watch('hackathon_id')?.toString()}
+          onValueChange={value => {
+            console.log('Select value changed:', value)
+            form.setValue('hackathon_id', Number(value))
+            console.log('Form values after change:', form.getValues())
+          }}
+        >
+          <SelectTrigger className={styles.selectTrigger}>
+            <SelectValue
+              placeholder='Выберите хакатон'
+              className={styles.selectValue}
+            />
+          </SelectTrigger>
+          <SelectContent
+            position='popper'
+            sideOffset={4}
+            className={styles.selectContent}
+            align='start'
+            side='bottom'
+          >
+            {hackathonList?.map(hackathon => {
+              console.log('Rendering hackathon option:', hackathon)
+              return (
+                <SelectItem
+                  key={hackathon.id}
+                  value={hackathon.id.toString()}
+                  className={styles.selectItem}
+                >
+                  {hackathon.name}
+                </SelectItem>
+              )
+            })}
+          </SelectContent>
+        </Select>
+      </div>
       <div className={styles.requestFormItem}>
         <Label htmlFor='subject'>Тема</Label>
         <Input
@@ -21,9 +75,9 @@ const CreateRequestFormContent = ({ form }: CreateRequestFormContentProps) => {
         />
       </div>
       <div className={styles.requestFormItem}>
-        <Label htmlFor='subject'>Сообщение</Label>
+        <Label htmlFor='message'>Сообщение</Label>
         <Input
-          id='subject'
+          id='message'
           {...form.register('message')}
           placeholder='Введите сообщение'
         />

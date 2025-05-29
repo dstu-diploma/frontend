@@ -9,8 +9,6 @@ import {
   FullUser,
 } from '../model/types'
 
-console.log(USER_SERVICE_API_URL)
-
 export const userBaseApi = {
   useRegister: () => {
     return useMutation({
