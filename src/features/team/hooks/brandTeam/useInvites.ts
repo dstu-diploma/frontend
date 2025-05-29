@@ -1,9 +1,9 @@
-import { useCustomToast } from '@/shared/lib/helpers/toast'
-import { teamApi } from '../api'
+import { notificationService } from '@/shared/lib/services/notification.service'
+import { teamApi } from '../../api'
 
 export const useInvites = () => {
   // Список приглашений в команды
-  const { showToastSuccess, showToastError } = useCustomToast()
+
   const { data: teamInvites, isPending: isTeamInvitesLoading } =
     teamApi.useGetUserInvites()
 
@@ -15,9 +15,9 @@ export const useInvites = () => {
   const handleAcceptInvite = (team_id: number) => {
     acceptInvite(team_id, {
       onSuccess: async () =>
-        showToastSuccess(`Приглашение успешно в команду принято`),
+        notificationService.success(`Приглашение успешно в команду принято`),
       onError: error =>
-        showToastError(error, `Ошибка при принятии приглашения`),
+        notificationService.error(error, `Ошибка при принятии приглашения`),
     })
   }
 
@@ -25,9 +25,11 @@ export const useInvites = () => {
   const handleDenyInvite = async (team_id: number) => {
     denyInvite(team_id, {
       onSuccess: async () =>
-        showToastSuccess(`Приглашение на участие в команде отклонено`),
+        notificationService.success(
+          `Приглашение на участие в команде отклонено`,
+        ),
       onError: error =>
-        showToastError(error, `Ошибка при отклонении приглашения`),
+        notificationService.error(error, `Ошибка при отклонении приглашения`),
     })
   }
 

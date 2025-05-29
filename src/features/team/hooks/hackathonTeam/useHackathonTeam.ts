@@ -1,27 +1,28 @@
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import { teamApi } from '../api'
-import { TeamMateRef } from '../model/types'
+import { teamApi } from '../../api'
+import { TeamMateRef } from '../../model/types'
 import { useEffect } from 'react'
 import { toast } from '@/shared/hooks/use-toast'
 import { useQueryClient } from '@tanstack/react-query'
-import { useCustomToast } from '@/shared/lib/helpers/toast'
 
-export const useTeam = () => {
+export const useHackathonTeam = (page_id: number) => {
   // Данные о команде
-  const { showToastSuccess, showToastError } = useCustomToast()
+  const hackathonId = Number(page_id)
+
   const queryClient = useQueryClient()
   const {
     data: teamInfo,
     isPending: isTeamLoading,
     isError: isTeamLoadingError,
-  } = teamApi.useGetMyTeamInfo()
+  } = teamApi.useGetMyHackathonTeamInfo(hackathonId)
   const { data: teamMates, isPending: isTeamMatesLoading } =
     teamApi.useGetTeamMates()
 
   // Мутации для изменения данных
-  const { mutate: leaveTeam } = teamApi.useLeaveTeam()
-  const { mutate: kickMate } = teamApi.useKickMate()
-  const { mutate: setCaptainRights } = teamApi.useSetCaptainRights()
+  const { mutate: leaveTeam } = teamApi.useLeaveHackathonTeam()
+  const { mutate: kickMate } = teamApi.useKickHackathonTeamMate()
+  const { mutate: setCaptainRights } =
+    teamApi.useSetHackathonTeamCaptainRights()
 
   // Вычисленные значения
   const hasTeam = !!teamInfo
@@ -46,10 +47,13 @@ export const useTeam = () => {
   // Обработчик выхода из команды
   const handleTeamLeave = async (event: React.FormEvent) => {
     event.preventDefault()
-    leaveTeam(undefined, {
+    leaveTeam(hackathonId, {
       onSuccess: async () =>
-        showToastSuccess(`Вы успешно покинули команду ${teamInfo?.name}`),
-      onError: error => showToastError(error, `Ошибка при выходе из команды`),
+        notificationService.success(
+          `Вы успешно покинули команду ${teamInfo?.name}`,
+        ),
+      onError: error =>
+        notificationService.error(error, `Ошибка при выходе из команды`),
     })
   }
 
@@ -61,11 +65,11 @@ export const useTeam = () => {
     event.preventDefault()
     kickMate(member, {
       onSuccess: async () =>
-        showToastSuccess(
+        notificationService.success(
           `Участник ${member.user_name} успешно исключен из команды`,
         ),
       onError: error =>
-        showToastError(error, `Ошибка при исключении участника`),
+        notificationService.error(error, `Ошибка при исключении участника`),
     })
   }
 
@@ -85,9 +89,10 @@ export const useTeam = () => {
         const success_message = !member.is_captain
           ? `Участник ${member?.user_name} успешно назначен капитаном`
           : `Участник ${member?.user_name} успешно снят с должности капитана`
-        showToastSuccess(success_message)
+        notificationService.success(success_message)
       },
-      onError: error => showToastError(error, `Ошибка при назначении капитана`),
+      onError: error =>
+        notificationService.error(error, `Ошибка при назначении капитана`),
     })
   }
 
