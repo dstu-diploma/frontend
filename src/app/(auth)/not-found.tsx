@@ -1,0 +1,36 @@
+'use client'
+
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Roboto } from 'next/font/google'
+import styles from '../not-found.module.scss'
+import { Button } from '@/shared/ui/shadcn/button'
+
+const roboto = Roboto({
+  weight: ['400', '500', '700'],
+  subsets: ['cyrillic', 'latin'],
+  display: 'swap',
+})
+
+export default function NotFound() {
+  const router = useRouter()
+
+  return (
+    <div className={`${styles.container} ${roboto.className}`}>
+      <div className={styles.content}>
+        <h1 className={styles.title}>404</h1>
+        <h2 className={styles.subtitle}>Страница не найдена</h2>
+        <p className={styles.description}>
+          Извините, но страница, которую вы ищете, не существует или была
+          перемещена.
+        </p>
+        <div className={styles.actions}>
+          <Button onClick={() => router.back()}>Назад</Button>
+          <Link href='/'>
+            <Button>На главную</Button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
