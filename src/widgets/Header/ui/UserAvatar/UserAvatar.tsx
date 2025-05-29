@@ -3,8 +3,8 @@
 import { useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Username } from '@/providers/UsernameContext'
-import { useAvatar } from '@/features/user/context/AvatarContext'
+import { Username } from '@/providers/UsernameProvider'
+import { useAvatar } from '@/providers/AvatarProvider'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import styles from './UserAvatar.module.css'
 
