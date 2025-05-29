@@ -1,35 +1,35 @@
-# 1. Используем точную версию Node.js
-FROM node:20.18.0-alpine AS builder
+# Этап сборки
+FROM node:18-alpine AS builder
 
-# 2. Устанавливаем рабочую директорию
 WORKDIR /app
 
-# 3. Копируем package.json и package-lock.json для установки зависимостей
-COPY package.json package-lock.json ./
+# Установка зависимостей
+COPY package*.json ./
+RUN npm install
 
-# 4. Устанавливаем зависимости
-RUN npm ci
-
-# 5. Копируем исходный код проекта
+# Копирование исходного кода
 COPY . .
 
-# 6. Строим Next.js приложение
+# Сборка приложения
 RUN npm run build
 
-# --- Production stage ---
-FROM node:20.18.0-alpine AS runner
+# Этап продакшена
+FROM node:18-alpine AS runner
 
-# 7. Устанавливаем рабочую директорию
 WORKDIR /app
 
-# 8. Копируем собранное приложение и нужные файлы из builder
-COPY --from=builder /app/.next .next
-COPY --from=builder /app/public public
-COPY --from=builder /app/package.json package.json
-COPY --from=builder /app/node_modules node_modules
+# Установка только production зависимостей
+COPY package*.json ./
+RUN npm install --production
 
-# 9. Указываем переменную окружения для продакшн-режима
+# Копирование собранного приложения
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+
+# Настройки для продакшена
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# 10. Запускаем приложение
+# Запуск в режиме продакшена
 CMD ["npm", "start"]
