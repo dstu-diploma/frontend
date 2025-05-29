@@ -1,39 +1,78 @@
-import React from 'react'
+import { memo, useMemo } from 'react'
 import styles from './HackathonPageOptionCard.module.scss'
-import { UserPartial } from '@/features/user/model/types'
-import { userApi } from '@/features/user'
-import { Criterion } from '@/features/hackathons/model/types'
+import { Criterion, Judge } from '@/features/hackathons/model/types'
+import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
+import { isJudge } from '@/features/hackathons/model/guards'
+import clsx from 'clsx'
 
 interface HackathonPageOptionCardProps {
-  item: UserPartial | Criterion
+  item: Judge | Criterion
   children?: React.ReactNode
   className?: string
 }
 
-export const HackathonPageOptionCard = ({
-  item,
-  children,
-}: HackathonPageOptionCardProps) => {
-  const avatarPath = userApi.getAvatar(item.id)
-  const isAvatar = 'first_name' in item
-  const title =
-    'first_name' in item ? `${item.first_name} ${item.last_name}` : item.name
+interface AvatarSectionProps {
+  item: Judge
+}
+
+const AvatarSection = memo(({ item }: AvatarSectionProps) => {
+  const avatarLink = useMemo(
+    () => (item.user_uploads.length ? item.user_uploads[0].url : ''),
+    [item.user_uploads],
+  )
+
+  const [firstName, lastName] = useMemo(
+    () => item.user_name.split(' '),
+    [item.user_name],
+  )
 
   return (
-    <div key={item.id} className={styles.item}>
-      {isAvatar ? (
-        <div className={styles.header}>
-          <div className={styles.avatar}>
-            <img src={avatarPath || '/default-avatar.png'} alt={title} />
-          </div>
-          <div className={styles.titleBlock}>
-            <h5 className={styles.personName}>{title}</h5>
-          </div>
-        </div>
+    <Avatar key={avatarLink || 'fallback'} className={styles.avatar}>
+      {avatarLink ? (
+        <AvatarImage
+          src={avatarLink}
+          alt={`${item.user_name} avatar`}
+          width={150}
+          height={150}
+          className={styles.avatarImage}
+        />
       ) : (
-        <h5 className={styles.name}>{title}</h5>
+        <AvatarFallback className={styles.avatarFallback}>
+          {`${firstName.charAt(0)} ${lastName.charAt(0)}`}
+        </AvatarFallback>
       )}
-      {children}
-    </div>
+    </Avatar>
   )
-}
+})
+
+AvatarSection.displayName = 'AvatarSection'
+
+const TitleSection = memo(({ title }: { title: string }) => (
+  <div className={styles.titleBlock}>
+    <h5 className={styles.personName}>{title}</h5>
+  </div>
+))
+
+TitleSection.displayName = 'TitleSection'
+
+export const HackathonPageOptionCard = memo(
+  ({ item, children, className }: HackathonPageOptionCardProps) => {
+    const isAvatar = isJudge(item)
+    const title = useMemo(
+      () => (isJudge(item) ? item.user_name : item.name),
+      [item],
+    )
+
+    return (
+      <div className={clsx(styles.item, className)}>
+        <div className={styles.header}>
+          {isAvatar && <AvatarSection item={item} />}
+          <TitleSection title={title} />
+        </div>
+        {children}
+      </div>
+    )
+  },
+)
+
+HackathonPageOptionCard.displayName = 'HackathonPageOptionCard'
