@@ -4,6 +4,7 @@ import { TeamMateRef } from '../../model/types'
 import { useEffect } from 'react'
 import { toast } from '@/shared/hooks/use-toast'
 import { useQueryClient } from '@tanstack/react-query'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
 export const useHackathonTeam = (page_id: number) => {
   // Данные о команде
@@ -20,9 +21,9 @@ export const useHackathonTeam = (page_id: number) => {
 
   // Мутации для изменения данных
   const { mutate: leaveTeam } = teamApi.useLeaveHackathonTeam()
-  const { mutate: kickMate } = teamApi.useKickHackathonTeamMate()
+  const { mutate: kickMate } = teamApi.useKickHackathonTeamMate(hackathonId)
   const { mutate: setCaptainRights } =
-    teamApi.useSetHackathonTeamCaptainRights()
+    teamApi.useSetHackathonTeamCaptainRights(hackathonId)
 
   // Вычисленные значения
   const hasTeam = !!teamInfo
@@ -63,14 +64,17 @@ export const useHackathonTeam = (page_id: number) => {
     member: TeamMateRef,
   ) => {
     event.preventDefault()
-    kickMate(member, {
-      onSuccess: async () =>
-        notificationService.success(
-          `Участник ${member.user_name} успешно исключен из команды`,
-        ),
-      onError: error =>
-        notificationService.error(error, `Ошибка при исключении участника`),
-    })
+    kickMate(
+      { mate_id: member.user_id },
+      {
+        onSuccess: async () =>
+          notificationService.success(
+            `Участник ${member.user_name} успешно исключен из команды`,
+          ),
+        onError: error =>
+          notificationService.error(error, `Ошибка при исключении участника`),
+      },
+    )
   }
 
   // Обработчик назначения капитана
@@ -85,7 +89,9 @@ export const useHackathonTeam = (page_id: number) => {
     }
     setCaptainRights(requestBody, {
       onSuccess: async () => {
-        await queryClient.refetchQueries({ queryKey: ['myTeamInfo'] })
+        await queryClient.refetchQueries({
+          queryKey: ['myHackathonTeam', hackathonId],
+        })
         const success_message = !member.is_captain
           ? `Участник ${member?.user_name} успешно назначен капитаном`
           : `Участник ${member?.user_name} успешно снят с должности капитана`

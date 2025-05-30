@@ -31,21 +31,35 @@ export const hackathonTeamsApi = {
       },
     })
   },
-  useSetHackathonTeamRole: () => {
+  useSetHackathonTeamRole: (hackathon_id: number) => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (hackathon_id: number) => {
+      mutationFn: async ({ role_desc }: { role_desc: string }) => {
         const response = await axiosInstance.put(
           `${TEAM_SERVICE_HACKATHON_TEAM_API_URL}/${hackathon_id}/mate/role-desc`,
+          { role_desc },
         )
         return response.data
       },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['myHackathonTeam', hackathon_id],
+        })
+      },
     })
   },
-  useSetHackathonTeamCaptainRights: () => {
+  useSetHackathonTeamCaptainRights: (hackathon_id: number) => {
     return useMutation({
-      mutationFn: async (hackathon_id: number) => {
+      mutationFn: async ({
+        user_id,
+        is_captain,
+      }: {
+        user_id: number
+        is_captain: boolean
+      }) => {
         const response = await axiosInstance.put(
           `${TEAM_SERVICE_HACKATHON_TEAM_API_URL}/${hackathon_id}/mate/captain-rights`,
+          { user_id, is_captain },
         )
         return response.data
       },
@@ -54,38 +68,26 @@ export const hackathonTeamsApi = {
   useLeaveHackathonTeam: () => {
     return useMutation({
       mutationFn: async (hackathon_id: number) => {
-        const response = await axiosInstance.put(
+        const response = await axiosInstance.delete(
           `${TEAM_SERVICE_HACKATHON_TEAM_API_URL}/${hackathon_id}/mate/`,
         )
         return response.data
       },
     })
   },
-  useKickHackathonTeamMate: () => {
+  useKickHackathonTeamMate: (hackathon_id: number) => {
     return useMutation({
-      mutationFn: async ({
-        hackathon_id,
-        mate_id,
-      }: {
-        hackathon_id: number
-        mate_id: number
-      }) => {
-        const response = await axiosInstance.put(
+      mutationFn: async ({ mate_id }: { mate_id: number }) => {
+        const response = await axiosInstance.delete(
           `${TEAM_SERVICE_HACKATHON_TEAM_API_URL}/${hackathon_id}/mate/${mate_id}/`,
         )
         return response.data
       },
     })
   },
-  useAddHackathonTeamMate: () => {
+  useAddHackathonTeamMate: (hackathon_id: number) => {
     return useMutation({
-      mutationFn: async ({
-        hackathon_id,
-        mate_id,
-      }: {
-        hackathon_id: number
-        mate_id: number
-      }) => {
+      mutationFn: async ({ mate_id }: { mate_id: number }) => {
         const response = await axiosInstance.post(
           `${TEAM_SERVICE_HACKATHON_TEAM_API_URL}/${hackathon_id}/mate/${mate_id}/`,
         )

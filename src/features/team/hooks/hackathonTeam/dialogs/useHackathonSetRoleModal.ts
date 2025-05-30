@@ -3,8 +3,9 @@ import { teamApi } from '../../../api'
 import { useQueryClient } from '@tanstack/react-query'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { TeamMateRef } from '../../../model/types'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
-export const useSetRoleModal = () => {
+export const useHackathonSetRoleModal = (hackathonId: number) => {
   const queryClient = useQueryClient()
   const user = cookiesApi.getUser()
   const teamMates = queryClient.getQueryData(['teamMates']) as
@@ -13,7 +14,8 @@ export const useSetRoleModal = () => {
   const currentUserRole =
     teamMates?.find(mate => mate.user_id === user?.id)?.role_desc || ''
 
-  const { mutate: setTeamMateRole } = teamApi.useSetTeamMateRole()
+  const { mutate: setTeamMateRole } =
+    teamApi.useSetHackathonTeamRole(hackathonId)
   const [role, setRole] = useState(currentUserRole)
 
   const handleMateRoleChange = async (
@@ -24,7 +26,8 @@ export const useSetRoleModal = () => {
 
   const handleMateRoleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    setTeamMateRole(role, {
+    const requestBody = { role_desc: role }
+    setTeamMateRole(requestBody, {
       onSuccess: async () => {
         notificationService.success(`Ваша роль в команде успешно изменена`)
       },
