@@ -13,6 +13,23 @@ export interface TeamInfo {
   mates: TeamMateRef[]
 }
 
+export interface HackathonTeamInfo extends TeamInfo {
+  submission: UserUpload[]
+  hackathon_id: number
+  hackathon_name: string
+}
+
+export interface HackathonTeamSubmission {
+  id: number
+  team_id: number
+  hackathon_id: number
+  name: string
+  s3_key: string
+  content_type: string
+  uploaded_at: string
+  url: string
+}
+
 // Объект cсылки на участника команды
 export interface TeamMateRef {
   team_id: number
