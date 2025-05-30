@@ -12,6 +12,7 @@ import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFal
 import styles from './TeamPageContent.module.scss'
 import HackathonTeamToolbar from '../hackathonPage/HackathonTeamToolbar/HackathonTeamToolbar'
 import HackathonTeamMembersList from '../hackathonPage/HackathonTeamMembersList/HackathonTeamMembersList'
+import HackathonTeamSubmissionSidebar from '../hackathonPage/HackathonTeamSubmissionSidebar'
 
 interface TeamPageContentProps {
   user: UserPartial
@@ -85,7 +86,6 @@ const HackathonTeamContent = ({
   const {
     isCaptain,
     isTeamLoading,
-    isTeamMatesLoading,
     hasTeam,
     teamName,
     teamMates,
@@ -106,7 +106,6 @@ const HackathonTeamContent = ({
   }
 
   const membersListSettings = {
-    isTeamMatesLoading,
     teamMates: teamMates ?? [],
     isCaptain,
     handleTeamKick,
@@ -135,8 +134,11 @@ const HackathonTeamContent = ({
                 user={user}
                 settings={membersListSettings}
               />
-              <div className={styles.teamSidebars}>
+              <div className={styles.hackathonTeamSidebars}>
                 <TeamSidebar team={teamInfo} teamName={teamName ?? ''} />
+                <HackathonTeamSubmissionSidebar
+                  submission={teamInfo?.submission}
+                />
               </div>
             </div>
           </div>

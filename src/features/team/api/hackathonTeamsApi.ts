@@ -1,6 +1,7 @@
 import axiosInstance from '@/shared/api/axios'
 import { TEAM_SERVICE_HACKATHON_TEAM_API_URL } from '@/shared/api/basePaths'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { HackathonTeamInfo } from '../model/types'
 
 export const hackathonTeamsApi = {
   useApplyToHackathon: (hackathon_id: number) => {
@@ -21,7 +22,7 @@ export const hackathonTeamsApi = {
     })
   },
   useGetMyHackathonTeamInfo: (hackathon_id: number) => {
-    return useQuery({
+    return useQuery<HackathonTeamInfo>({
       queryKey: ['myHackathonTeam', hackathon_id],
       queryFn: async () => {
         const response = await axiosInstance.get(
@@ -76,6 +77,7 @@ export const hackathonTeamsApi = {
     })
   },
   useKickHackathonTeamMate: (hackathon_id: number) => {
+    const queryClient = useQueryClient()
     return useMutation({
       mutationFn: async ({ mate_id }: { mate_id: number }) => {
         const response = await axiosInstance.delete(
@@ -83,15 +85,50 @@ export const hackathonTeamsApi = {
         )
         return response.data
       },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['myHackathonTeam', hackathon_id],
+        })
+      },
     })
   },
   useAddHackathonTeamMate: (hackathon_id: number) => {
+    const queryClient = useQueryClient()
     return useMutation({
       mutationFn: async ({ mate_id }: { mate_id: number }) => {
         const response = await axiosInstance.post(
           `${TEAM_SERVICE_HACKATHON_TEAM_API_URL}/${hackathon_id}/mate/${mate_id}/`,
         )
         return response.data
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['myHackathonTeam', hackathon_id],
+        })
+      },
+    })
+  },
+  useUploadSubmission: (hackathon_id: number) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+      mutationFn: async ({ file }: { file: File }) => {
+        const formData = new FormData()
+        formData.append('file', file)
+        const response = await axiosInstance.put(
+          `${TEAM_SERVICE_HACKATHON_TEAM_API_URL}/${hackathon_id}/submission`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        )
+        return response.data
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['myHackathonTeam', hackathon_id],
+        })
       },
     })
   },

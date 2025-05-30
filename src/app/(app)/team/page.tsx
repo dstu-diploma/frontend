@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers'
-import TeamPageContent from '@/features/team/ui/teamPage/TeamPageContent/TeamPageContent'
+import TeamPageContent from '@/features/team/ui/TeamPageContent/TeamPageContent'
 import { UserPartial } from '@/features/user/model/types'
 
 export default async function TeamPage() {

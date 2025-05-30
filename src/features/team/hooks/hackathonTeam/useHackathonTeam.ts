@@ -16,24 +16,12 @@ export const useHackathonTeam = (page_id: number) => {
     isPending: isTeamLoading,
     isError: isTeamLoadingError,
   } = teamApi.useGetMyHackathonTeamInfo(hackathonId)
-  const { data: teamMates, isPending: isTeamMatesLoading } =
-    teamApi.useGetTeamMates()
 
   // Мутации для изменения данных
   const { mutate: leaveTeam } = teamApi.useLeaveHackathonTeam()
   const { mutate: kickMate } = teamApi.useKickHackathonTeamMate(hackathonId)
   const { mutate: setCaptainRights } =
     teamApi.useSetHackathonTeamCaptainRights(hackathonId)
-
-  // Вычисленные значения
-  const hasTeam = !!teamInfo
-  const currentUser = teamMates?.find(
-    mate => mate.user_id === cookiesApi.getUser()?.id,
-  )
-  const isCaptain = currentUser?.is_captain || false
-  const teamRole = currentUser?.role_desc || ''
-  const nonCaptainMates = teamMates?.filter(mate => !mate.is_captain) || []
-  const teamName = teamInfo?.name
 
   useEffect(() => {
     if (isTeamLoadingError) {
@@ -44,6 +32,17 @@ export const useHackathonTeam = (page_id: number) => {
       })
     }
   }, [isTeamLoadingError])
+
+  // Вычисленные значения
+  const hasTeam = !!teamInfo
+  const currentUser = teamInfo?.mates?.find(
+    mate => mate.user_id === cookiesApi.getUser()?.id,
+  )
+  const isCaptain = currentUser?.is_captain || false
+  const teamRole = currentUser?.role_desc || ''
+  const nonCaptainMates =
+    teamInfo?.mates?.filter(mate => !mate.is_captain) || []
+  const teamName = teamInfo?.name
 
   // Обработчик выхода из команды
   const handleTeamLeave = async (event: React.FormEvent) => {
@@ -107,11 +106,10 @@ export const useHackathonTeam = (page_id: number) => {
     teamName,
     teamRole,
     nonCaptainMates,
-    isTeamMatesLoading,
     isTeamLoading,
     hasTeam,
     teamInfo,
-    teamMates,
+    teamMates: teamInfo?.mates,
     handleTeamLeave,
     handleTeamKick,
     handleChangeCaptain,
