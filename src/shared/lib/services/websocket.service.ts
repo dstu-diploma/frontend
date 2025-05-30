@@ -2,6 +2,7 @@ import {
   CHAT_SERVICE_API_URL,
   USER_SERVICE_API_URL,
 } from '@/shared/api/basePaths'
+import Cookies from 'js-cookie'
 import axiosInstance, { API_URL } from '@/shared/api/axios'
 import { type Request } from '@/features/requests/model/types'
 import { notificationService } from './notification.service'
@@ -28,6 +29,9 @@ class WebSocketService {
   private refreshToken: string
 
   private constructor(apiKey: string, refreshToken: string) {
+    if (!apiKey || !refreshToken) {
+      throw new Error('API key and refresh token are required')
+    }
     this.apiKey = apiKey
     this.refreshToken = refreshToken
   }
@@ -37,8 +41,16 @@ class WebSocketService {
     apiKey: string,
     refreshToken: string,
   ): WebSocketService {
+    if (!apiKey || !refreshToken) {
+      throw new Error('API key and refresh token are required')
+    }
+
     if (!WebSocketService.instance) {
       WebSocketService.instance = new WebSocketService(apiKey, refreshToken)
+    } else {
+      // Обновляем токены в существующем инстансе
+      WebSocketService.instance.apiKey = apiKey
+      WebSocketService.instance.refreshToken = refreshToken
     }
     return WebSocketService.instance
   }
@@ -92,7 +104,7 @@ class WebSocketService {
           break
         case 'message':
           const currentRequest = await axiosInstance.get<Request>(
-            `${CHAT_SERVICE_API_URL}/${data.data.id}`,
+            `${CHAT_SERVICE_API_URL}/${data.data.request_id}`,
           )
           notificationService.success(
             `Пришло новое сообщение в обращение: «${currentRequest.data.subject}»`,
@@ -141,12 +153,12 @@ class WebSocketService {
       return
     }
 
-    this.ws = new WebSocket('ws://localhost/chat/ws')
+    this.ws = new WebSocket('http://localhost/chat/ws')
 
-    this.ws.addEventListener('open', this.onOpen.bind(this))
-    this.ws.addEventListener('message', this.onMessage.bind(this))
-    this.ws.addEventListener('close', this.onClose.bind(this))
-    this.ws.addEventListener('error', this.onError.bind(this))
+    this.ws.onopen = this.onOpen.bind(this)
+    this.ws.onmessage = this.onMessage.bind(this)
+    this.ws.onclose = this.onClose.bind(this)
+    this.ws.onerror = this.onError.bind(this)
   }
 
   // Подписка на веб-сокет
@@ -173,10 +185,22 @@ class WebSocketService {
   }
 }
 
-const API_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NDg1MjE4NjJ9.MQsc8LeEjRa6LpE-eq0ZZ4vXtbnS5TOQbZtgEwsfEbc'
-const REFRESH_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NDkxMjI5OTcsInRva2VuX3JldmlzaW9uIjoxMDJ9.xCYsKqq8f8-nRh4Nt-vJcdCjuU2p7y86cuuydLs_FdY'
-export const wsService = WebSocketService.getInstance(API_KEY, REFRESH_KEY)
+// Создаем экземпляр сервиса только если есть токены
+export let wsService: WebSocketService | null = null
 
-wsService.connect()
+const access_token = Cookies.get('access_token')
+const refresh_token = Cookies.get('refresh_token')
+
+if (access_token && refresh_token) {
+  try {
+    wsService = WebSocketService.getInstance(
+      `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NDg2MzE5Mjl9.J1qAW4PJb47xM3LyStRZp9ceGXakujsRkPG-wRnErJ4`,
+      refresh_token,
+    )
+    wsService.connect()
+  } catch (error) {
+    console.error('Failed to initialize WebSocket service:', error)
+  }
+} else {
+  console.log('No tokens found in cookies')
+}
