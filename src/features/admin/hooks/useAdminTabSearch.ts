@@ -5,20 +5,22 @@ import { TeamInfo } from '@/features/team/model/types'
 import { User } from '@/features/user'
 import { useMemo, useState } from 'react'
 
-interface FilterConfig<T> {
+interface FilterConfig<T extends object> {
   items: T[]
   searchTerm: string
   searchFields: (keyof T)[]
   filterValue?: string
   filterField?: keyof T
+  filterType?: 'role' | 'status' | 'team'
 }
 
-const filterItems = <T,>({
+const filterItems = <T extends object>({
   items,
   searchTerm,
   searchFields,
   filterValue,
   filterField,
+  filterType,
 }: FilterConfig<T>) => {
   let filteredItems = items
 
@@ -36,10 +38,21 @@ const filterItems = <T,>({
   }
 
   // Применяем фильтрацию по селекту
-  if (filterValue && filterField) {
+  if (filterValue && filterValue !== 'all') {
     filteredItems = filteredItems.filter(item => {
-      const value = item[filterField]
-      return value === filterValue
+      if (filterType === 'status' && 'is_banned' in item) {
+        return (
+          (filterValue === 'active' && !item.is_banned) ||
+          (filterValue === 'blocked' && item.is_banned)
+        )
+      }
+      if (filterType === 'role' && 'role' in item) {
+        return item.role === filterValue
+      }
+      if (filterType === 'team' && 'type' in item) {
+        return item.type === filterValue
+      }
+      return false
     })
   }
 
@@ -92,7 +105,7 @@ export const useAdminTabSearch = ({
       searchTerm: searchTerms.users,
       searchFields: ['first_name', 'last_name', 'email'],
       filterValue: filterValues.users,
-      filterField: 'role',
+      filterType: 'role',
     })
   }, [users, searchTerms.users, filterValues.users])
 
@@ -102,7 +115,7 @@ export const useAdminTabSearch = ({
       searchTerm: searchTerms.brandTeams,
       searchFields: ['name'],
       filterValue: filterValues.brandTeams,
-      filterField: 'type',
+      filterType: 'team',
     })
   }, [brandTeams, searchTerms.brandTeams, filterValues.brandTeams])
 
@@ -112,7 +125,7 @@ export const useAdminTabSearch = ({
       searchTerm: searchTerms.hackathonTeams,
       searchFields: ['name'],
       filterValue: filterValues.hackathonTeams,
-      filterField: 'type',
+      filterType: 'status',
     })
   }, [hackathonTeams, searchTerms.hackathonTeams, filterValues.hackathonTeams])
 

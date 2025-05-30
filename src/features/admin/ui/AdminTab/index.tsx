@@ -111,13 +111,32 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
 
   const filteredItems =
     items?.filter(item => {
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase()
+        if ('name' in item) {
+          if (!item.name.toLowerCase().includes(searchLower)) {
+            return false
+          }
+        } else if ('first_name' in item && 'last_name' in item) {
+          const fullName = `${item.first_name} ${item.last_name}`.toLowerCase()
+          if (!fullName.includes(searchLower)) {
+            return false
+          }
+        } else {
+          return false
+        }
+      }
+
       if (!isFilterActive) return true
 
       switch (filterType) {
         case 'role':
           return 'role' in item && item.role === filterValue
         case 'status':
-          return 'status' in item && item.status === filterValue
+          return 'is_banned' in item
+            ? (filterValue === 'active' && !item.is_banned) ||
+                (filterValue === 'blocked' && item.is_banned)
+            : 'status' in item && item.status === filterValue
         case 'team':
           return 'type' in item && item.type === filterValue
         default:

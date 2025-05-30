@@ -1,15 +1,9 @@
 import React from 'react'
 import styles from './AdminTabFilter.module.scss'
 import { Input } from '@/shared/ui/shadcn/input'
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/shared/ui/shadcn/select'
 import { useAdminSelect } from '@/features/admin/hooks/useAdminSelect'
 import { FilterType } from '@/features/admin/hooks/useAdminSelect'
+import TabSelect from './TabSelect/TabSelect'
 
 interface AdminTabFilterProps {
   className?: string
@@ -32,22 +26,13 @@ export const AdminTabFilter = ({
     ({ selectedValue, options, placeholder, handleSelectChange }, index) => {
       const type = filterTypes[index]
       return (
-        <Select
+        <TabSelect
           key={type}
-          value={selectedValue}
-          onValueChange={handleSelectChange}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder={placeholder} />
-          </SelectTrigger>
-          <SelectContent>
-            {options.map(option => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          selectedValue={selectedValue}
+          handleSelect={handleSelectChange}
+          placeholder={placeholder}
+          options={options}
+        />
       )
     },
   )

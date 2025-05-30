@@ -21,7 +21,7 @@ const AccordionBlock = ({
   return (
     <AccordionItem
       value={valueKey}
-      className={clsx(styles.AccordionBlock, className)}
+      className={clsx(styles.accordionBlock, className)}
     >
       <AccordionBlockTrigger
         entity={entity}

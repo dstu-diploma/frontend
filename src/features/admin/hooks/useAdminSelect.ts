@@ -1,16 +1,10 @@
-import { useState } from 'react'
-
-export type SelectOption = {
-  value: string
-  label: string
-}
-
-export type FilterType = 'role' | 'status' | 'team'
+import { useState, useMemo } from 'react'
+import { FilterType } from './types'
 
 export const useAdminSelect = (filterType: FilterType) => {
-  const [selectedValue, setSelectedValue] = useState<string>('')
+  const [selectedValue, setSelectedValue] = useState('all')
 
-  const getOptions = (): SelectOption[] => {
+  const options = useMemo(() => {
     switch (filterType) {
       case 'role':
         return [
@@ -27,38 +21,50 @@ export const useAdminSelect = (filterType: FilterType) => {
           { value: 'active', label: 'Активный' },
           { value: 'inactive', label: 'Заблокирован' },
         ]
-      case 'team':
-        return [
-          { value: 'all', label: 'Все команды' },
-          { value: 'brand', label: 'Команда-бренд' },
-          { value: 'hackathon', label: 'Хакатон' },
-        ]
       default:
         return []
     }
-  }
+  }, [filterType])
+
+  const placeholder = useMemo(() => {
+    switch (filterType) {
+      case 'role':
+        return 'Выберите роль'
+      case 'status':
+        return 'Выберите статус'
+      default:
+        return 'Выберите значение'
+    }
+  }, [filterType])
 
   const handleSelectChange = (value: string) => {
     setSelectedValue(value)
   }
 
-  const getPlaceholder = (): string => {
-    switch (filterType) {
-      case 'role':
-        return 'Сортировка по роли'
-      case 'status':
-        return 'Сортировка по статусу'
-      case 'team':
-        return 'Сортировка по типу команды'
-      default:
-        return 'Выберите значение'
-    }
+  const filterUsers = (users: any[]) => {
+    if (selectedValue === 'all') return users
+
+    return users.filter(user => {
+      if (filterType === 'role') {
+        return user.role === selectedValue
+      }
+      if (filterType === 'status') {
+        if (selectedValue === 'active') {
+          return user.is_banned === false
+        }
+        if (selectedValue === 'inactive') {
+          return user.is_banned === true
+        }
+      }
+      return true
+    })
   }
 
   return {
     selectedValue,
-    options: getOptions(),
-    placeholder: getPlaceholder(),
+    options,
+    placeholder,
     handleSelectChange,
+    filterUsers,
   }
 }
