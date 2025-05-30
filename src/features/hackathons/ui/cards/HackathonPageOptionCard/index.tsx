@@ -16,10 +16,12 @@ interface AvatarSectionProps {
 }
 
 const AvatarSection = memo(({ item }: AvatarSectionProps) => {
-  const avatarLink = useMemo(
-    () => (item.user_uploads.length ? item.user_uploads[0].url : ''),
-    [item.user_uploads],
-  )
+  const avatarLink = useMemo(() => {
+    const avatarUpload = item.user_uploads.find(
+      upload => upload.type === 'avatar',
+    )
+    return avatarUpload?.url || ''
+  }, [item.user_uploads])
 
   const [firstName, lastName] = useMemo(
     () => item.user_name.split(' '),

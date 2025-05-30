@@ -95,8 +95,8 @@ const HackathonPageCriteria = ({
           ) : (
             <div className={styles.noCriteria}>
               <span>Критерии для оценки работ команд отсутствуют</span>
-              <div className={styles.hackathonCriteriaActions}>
-                {isPrivilegedRole() && (
+              {isPrivilegedRole() && (
+                <div className={styles.hackathonCriteriaActions}>
                   <ActionModal
                     title='Создать критерий'
                     trigger={<Button>Создать критерий</Button>}
@@ -108,8 +108,8 @@ const HackathonPageCriteria = ({
                   >
                     <HackathonCriteriaFormContent form={criterionForm} />
                   </ActionModal>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           )}
         </div>
