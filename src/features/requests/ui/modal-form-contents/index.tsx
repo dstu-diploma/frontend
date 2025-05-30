@@ -22,10 +22,6 @@ const CreateRequestFormContent = ({
   form,
   hackathonList,
 }: CreateRequestFormContentProps) => {
-  console.log('Hackathon list:', hackathonList)
-  console.log('Current form values:', form.getValues())
-  console.log('Current hackathon_id:', form.watch('hackathon_id'))
-
   return (
     <div className={styles.requestForm}>
       <div className={styles.requestFormItem}>
@@ -33,9 +29,7 @@ const CreateRequestFormContent = ({
         <Select
           value={form.watch('hackathon_id')?.toString()}
           onValueChange={value => {
-            console.log('Select value changed:', value)
             form.setValue('hackathon_id', Number(value))
-            console.log('Form values after change:', form.getValues())
           }}
         >
           <SelectTrigger className={styles.selectTrigger}>
@@ -52,7 +46,6 @@ const CreateRequestFormContent = ({
             side='bottom'
           >
             {hackathonList?.map(hackathon => {
-              console.log('Rendering hackathon option:', hackathon)
               return (
                 <SelectItem
                   key={hackathon.id}

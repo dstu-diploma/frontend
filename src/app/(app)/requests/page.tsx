@@ -25,6 +25,7 @@ const MyRequestsPage = () => {
     closedRequests,
     isRequestsLoading,
     handleCreateRequest,
+    isCreatingRequest,
   } = useRequests()
 
   const createRequestForm = useForm<CreateRequestFormData>({
@@ -38,6 +39,10 @@ const MyRequestsPage = () => {
 
   useRequestsListSocket()
 
+  const onSubmit = (data: CreateRequestFormData) => {
+    handleCreateRequest(data)
+  }
+
   return (
     <div className={styles.requestsContainer}>
       <h1 className={styles.requestsTitle}>Мои обращения</h1>
@@ -47,10 +52,8 @@ const MyRequestsPage = () => {
             title='Создание обращения'
             trigger={<Button>Создать обращение</Button>}
             submitButtonText='Создать'
-            onSave={e => {
-              e.preventDefault()
-              createRequestForm.handleSubmit(handleCreateRequest)(e)
-            }}
+            onSave={createRequestForm.handleSubmit(onSubmit)}
+            isSubmitting={isCreatingRequest}
           >
             <CreateRequestFormContent
               hackathonList={hackathonsList}

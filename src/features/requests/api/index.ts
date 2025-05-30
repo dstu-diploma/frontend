@@ -47,6 +47,12 @@ export const requestsApi = {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['allRequests'] })
       },
+      retry: false,
+      mutationKey: ['createRequest'],
+      onMutate: async () => {
+        // Отменяем все исходящие запросы
+        await queryClient.cancelQueries({ queryKey: ['allRequests'] })
+      },
     })
   },
   useSendMessageInRequest: (request_id: number) => {
@@ -68,13 +74,17 @@ export const requestsApi = {
       },
     })
   },
-  useCloseRequest: () => {
+  useCloseRequest: (request_id: number) => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (request_id: number): Promise<Request> => {
+      mutationFn: async (): Promise<Request> => {
         const response = await axiosInstance.delete(
           `${CHAT_SERVICE_API_URL}/${request_id}`,
         )
         return response.data
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['request', request_id] })
       },
     })
   },

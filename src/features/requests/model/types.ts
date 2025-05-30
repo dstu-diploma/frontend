@@ -48,3 +48,14 @@ export interface ChatMessage {
 export interface RequestMessage {
   message: string
 }
+
+export interface CreatedRequest {
+  id: number
+  hackathon_id: number
+  message: string
+  subject: string
+  created_at: string
+  updated_at: string
+  closed_by_user_id: number | null
+  user_id: number
+}

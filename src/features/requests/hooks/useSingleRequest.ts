@@ -6,7 +6,7 @@ import { notificationService } from '@/shared/lib/services/notification.service'
 export const useSingleRequest = (requestId: number) => {
   const { data: currentRequest, isLoading: isRequestLoading } =
     requestsApi.useGetRequestById(requestId)
-  const { mutate: closeRequest } = requestsApi.useCloseRequest()
+  const { mutate: closeRequest } = requestsApi.useCloseRequest(requestId)
   const { mutate: sendMessage } = requestsApi.useSendMessageInRequest(requestId)
 
   // Отправка сообщения в обращение
@@ -23,9 +23,9 @@ export const useSingleRequest = (requestId: number) => {
 
   // Закрытие обращения
   const handleCloseRequest = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>, requestId: number) => {
+    (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      closeRequest(requestId, {
+      closeRequest(undefined, {
         onError: error => {
           const axiosError = error as AxiosError
           if (axiosError.response?.status === 400) {
