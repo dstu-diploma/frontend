@@ -1,23 +1,64 @@
 import React from 'react'
-import styles from './HackathonPageSidebar.module.scss'
-// import { HackathonTeam } from '@/features/hackathons/model/types'
 import { Button } from '@/shared/ui/shadcn/button'
+import styles from './HackathonTeamSubmissionSidebar.module.scss'
+import { useParams } from 'next/navigation'
+import HackathonPageSidebar from '@/features/hackathons/ui/hackathonPage/sidebar/HackathonPageSidebar'
+import AttachmentRow from '@/features/hackathons/ui/hackathonPage/sidebar/HackathonAttachmentsSidebar/AttachmentRow'
+import { useHackathonTeamSubmission } from '@/features/team/hooks/hackathonTeam/useHackathonTeamSubmission'
+import { HackathonTeamSubmission } from '@/features/team/model/types'
 
-// interface TeamSubmissionSidebarProps {
-//   teamInfo: HackathonTeam
-// }
+interface HackathonTeamSubmissionSidebarProps {
+  submission: HackathonTeamSubmission | undefined
+}
 
-const TeamSubmissionSidebar = () => {
+const HackathonAttachmentsSidebar = ({
+  submission,
+}: HackathonTeamSubmissionSidebarProps) => {
+  const { id } = useParams()
+  const hackathon_id = Number(id)
+  const { handleUploadSubmission } = useHackathonTeamSubmission(hackathon_id)
+
   return (
-    <div className={styles.sidebar}>
-      <div className={styles.sidebarContent}>
-        <div className={styles.sidebarSection}>
-          <h4>Вложение команды</h4>
-        </div>
-        <Button variant='destructive'>Удалить вложение</Button>
+    <HackathonPageSidebar
+      title='Вложение команды'
+      actions={
+        !submission && (
+          <div className={styles.sidebarActions}>
+            <div style={{ position: 'relative' }}>
+              <input
+                type='file'
+                style={{ display: 'none' }}
+                id='file-upload'
+                onChange={handleUploadSubmission}
+              />
+              <Button
+                onClick={() => {
+                  document.getElementById('file-upload')?.click()
+                }}
+              >
+                Загрузить вложение
+              </Button>
+            </div>
+          </div>
+        )
+      }
+    >
+      <div className={styles.hackathonAttachments}>
+        {submission ? (
+          <div className={styles.attachmentsList}>
+            <AttachmentRow
+              key={submission.id}
+              fileName={submission.name}
+              mimeType={submission.content_type}
+              link={submission.url}
+            />
+          </div>
+        ) : (
+          <div className={styles.noAttachments}>Нет загруженного вложения</div>
+        )}
       </div>
-    </div>
+    </HackathonPageSidebar>
   )
 }
 
-export default TeamSubmissionSidebar
+export default HackathonAttachmentsSidebar
