@@ -1,15 +1,17 @@
 'use client'
 
 import React from 'react'
-import { TeamSidebar } from '../../sidebar/TeamSidebar'
-import TeamToolbar from '../TeamToolbar/TeamToolbar'
-import TeamInvitesList from '../TeamInvitesList/TeamInvitesList'
-import TeamMembersList from '../TeamMembersList/TeamMembersList'
+import { TeamSidebar } from '../sidebar/TeamSidebar'
+import TeamToolbar from '../teamPage/TeamToolbar/TeamToolbar'
+import TeamInvitesList from '../teamPage/TeamInvitesList/TeamInvitesList'
+import TeamMembersList from '../teamPage/TeamMembersList/TeamMembersList'
 import { UserPartial } from '@/features/user/model/types'
 import { useTeam } from '@/features/team/hooks/brandTeam/useTeam'
 import { useHackathonTeam } from '@/features/team/hooks/hackathonTeam/useHackathonTeam'
 import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
 import styles from './TeamPageContent.module.scss'
+import HackathonTeamToolbar from '../hackathonPage/HackathonTeamToolbar/HackathonTeamToolbar'
+import HackathonTeamMembersList from '../hackathonPage/HackathonTeamMembersList/HackathonTeamMembersList'
 
 interface TeamPageContentProps {
   user: UserPartial
@@ -119,13 +121,20 @@ const HackathonTeamContent = ({
     <div className={styles.teamContainer}>
       <h1 className={styles.teamTitle}>Команда «{teamInfo?.name}»</h1>
       <div className={styles.teamContent}>
-        <TeamToolbar user={user} settings={toolbarSettings} />
+        <HackathonTeamToolbar
+          hackathonId={pageId}
+          user={user}
+          settings={toolbarSettings}
+        />
         {!hasTeam && !isTeamLoading && <TeamInvitesList />}
         {hasTeam && teamInfo && (
           <div className={styles.teamContents}>
             <h3>Участники команды</h3>
             <div className={styles.membersContainer}>
-              <TeamMembersList user={user} settings={membersListSettings} />
+              <HackathonTeamMembersList
+                user={user}
+                settings={membersListSettings}
+              />
               <div className={styles.teamSidebars}>
                 <TeamSidebar team={teamInfo} teamName={teamName ?? ''} />
               </div>
