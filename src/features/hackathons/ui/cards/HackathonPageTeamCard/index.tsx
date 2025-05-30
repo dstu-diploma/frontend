@@ -68,20 +68,24 @@ const HackathonPageTeamCard = ({
               e.preventDefault()
             }}
           >
-            <ActionModal
-              title='Оставить оценку команде'
-              trigger={<Button>Оценить по критериям</Button>}
-              submitButtonText='Оставить оценку'
-              form={form}
-              onSave={async e => {
-                e.preventDefault()
-                form.handleSubmit(data => {
-                  onSetScore(team.id, data)
-                })()
-              }}
-            >
-              <HackathonScoreFormContent criteria={criteria} form={form} />
-            </ActionModal>
+            {Array.isArray(criteria) && criteria.length > 0 ? (
+              <ActionModal
+                title='Оставить оценку команде'
+                trigger={<Button>Оценить по критериям</Button>}
+                submitButtonText='Оставить оценку'
+                form={form}
+                onSave={async e => {
+                  e.preventDefault()
+                  form.handleSubmit(data => {
+                    onSetScore(team.id, data)
+                  })()
+                }}
+              >
+                <HackathonScoreFormContent criteria={criteria} form={form} />
+              </ActionModal>
+            ) : (
+              <span>Нет критериев для оценки</span>
+            )}
           </div>
         )}
       </div>

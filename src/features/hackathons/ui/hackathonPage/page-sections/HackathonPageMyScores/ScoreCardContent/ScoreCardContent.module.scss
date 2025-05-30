@@ -1,0 +1,126 @@
+.accordionBlockForm {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  padding: 0 0.5rem;
+}
+
+.accordionBlockFormСontainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 60%;
+}
+
+.accordionBlockFormColumns {
+  width: 100%;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.accordionBlockFormRow {
+  display: flex;
+  gap: 1rem;
+}
+
+.accordionBlockFormRow>.accordionBlockFormItem {
+  width: 50%;
+}
+
+.accordionBlockFormGroup {
+  width: calc(100% / 2);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.accordionBlockFormGroup:last-child {
+  gap: 1rem;
+}
+
+.accordionBlockFormItem {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 0.25rem;
+
+  .formItemLabel {
+    font-size: 15px;
+    color: black !important;
+  }
+}
+
+.accordionBlockFormItemText {
+  display: block;
+  padding: 0.5rem 0;
+}
+
+.accordionBlockFormItem:has(.accordionBlockFormAbout) {
+  flex: 1;
+}
+
+.accordionBlockFormAbout {
+  height: 100%;
+  background-color: white;
+}
+
+.accordionBlockFormButtons {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.accordionBlockFormInput {
+  background-color: white !important;
+}
+
+.accordionBlockFormInput:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+  background-color: #fff;
+}
+
+.dropdownFileInput {
+  display: none;
+}
+
+.accordionBlockFormErrors {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 30%;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.errorBlock {
+  display: flex;
+  min-height: 1rem;
+  padding: 0.25rem 0;
+}
+
+.errorText {
+  color: red;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.errorMessage {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}

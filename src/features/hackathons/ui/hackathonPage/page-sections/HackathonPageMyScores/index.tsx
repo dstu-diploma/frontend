@@ -46,7 +46,10 @@ const HackathonPageMyScores = ({
                   <HackathonPageScoreCard
                     key={teamId}
                     className={styles.scoreTrigger}
-                    teamName={teamScores[0]?.team_name}
+                    teamName={teamScores
+                      .map(score => score.team_name)
+                      .join(', ')}
+                    teamScores={teamScores}
                   />
                 </AccordionTrigger>
                 <AccordionContent>
