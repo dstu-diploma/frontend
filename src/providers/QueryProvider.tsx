@@ -15,14 +15,14 @@ export const QueryProvider = ({ children }: QueryProviderProps) => {
         defaultOptions: {
           queries: {
             refetchOnWindowFocus: false,
-            retry: (failureCount, error) => {
-              const axiosError = error as AxiosError
-              return axiosError.response?.status !== 400 && failureCount < 2
-            },
-            staleTime: 0,
-            gcTime: 0,
+            retry: false,
+            staleTime: 5 * 60 * 1000,
+            gcTime: 10 * 60 * 1000,
+            refetchOnMount: false,
+            refetchOnReconnect: false,
           },
           mutations: {
+            retry: false,
             onError: error => {
               const axiosError = error as AxiosError
               if (axiosError.response?.status === 400) {
