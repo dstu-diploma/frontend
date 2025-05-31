@@ -10,6 +10,8 @@ import { useToast } from '@/shared/hooks/use-toast'
 import { useEffect } from 'react'
 import { useLogin } from '../../hooks/auth/useLogin'
 import Cookies from 'js-cookie'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 export const LoginForm = () => {
   const {
@@ -39,8 +41,16 @@ export const LoginForm = () => {
     }
   }, [toast])
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const authWrapperStyles = clsx(styles.wrapper, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.wrapper}>
+    <div className={authWrapperStyles}>
       <div className={styles.container}>
         <h1 className={styles.brandTitle}>Packathon</h1>
         <form className={styles.form} onSubmit={handleSubmit(handleLogin)}>
