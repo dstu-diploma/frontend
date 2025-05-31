@@ -1,3 +1,8 @@
+@use "./media/mobile";
+// @use "./media/tablet";
+// @use "./media/desktop";
+// @use "./media/medium_desktop";
+
 .header {
   width: 100%;
   height: 70px;
@@ -17,6 +22,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.logoBlock {
+  display: flex;
+  gap: 0.625rem;
 }
 
 .brand {
