@@ -27,10 +27,18 @@ const validateUploads = (user: FullUser) => {
 
 export const cookiesApi = {
   setAccessToken: (accessToken: string) => {
-    Cookies.set('access_token', accessToken, COOKIE_OPTIONS)
+    try {
+      Cookies.set('access_token', accessToken, COOKIE_OPTIONS)
+    } catch (error) {
+      console.error('Error setting access token cookie:', error)
+    }
   },
   setRefreshToken: (refreshToken: string) => {
-    Cookies.set('refresh_token', refreshToken, COOKIE_OPTIONS)
+    try {
+      Cookies.set('refresh_token', refreshToken, COOKIE_OPTIONS)
+    } catch (error) {
+      console.error('Error setting refresh token cookie:', error)
+    }
   },
   setUserCookie: (user: FullUser) => {
     const validatedUser = validateUploads(user)
