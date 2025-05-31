@@ -1,13 +1,8 @@
-import { Suspense } from 'react'
 import { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
-import { Toaster } from '@/shared/ui/shadcn/toast/toaster'
-import { Header } from '@/widgets/Header/ui/Header'
-import { Sidebar } from '@/widgets/Sidebar/ui/Sidebar'
-import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
-import styles from './layout.module.scss'
 import '@/shared/styles/globals.scss'
 import { AppProvider } from '@/providers/AppProvider'
+import { AppContent } from './AppContent'
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -26,18 +21,9 @@ export const metadata: Metadata = {
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <html>
-      <body suppressHydrationWarning={true}>
+      <body suppressHydrationWarning={true} className={roboto.className}>
         <AppProvider>
-          <Suspense fallback={<LayoutFallback />}>
-            <div className={`${styles.layout} ${roboto.className}`}>
-              <Header />
-              <div className={styles.container}>
-                <Sidebar />
-                <main className={styles.main}>{children}</main>
-                <Toaster />
-              </div>
-            </div>
-          </Suspense>
+          <AppContent>{children}</AppContent>
         </AppProvider>
       </body>
     </html>
