@@ -9,6 +9,7 @@ import { getAxiosResponse } from '@/shared/lib/helpers/apiResponse'
 import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
 import { useUserPage } from '@/features/user/hooks/userpage/useUserPage'
 import CustomMDEditor from '@/shared/ui/custom/misc/CustomMDEditor/CustomMDEditor'
+import { mapRole } from '@/shared/lib/helpers/roleMapping'
 
 export default function UserPage() {
   const { id } = useParams()
@@ -87,6 +88,14 @@ export default function UserPage() {
           <h2 className={styles.sectionTitle}>Информация о пользователе</h2>
           <div className={styles.details}>
             <div className={styles.detailItem}>
+              <div className={styles.detailLabel}>ID пользователя</div>
+              <div className={styles.detailValue}>{user.id}</div>
+            </div>
+            <div className={styles.detailItem}>
+              <div className={styles.detailLabel}>Роль</div>
+              <div className={styles.detailValue}>{mapRole(user.role)}</div>
+            </div>
+            <div className={styles.detailItem}>
               <div className={styles.detailLabel}>Дата регистрации</div>
               <div className={styles.detailValue}>
                 {ISOStringToDateString(user.register_date)}
@@ -99,10 +108,6 @@ export default function UserPage() {
                   ? ISOStringToDateString(user.birthday)
                   : 'Не указана'}
               </div>
-            </div>
-            <div className={styles.detailItem}>
-              <div className={styles.detailLabel}>ID пользователя</div>
-              <div className={styles.detailValue}>{user.id}</div>
             </div>
           </div>
         </div>
