@@ -25,6 +25,9 @@ export const useSetRoleModal = () => {
 
   const handleMateRoleSave = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!role) {
+      return
+    }
     setTeamMateRole(role, {
       onSuccess: async () => {
         notificationService.success(`Ваша роль в команде успешно изменена`)

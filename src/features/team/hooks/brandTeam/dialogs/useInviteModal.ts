@@ -32,6 +32,9 @@ export const useInviteModal = () => {
 
   const handleTeamInvite = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!mateEmail) {
+      return
+    }
     searchByEmail(mateEmail, {
       onSuccess: (data: UserByEmail) => {
         sendInvintation(data.id, data.first_name, data.last_name)
