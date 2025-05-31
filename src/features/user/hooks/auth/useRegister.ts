@@ -3,13 +3,14 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { userApi } from '../../api'
 import { RegisterFormData } from '../../model/schemas'
-import { useToast } from '@/shared/hooks/use-toast'
+import { notificationService } from '@/shared/lib/services/notification.service'
+import { useLogin } from './useLogin'
 
 export const useRegister = () => {
   const router = useRouter()
   const { mutate: registerUser } = userApi.useRegister()
   const [error, setError] = useState<string | null>(null)
-  const { toast, dismiss } = useToast()
+  const { login } = useLogin()
 
   const handleRegister = async (data: RegisterFormData) => {
     registerUser(
@@ -21,14 +22,20 @@ export const useRegister = () => {
         password: data.password,
       },
       {
-        onSuccess: () => {
-          router.push('/login')
-          dismiss()
-          toast({
-            variant: 'defaultBlueSuccess',
-            title: 'Регистрация прошла успешно',
-            description: 'Вы успешно зарегистрировались',
-          })
+        onSuccess: async () => {
+          try {
+            await login(data.email, data.password)
+            notificationService.successRaw(
+              'Регистрация прошла успешно',
+              'Вы успешно зарегистрировались',
+            )
+          } catch (error) {
+            console.error('Login after registration failed:', error)
+            notificationService.error(
+              error,
+              `Ошибка при автоматическом входе после регистрации`,
+            )
+          }
         },
         onError: (error: Error) => {
           const axiosError = error as AxiosError

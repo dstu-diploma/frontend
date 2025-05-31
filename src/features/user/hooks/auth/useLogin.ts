@@ -37,11 +37,12 @@ export const useLogin = () => {
     }
   }, [userInfo, loggedInUserId, router])
 
-  const handleLogin = async (data: LoginFormData) => {
+  // Метод для логина юзера
+  const login = (username: string, password: string) => {
     loginUser(
       {
-        username: data.username,
-        password: data.password,
+        username,
+        password,
       },
       {
         onSuccess: response => {
@@ -72,7 +73,13 @@ export const useLogin = () => {
     )
   }
 
+  // Обработка отправки формы логина
+  const handleLogin = async (data: LoginFormData) => {
+    login(data.username, data.password)
+  }
+
   return {
+    login,
     hasCheckedAuth,
     handleLogin,
     error,
