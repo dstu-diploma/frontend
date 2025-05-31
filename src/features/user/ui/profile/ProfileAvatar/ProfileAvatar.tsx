@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/shared/ui/shadcn/dropdown'
-import { User } from '../../../model/types'
+import { User, UserUpload } from '../../../model/types'
 import { useProfileAvatar } from '../../../hooks/profile/useProfileAvatar'
 import styles from './ProfileAvatar.module.scss'
 import { useMemo } from 'react'
@@ -40,7 +40,9 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
       return avatarSrc
     }
     if (user && 'uploads' in user) {
-      return user?.uploads?.[0]?.url
+      return user?.uploads?.find(
+        (upload: UserUpload) => upload.type === 'avatar',
+      )
     }
     return null
   }, [avatarSrc, isAvatarDeleted, user])

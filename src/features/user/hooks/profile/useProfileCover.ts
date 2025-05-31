@@ -3,10 +3,12 @@ import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { useRef, useEffect, useMemo, useState } from 'react'
 import { userApi } from '../../api'
 import { notificationService } from '@/shared/lib/services/notification.service'
+import { useUploads } from '../../providers/UploadsProvider'
 
 export const useProfileCover = () => {
   const user = cookiesApi.getUser()
   const [localCoverUrl, setLocalCoverUrl] = useState<string | null>(null)
+  const { updateUploads, getUploads } = useUploads()
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const objectUrlRef = useRef<string | null>(null)
@@ -16,6 +18,7 @@ export const useProfileCover = () => {
     userApi.useSetOrUpdateCover()
   const { mutate: deleteCover, isPending: isDeletingCover } =
     userApi.useDeleteCover()
+  const { refetch: refetchUser } = userApi.useGetSingleUser(user?.id!)
 
   const isLoading = isUpdatingCover || isDeletingCover
 
@@ -26,11 +29,12 @@ export const useProfileCover = () => {
     if (objectUrlRef.current) {
       return objectUrlRef.current
     }
-    const coverUpload = user?.uploads?.find(
+    const uploads = getUploads()
+    const coverUpload = uploads.find(
       (upload: { type?: string }) => upload.type === 'cover',
     )
     return coverUpload?.url
-  }, [user, localCoverUrl])
+  }, [getUploads, localCoverUrl])
 
   useEffect(() => {
     return () => {
@@ -56,22 +60,25 @@ export const useProfileCover = () => {
     cleanupObjectUrl()
     pendingFileRef.current = file
 
+    // Сохраняем текущее состояние аватара
+    const currentUploads = getUploads()
+    const avatarUpload = currentUploads.find(
+      (upload: { type?: string }) => upload.type === 'avatar',
+    )
+
     setOrUpdateCover(file, {
-      onSuccess: data => {
+      onSuccess: async data => {
         cleanupObjectUrl()
         setLocalCoverUrl(data.url)
-        if (user) {
-          const currentUploads = user.uploads || []
-          const coverUpload = currentUploads.find(
-            (upload: { type?: string }) => upload.type === 'cover',
-          )
-          if (coverUpload) {
-            coverUpload.url = data.url
-          } else {
-            currentUploads.push({ ...data, type: 'cover' })
+        // Обновляем данные пользователя с сервера
+        const { data: updatedUser } = await refetchUser()
+        if (updatedUser) {
+          cookiesApi.setUserCookie(updatedUser)
+          // Обновляем состояние загрузок, сохраняя аватар
+          if (avatarUpload) {
+            updateUploads('avatar', avatarUpload)
           }
-          user.uploads = currentUploads
-          cookiesApi.setUserCookie(user)
+          updateUploads('cover', data)
         }
         notificationService.success('Обложка успешно изменена')
         if (fileInputRef.current) {
@@ -81,6 +88,10 @@ export const useProfileCover = () => {
       },
       onError: error => {
         cleanupObjectUrl()
+        // В случае ошибки восстанавливаем предыдущее состояние
+        if (avatarUpload) {
+          updateUploads('avatar', avatarUpload)
+        }
         notificationService.error(error, 'Ошибка при изменении обложки')
         if (fileInputRef.current) {
           fileInputRef.current.value = ''
@@ -104,19 +115,42 @@ export const useProfileCover = () => {
     setLocalCoverUrl(null)
     pendingFileRef.current = null
 
+    // Сохраняем текущее состояние загрузок
+    const currentUploads = getUploads()
+    const avatarUpload = currentUploads.find(
+      (upload: { type?: string }) => upload.type === 'avatar',
+    )
+
+    // Обновляем состояние, удаляя только обложку
+    updateUploads('cover', null)
+
+    // Затем отправляем запрос на удаление
     deleteCover(undefined, {
-      onSuccess: () => {
-        if (user) {
-          const currentUploads = user.uploads || []
-          const updatedUploads = currentUploads.filter(
-            (upload: { type?: string }) => upload.type !== 'cover',
-          )
-          user.uploads = updatedUploads
-          cookiesApi.setUserCookie(user)
+      onSuccess: async () => {
+        try {
+          // Обновляем данные пользователя с сервера
+          const { data: updatedUser } = await refetchUser()
+          if (updatedUser) {
+            cookiesApi.setUserCookie(updatedUser)
+            // Восстанавливаем аватар, если он был
+            if (avatarUpload) {
+              updateUploads('avatar', avatarUpload)
+            }
+          }
           notificationService.success('Обложка успешно удалена')
+        } catch (error) {
+          // В случае ошибки восстанавливаем предыдущее состояние
+          if (avatarUpload) {
+            updateUploads('avatar', avatarUpload)
+          }
+          notificationService.error(error, 'Ошибка при обновлении данных')
         }
       },
       onError: error => {
+        // В случае ошибки восстанавливаем предыдущее состояние
+        if (avatarUpload) {
+          updateUploads('avatar', avatarUpload)
+        }
         notificationService.error(error, `Ошибка при удалении обложки`)
       },
     })

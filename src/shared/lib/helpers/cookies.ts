@@ -16,12 +16,9 @@ const validateUploads = (user: FullUser) => {
     upload => upload && upload.type && validTypes.includes(upload.type),
   )
 
-  const avatar = validatedUploads.find(upload => upload.type === 'avatar')
-  const cover = validatedUploads.find(upload => upload.type === 'cover')
-
   return {
     ...user,
-    uploads: [avatar, cover].filter(Boolean),
+    uploads: validatedUploads,
   }
 }
 
