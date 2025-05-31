@@ -1,11 +1,8 @@
-import { Suspense } from 'react'
 import { Metadata } from 'next'
-import { QueryProvider } from '@/providers/QueryProvider'
 import { Roboto } from 'next/font/google'
-import { Toaster } from '@/shared/ui/shadcn/toast/toaster'
-import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
-import styles from './layout.module.scss'
 import '@/shared/styles/globals.scss'
+import { AppProvider } from '@/providers/AppProvider'
+import { AuthContent } from './AuthContent'
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -14,7 +11,7 @@ const roboto = Roboto({
 })
 
 export const metadata: Metadata = {
-  title: 'Packathon',
+  title: 'Packathon - Авторизация',
   description: 'Платформа для проведения хакатонов',
   icons: {
     icon: '/favicon.png',
@@ -27,16 +24,11 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang='ru' className={roboto.className}>
-      <body>
-        <QueryProvider>
-          <Suspense fallback={<LayoutFallback />}>
-            <div className={styles.layout}>
-              <main className={styles.main}>{children}</main>
-              <Toaster />
-            </div>
-          </Suspense>
-        </QueryProvider>
+    <html>
+      <body suppressHydrationWarning={true} className={roboto.className}>
+        <AppProvider>
+          <AuthContent>{children}</AuthContent>
+        </AppProvider>
       </body>
     </html>
   )

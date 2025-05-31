@@ -9,6 +9,7 @@ import { useRegister } from '../../hooks/auth/useRegister'
 import AuthFormGroup from './AuthFormGroup'
 import styles from './auth.module.scss'
 import clsx from 'clsx'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 export const RegisterForm = () => {
   const {
@@ -21,8 +22,16 @@ export const RegisterForm = () => {
   })
   const { handleRegister, error } = useRegister()
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const authWrapperStyles = clsx(styles.wrapper, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.wrapper}>
+    <div className={authWrapperStyles}>
       <div className={styles.container}>
         <h1 className={styles.brandTitle}>Packathon</h1>
         <form
