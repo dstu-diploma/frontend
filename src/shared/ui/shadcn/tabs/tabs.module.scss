@@ -4,9 +4,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 0.5rem;
-    background-color: hsl(var(--muted));
+    background-color: hsl(#f8fafc);
     padding: 0.25rem;
-    color: hsl(var(--muted-foreground));
+    color: hsl(#64748b);
   }
   
   .tabsTrigger {
@@ -25,7 +25,7 @@
     &:focus-visible {
       outline: 2px solid transparent;
       outline-offset: 2px;
-      box-shadow: 0 0 0 2px hsl(var(--ring));
+      box-shadow: 0 0 0 2px hsl(#94a3b8);
     }
     
     &:disabled {
@@ -34,8 +34,8 @@
     }
     
     &[data-state="active"] {
-      background-color: hsl(var(--background));
-      color: hsl(var(--foreground));
+      background-color: hsl(#ffffff);
+      color: hsl(#020817);
       box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     }
   }
