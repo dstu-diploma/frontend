@@ -8,6 +8,7 @@ import {
   UserPartial,
   FullUser,
 } from '../model/types'
+import { ProfileFormData } from '../model/schemas'
 
 export const userBaseApi = {
   useRegister: () => {
@@ -76,5 +77,8 @@ export const userBaseApi = {
         return response.data
       },
     })
+  },
+  updateProfile: (data: ProfileFormData) => {
+    return axiosInstance.patch(`${USER_SERVICE_API_URL}/`, data)
   },
 }

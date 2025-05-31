@@ -1,98 +1,64 @@
-import { useUsername } from '@/providers/UsernameProvider'
-import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import {
-  dateStringToISO,
-  ISOStringToDateString,
-} from '@/shared/lib/helpers/date'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { ProfileFormData, profileSchema } from '../../model/schemas'
-import { mapRole } from '@/shared/lib/helpers/roleMapping'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { profileSchema } from '../../model/schemas'
 import { userApi } from '../../api'
-import { FullUser } from '../../model/types'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { notificationService } from '@/shared/lib/services/notification.service'
+import { useRouter } from 'next/navigation'
+import { mapRole } from '@/shared/lib/helpers/roleMapping'
 
 export const useProfileForm = () => {
+  const router = useRouter()
   const profile = cookiesApi.getUser()
-  const { setUsername } = useUsername()
-  const [isLocalLoading, setIsLocalLoading] = useState(false)
-
-  const defaultValues = useMemo(() => {
-    if (!profile) {
-      return {
-        role: '',
-        birthday: '',
-      }
-    }
-    return {
-      ...profile,
-      role: mapRole(profile.role || ''),
-      birthday: ISOStringToDateString(profile.birthday || ''),
-    }
-  }, [profile])
 
   const {
-    watch,
-    setValue,
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
-  } = useForm<ProfileFormData>({
+  } = useForm({
     resolver: zodResolver(profileSchema),
-    defaultValues,
+    defaultValues: {
+      first_name: profile?.first_name || '',
+      last_name: profile?.last_name || '',
+      patronymic: profile?.patronymic || '',
+      email: profile?.email || '',
+      about: profile?.about || '',
+      birthday: profile?.birthday || null,
+      role: mapRole(profile?.role) || '',
+      registerDate: profile?.register_date || '',
+    },
   })
 
   const { mutate: updateProfile } = userApi.useUpdateProfile()
 
-  const handleProfileFormSubmit = async (data: ProfileFormData) => {
-    updateProfile(
-      {
-        first_name: data.first_name,
-        last_name: data.last_name,
-        patronymic: data.patronymic,
-        email: data.email,
-        about: data.about,
-        birthday: dateStringToISO(data.birthday) || '',
-      },
-      {
-        onSuccess: (data: FullUser) => {
-          cookiesApi.setUserCookie(data)
+  const submitHandler = handleSubmit(async data => {
+    try {
+      updateProfile(data, {
+        onSuccess: response => {
+          if (response) {
+            cookiesApi.setUserCookie(response)
+            notificationService.success('Профиль успешно обновлен')
+            router.refresh()
+          }
         },
         onError: error => {
-          console.error('Ошибка при обновлении профиля:', error)
+          notificationService.error(error, 'Ошибка при обновлении профиля')
         },
-      },
-    )
-  }
-
-  const submitHandler = handleSubmit(async data => {
-    setIsLocalLoading(true)
-    try {
-      console.log('Submitting form data:', data)
-      await handleProfileFormSubmit(data)
-      notificationService.success('Данные успешно сохранены!')
-      setUsername({
-        first_name: data.first_name,
-        last_name: data.last_name,
       })
     } catch (error) {
-      console.error('Error submitting form:', error)
-      notificationService.error(error, `Ошибка при сохранении данных`)
-    } finally {
-      setIsLocalLoading(false)
+      notificationService.error(error, 'Ошибка при обновлении профиля')
     }
   })
 
   return {
-    profile,
-    watch,
-    setValue,
-    isLocalLoading,
     submitHandler,
     register,
-    handleSubmit,
+    watch,
+    setValue,
     errors,
     isSubmitting,
+    profile,
   }
 }

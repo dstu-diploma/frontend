@@ -60,11 +60,18 @@ export const profileSchema = z.object({
   about: z
     .string()
     .max(100, { message: 'Информация о себе не должна превышать 100 символов' })
+    .nullable()
     .optional(),
   birthday: z
     .string()
-    .min(10, { message: 'Дата рождения должна содержать минимум 10 символов' })
-    .optional(),
+    .nullable()
+    .optional()
+    .transform(val => {
+      if (!val) return null
+      // Преобразуем значение из datetime-local в ISO формат
+      const date = new Date(val)
+      return date.toISOString()
+    }),
   role: z.string().optional(),
   registerDate: z.string().optional(),
 })

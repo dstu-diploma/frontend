@@ -1,7 +1,11 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { formatDate } from '@/shared/lib/helpers/date'
+import { useMemo, useState, useEffect } from 'react'
+import {
+  dateTimeLocalToIso,
+  formatDate,
+  isoToDateTimeLocal,
+} from '@/shared/lib/helpers/date'
 import { mapRole } from '@/shared/lib/helpers/roleMapping'
 import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
 import { useProfileForm } from '@/features/user/hooks/profile/useProfileForm'
@@ -117,11 +121,12 @@ export default function ProfilePage() {
               <Label className={styles.detailLabel}>Дата рождения</Label>
               <div className={styles.detailValue}>
                 <Input
+                  type='datetime-local'
                   id='birthday'
-                  {...register('birthday')}
-                  defaultValue={
-                    formatDate(profileData.birthday) || 'Не указана'
-                  }
+                  value={isoToDateTimeLocal(watch('birthday'))}
+                  onChange={e => {
+                    setValue('birthday', dateTimeLocalToIso(e.target.value))
+                  }}
                   className={styles.profileFormInput}
                 />
               </div>
