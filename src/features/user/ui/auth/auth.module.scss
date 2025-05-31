@@ -1,3 +1,7 @@
+@use './media/mobile';
+@use './media/tablet';
+@use './media/desktop';
+
 .wrapper {
     display: flex;
     justify-content: center;
