@@ -11,6 +11,9 @@ export const useSingleRequest = (requestId: number) => {
 
   // Отправка сообщения в обращение
   const handleSendMessage = (messageText: string) => {
+    if (!messageText) {
+      return
+    }
     const requestBody = {
       message: messageText,
     }

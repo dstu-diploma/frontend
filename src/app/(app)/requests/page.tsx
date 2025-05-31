@@ -17,6 +17,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@radix-ui/react-tabs'
 import RequestList from '@/features/requests/ui/RequestList'
 import { useRequestsListSocket } from '@/features/requests/hooks/useRequestsListSocket'
 import { hackathonApi } from '@/features/hackathons/api'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
 
 const MyRequestsPage = () => {
   const { data: hackathonsList } = hackathonApi.useGetHackathonList()
@@ -43,24 +44,32 @@ const MyRequestsPage = () => {
     handleCreateRequest(data)
   }
 
+  const user = cookiesApi.getUser()
+  const canCreateRequest =
+    (user && user.role === 'user') || user.role === 'judge'
+
   return (
     <div className={styles.requestsContainer}>
-      <h1 className={styles.requestsTitle}>Мои обращения</h1>
+      <h1 className={styles.requestsTitle}>
+        {user.role !== 'user' ? 'Все' : 'Мои'} обращения
+      </h1>
       <div className={styles.requestsContent}>
-        <Toolbar>
-          <ActionModal
-            title='Создание обращения'
-            trigger={<Button>Создать обращение</Button>}
-            submitButtonText='Создать'
-            onSave={createRequestForm.handleSubmit(onSubmit)}
-            isSubmitting={isCreatingRequest}
-          >
-            <CreateRequestFormContent
-              hackathonList={hackathonsList}
-              form={createRequestForm}
-            />
-          </ActionModal>
-        </Toolbar>
+        {canCreateRequest && (
+          <Toolbar>
+            <ActionModal
+              title='Создание обращения'
+              trigger={<Button>Создать обращение</Button>}
+              submitButtonText='Создать'
+              onSave={createRequestForm.handleSubmit(onSubmit)}
+              isSubmitting={isCreatingRequest}
+            >
+              <CreateRequestFormContent
+                hackathonList={hackathonsList}
+                form={createRequestForm}
+              />
+            </ActionModal>
+          </Toolbar>
+        )}
         <div className={styles.requestsListContainer}>
           <h3>Список обращений</h3>
           {isRequestsLoading ? (

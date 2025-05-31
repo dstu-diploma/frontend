@@ -65,7 +65,9 @@ const RequestPage = () => {
                     placeholder='Введите сообщение...'
                     rows={1}
                   />
-                  <Button type='submit'>Отправить</Button>
+                  <Button type='submit' disabled={!messageText}>
+                    Отправить
+                  </Button>
                   <ConfirmModal
                     title='Вы уверены, что хотите закрыть обращение?'
                     submitButtonText='Закрыть'
