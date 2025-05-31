@@ -1,5 +1,6 @@
 type NotificationCallback = {
   success: (message: string) => void
+  successRaw: (title: string, description: string) => void
   error: (error: unknown, message: string) => void
   errorRaw: (title: string, description: string) => void
 }
@@ -27,6 +28,9 @@ class NotificationService {
 
   public success(message: string): void {
     this.listeners.forEach(callback => callback.success(message))
+  }
+  public successRaw(title: string, description: string): void {
+    this.listeners.forEach(callback => callback.successRaw(title, description))
   }
 
   public error(error: unknown, message: string): void {

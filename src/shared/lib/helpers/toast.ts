@@ -44,6 +44,19 @@ export const useCustomToast = () => {
     [dismiss, toast],
   )
 
+  // Вывод успешного тоста с описанием
+  const showToastSuccessRaw = useCallback(
+    (title: string, description: string) => {
+      dismiss()
+      toast({
+        variant: 'defaultBlueSuccess',
+        title: title,
+        description: description,
+      })
+    },
+    [],
+  )
+
   // Вывод успешного тоста
   const showToastSuccess = useCallback(
     (successMessage: string) => {
@@ -60,5 +73,6 @@ export const useCustomToast = () => {
     showToastError,
     showRawToastError,
     showToastSuccess,
+    showToastSuccessRaw,
   }
 }

@@ -9,13 +9,20 @@ export const NotificationProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const { showToastSuccess, showToastError, showRawToastError } =
-    useCustomToast()
+  const {
+    showToastSuccess,
+    showToastSuccessRaw,
+    showToastError,
+    showRawToastError,
+  } = useCustomToast()
 
   useEffect(() => {
     const handleNotification = {
       success: (message: string) => {
         showToastSuccess(message)
+      },
+      successRaw: (title: string, description: string) => {
+        showToastSuccessRaw(title, description)
       },
       error: (error: unknown, message: string) => {
         showToastError(error, message)
