@@ -13,6 +13,9 @@ import { Button } from '@/shared/ui/shadcn/button'
 import { generateGradient } from '@/shared/lib/helpers/gradient'
 import styles from './profile.module.scss'
 import { useProfileCover } from '@/features/user/hooks/profile/useProfileCover'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
+import MediaQuery from 'react-responsive'
 
 export default function ProfilePage() {
   const [gradient] = useState(generateGradient())
@@ -52,12 +55,20 @@ export default function ProfilePage() {
     return profile || defaultProfileData
   }, [profile, defaultProfileData])
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const profileStyles = clsx(styles.profileContainer, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   if (!profile) {
     return <LayoutFallback text='Загрузка профиля...' />
   }
 
   return (
-    <div className={styles.profileContainer}>
+    <div className={profileStyles}>
       <h1>Профиль</h1>
       <input
         type='file'
@@ -81,22 +92,31 @@ export default function ProfilePage() {
             </div>
             <div className={styles.userInfo}>
               <h1 className={styles.name}>
-                {profile.last_name} {profile.first_name} {profile.patronymic}
+                <MediaQuery maxWidth={767}>
+                  {profile.last_name} {profile.first_name}
+                </MediaQuery>
+                <MediaQuery minWidth={768}>
+                  {profile.last_name} {profile.first_name} {profile.patronymic}
+                </MediaQuery>
               </h1>
-              <p>
-                Дата регистрации:{' '}
-                {formatDate(profileData.register_date) || 'Не указана'}
+              <p className={styles.registerDate}>
+                Дата регистрации:&nbsp;
+                <span>
+                  {formatDate(profileData.register_date) || 'Не указана'}
+                </span>
               </p>
             </div>
           </div>
           {coverUrl && (
-            <Button
-              variant='destructive'
-              onClick={handleCoverDelete}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Загрузка...' : 'Удалить обложку'}
-            </Button>
+            <div className={styles.deleteButtonWrapper}>
+              <Button
+                variant='destructive'
+                onClick={handleCoverDelete}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Загрузка...' : 'Удалить обложку'}
+              </Button>
+            </div>
           )}
         </div>
         <form onSubmit={submitHandler} className={styles.profileForm}>
