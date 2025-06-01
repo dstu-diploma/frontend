@@ -1,0 +1,12 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .profileAvatarTrigger.mobile {
+    width: 125px;
+    height: 125px;
+    margin-bottom: 0.5rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+}

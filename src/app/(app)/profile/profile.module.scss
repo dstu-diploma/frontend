@@ -1,5 +1,6 @@
 @use '@/shared/styles/mixins' as *;
 @use './media/mobile';
+@use './media/tablet';
 
 .coverSection {
     width: 100%;

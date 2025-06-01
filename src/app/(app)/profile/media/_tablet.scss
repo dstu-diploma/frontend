@@ -1,7 +1,7 @@
 @use '@/shared/styles/mixins' as *;
 
-@include media(tablet, max) {
-  .profileContainer.mobile {
+@include media(tablet, min) {
+  .profileContainer.tablet {
     h1 {
       margin-top: 0.5rem;
       font-size: 1.25rem;
@@ -14,7 +14,7 @@
 
     .container {
       width: 100%;
-      padding: 1.25rem 1rem;
+      padding: 1.25rem 1.5rem;
       background: white;
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
@@ -32,12 +32,11 @@
         .info {
           width: 100%;
           display: flex;
-          flex-direction: column;
           margin-bottom: 1rem;
 
           .userInfo {
             margin-top: 0;
-            margin-left: 0;
+            margin-left: 30px;
             margin-bottom: 0;
 
             .registerDate {
@@ -48,7 +47,7 @@
           }
 
           .avatarContainer {
-            margin-top: -75px;
+            margin-top: -50px;
           }
         }
 
@@ -56,15 +55,6 @@
           width: 100%;
           display: flex;
           justify-content: flex-start;
-        }
-      }
-
-      .profileForm {
-        .details {
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
         }
       }
     }
