@@ -4,6 +4,8 @@ import { ConfirmModal } from '../../../../../shared/ui/custom/modals/ConfirmModa
 import styles from './TeamMemberCard.module.scss'
 import { TeamMateRef } from '@/features/team/model/types'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface TeamMemberCardProps {
   isCaptain: boolean
@@ -22,8 +24,17 @@ export const TeamMemberCard = ({
   if (!user) {
     return
   }
+
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const teamMemberCardStyles = clsx(styles.card, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.card}>
+    <div className={teamMemberCardStyles}>
       <div className={styles.mateInfo}>
         <TeamMemberCardAvatar member={member} />
         <div className={styles.info}>

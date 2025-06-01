@@ -1,6 +1,7 @@
 @use '@/shared/styles/mixins' as *;
 @use './media/mobile';
 @use './media/tablet';
+@use './media/desktop';
 
 .coverSection {
     width: 100%;
@@ -13,6 +14,7 @@
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     margin-top: 2rem;
+    animation: gradientAnimation 15s ease infinite;
 
     &:hover {
         opacity: 0.9;

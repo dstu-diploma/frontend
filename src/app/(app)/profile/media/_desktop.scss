@@ -1,0 +1,11 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(desktop, min) {
+  .profileContainer.desktop {
+    .userInfo {
+      .name {
+        font-size: 1.5rem;
+      }   
+    }
+  }
+}
