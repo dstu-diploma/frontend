@@ -97,11 +97,11 @@ export const RegisterForm = () => {
               className={styles.formButton}
               disabled={isSubmitting || !isValid}
             >
-              {isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
+              {isSubmitting ? 'Регистрация...' : 'Создать аккаунт'}
             </Button>
             <Link href='/login' className={styles.linkButton}>
               <Button type='submit' className={styles.formButton}>
-                Войти в аккаунт
+                Войти
               </Button>
             </Link>
           </div>

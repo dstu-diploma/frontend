@@ -1,3 +1,6 @@
+@use '@/shared/styles/mixins' as *;
+@use './media/mobile';
+
 .formGroup {
   position: relative;
 }

@@ -1,0 +1,27 @@
+@use '@/shared/styles/mixins' as *;
+@use '@/shared/styles/variables' as *;
+
+@include media(tablet, max) {
+  .formGroup.mobile {
+    label {
+      font-size: 0.75rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.5rem 0.625rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 0.6rem;
+      transition: all 0.2s ease;
+      background-color: #f8fafc;
+      color: #1a202c;
+    }
+
+    .errorText {
+      font-size: 0.58rem;
+      margin-top: 0.5rem;     
+      padding-left: 0;
+    }
+  }
+}
