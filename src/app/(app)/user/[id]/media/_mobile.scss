@@ -1,0 +1,70 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .userPage.mobile {
+    .coverSection {
+      height: 200px;
+    }
+
+    .container {
+      padding: 1.25rem 1.25rem;
+
+      .header {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #eee;
+        text-align: center;
+
+        .avatarContainer {
+          margin-bottom: 0.75rem;
+          .avatar {
+            width: 140px;
+            height: 140px;
+          }
+        }
+
+        .userInfo {
+          margin-top: 0;
+          margin-left: 0;
+          margin-bottom: 1rem;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: flex-start;
+          max-width: 600px;
+
+          h1 {
+            font-size: 1.25rem;
+            text-align: left;
+          }
+        }
+      }
+
+      .detailsContainer {
+        .sectionTitle {
+          font-size: 1rem;
+        }
+
+        .details {
+          margin-top: 0.75rem;
+          .detailItem {
+            padding: 0.75rem;
+
+            .detailLabel,
+            .detailValue {
+              font-size: 0.75rem;
+            }
+          }
+        }
+      }
+
+      .section {
+        .sectionTitle {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}

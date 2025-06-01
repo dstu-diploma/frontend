@@ -1,0 +1,16 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, min) {
+  .userPage.tablet {
+    .container {
+      .header {
+        .userInfo {
+          h1 {
+            font-size: 1.5rem;
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+}

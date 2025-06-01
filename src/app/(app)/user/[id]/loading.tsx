@@ -1,5 +1,7 @@
 import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
 
-export default function Loading() {
+const Loading = () => {
   return <LayoutFallback text='Загрузка профиля...' />
 }
+
+export default Loading as React.FC
