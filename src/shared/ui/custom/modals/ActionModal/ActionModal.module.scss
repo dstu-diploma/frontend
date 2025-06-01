@@ -1,3 +1,6 @@
+@use '@/shared/styles/mixins' as *;
+@use './media/mobile';
+
 .dialogContent {
     max-width: 500px;
     width: 100%;

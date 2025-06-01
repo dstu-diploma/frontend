@@ -1,0 +1,33 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .dialogContent.mobile {
+    z-index: 999;
+    display: grid;
+    width: 75% !important;
+    transform: translate(-50%, -50%);
+    border-radius: 12px;
+    padding: 1.25rem;
+
+    .dialogForm {
+      gap: 1.25rem;
+      .dialogConfirmHeader {
+        .dialogConfirmTitle {
+          .dialogConfirmTitleText, .dangerWarning {
+            font-size: 1rem;
+            width: 100%;
+          }
+        }
+      }
+      .dialogActions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+
+        button {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
