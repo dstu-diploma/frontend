@@ -9,6 +9,25 @@
     display: flex;
     padding-top: 64px;
     min-height: 100vh;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        transition: all 0.4s ease-in;
+        background: #acd1f9;
+        border-radius: 4px;
+            
+        &:hover {
+            background: #3182ce;
+        }
+    }
 }
 
 .main {
