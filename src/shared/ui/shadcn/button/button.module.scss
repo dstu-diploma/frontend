@@ -1,3 +1,6 @@
+@use '@/shared/styles/mixins' as *;
+@use './media/mobile';
+
 .button {
     padding: 1rem;
     background: #e6f0fa; 
@@ -60,6 +63,13 @@
         }
     }
 } 
+
+@media (max-width: 767px) {
+    .button {
+        padding: 0.75rem;
+        font-size: 0.625rem;
+    }
+}
 
 .buttonDestructive {
     @extend .button;

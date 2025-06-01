@@ -1,6 +1,6 @@
 import * as React from 'react'
 import clsx from 'clsx'
-import styles from './input.module.css'
+import styles from './input.module.scss'
 
 const Input = React.forwardRef<
   HTMLInputElement,
