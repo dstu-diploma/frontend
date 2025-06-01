@@ -1,0 +1,69 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .message.mobile {
+    width: 60%;
+    max-width: 90%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    position: relative;
+
+    .messageUserInfo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .userAvatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .userNameReceived {
+      font-size: 0.65rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .userNameSent {
+      font-size: 0.65rem;
+      color: white;
+      font-weight: 500;
+    }
+
+    &.sent {
+      align-self: flex-start;
+      background-color: #8eabea;
+      color: white;
+      border-bottom-left-radius: 0.25rem;
+    }
+
+    &.received {
+      align-self: flex-start;
+      background-color: white;
+      color: #1e293b;
+      border: 1px solid #e2e8f0;
+      border-bottom-left-radius: 0.25rem;
+    }
+
+    .messageTime {
+      font-size: 0.625rem;
+      opacity: 0.8;
+      margin-top: 0.25rem;
+    }
+
+    .messageContent {
+      font-size: 0.7rem;
+      word-wrap: break-word;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      white-space: pre-wrap;
+    }
+  }
+}
