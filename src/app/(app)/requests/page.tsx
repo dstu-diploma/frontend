@@ -1,23 +1,23 @@
 'use client'
 
-import Toolbar from '@/shared/ui/custom/misc/Toolbar/Toolbar'
-import { Button } from '@/shared/ui/shadcn/button'
-import styles from './requests.module.scss'
-import { ActionModal } from '@/shared/ui/custom/modals/ActionModal'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { hackathonApi } from '@/features/hackathons/api'
+import { useRequests } from '@/features/requests/hooks/useRequests'
+import { useRequestsListSocket } from '@/features/requests/hooks/useRequestsListSocket'
 import {
   CreateRequestFormData,
   createRequestFormSchema,
 } from '@/features/requests/model/schemas'
-import { useRequests } from '@/features/requests/hooks/useRequests'
 import CreateRequestFormContent from '@/features/requests/ui/modal-form-contents'
-import EntityLoading from '@/shared/ui/custom/fallback/EntityLoading'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@radix-ui/react-tabs'
 import RequestList from '@/features/requests/ui/RequestList'
-import { useRequestsListSocket } from '@/features/requests/hooks/useRequestsListSocket'
-import { hackathonApi } from '@/features/hackathons/api'
+import { ActionModal } from '@/features/team'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
+import EntityLoading from '@/shared/ui/custom/fallback/EntityLoading'
+import Toolbar from '@/shared/ui/custom/misc/Toolbar/Toolbar'
+import { Button } from '@/shared/ui/shadcn/button'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@radix-ui/react-tabs'
+import { useForm } from 'react-hook-form'
+import styles from './requests.module.scss'
 
 const MyRequestsPage = () => {
   const { data: hackathonsList } = hackathonApi.useGetHackathonList()

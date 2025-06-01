@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import {
   dateTimeLocalToIso,
   formatDate,
@@ -207,7 +207,6 @@ export default function ProfilePage() {
                     setValue('about', value || '')
                   }}
                   height={300}
-                  mdClassName={styles.markdownEditor}
                 />
               </div>
             </div>
