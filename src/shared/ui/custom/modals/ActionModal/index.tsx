@@ -29,8 +29,11 @@ export const ActionModal = (props: ActionModalProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  console.log('ActionModal rendered, isOpen:', isOpen)
+
   // Запрет на автоматический выбор текста в инпутах
   const preventAutoInputSelection = (e: Event) => {
+    console.log('preventAutoInputSelection called')
     e.preventDefault()
     if (inputRef.current) {
       const input = inputRef.current
@@ -43,22 +46,37 @@ export const ActionModal = (props: ActionModalProps) => {
   // Обработка отправки формы. Если форма не валидна,
   // то не отправляем форму (и не закрываем модалку)
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('handleSubmit called')
     e.preventDefault()
 
     if (props.form) {
+      console.log('Checking form validation')
       const isValid = await props.form.trigger()
+      console.log('Form validation result:', isValid)
       if (!isValid) {
         return
       }
     }
 
+    console.log('Calling onSave')
     await props.onSave(e)
+    console.log('Setting isOpen to false')
     setIsOpen(false)
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{props.trigger}</DialogTrigger>
+    <Dialog
+      open={isOpen}
+      onOpenChange={open => {
+        console.log('Dialog onOpenChange called with:', open)
+        setIsOpen(open)
+      }}
+    >
+      <DialogTrigger asChild>
+        <div onClick={() => console.log('DialogTrigger clicked')}>
+          {props.trigger}
+        </div>
+      </DialogTrigger>
       <DialogContent
         className={clsx(styles.dialogContent, props.contentClassName)}
         onOpenAutoFocus={preventAutoInputSelection}
