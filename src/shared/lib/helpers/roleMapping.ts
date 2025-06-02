@@ -22,6 +22,7 @@ export const mapRoleKey = (role: string): string => {
 
 export const isPrivilegedRole = (): boolean => {
   return (
-    user.role === 'admin' || user.role === 'organizer' || user.role === 'jury'
+    user &&
+    (user.role === 'admin' || user.role === 'organizer' || user.role === 'jury')
   )
 }

@@ -16,6 +16,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import HackathonScoreFormContent from '../../hackathonPage/modal-form-contents/HackathonScoreFormContent'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface HackathonPageTeamCardProps {
   onSetScore: (teamId: number, data: ScoreFormData) => void
@@ -23,6 +24,7 @@ interface HackathonPageTeamCardProps {
   hackathonInfo: DetailedHackathon
   className?: string
   scores: Record<string, TeamJudgeScoreObject[]>
+  canSetScores: boolean
 }
 
 const HackathonPageTeamCard = ({
@@ -30,6 +32,7 @@ const HackathonPageTeamCard = ({
   team,
   className,
   onSetScore,
+  canSetScores,
   scores,
 }: HackathonPageTeamCardProps) => {
   const jury = hackathonInfo.judges
@@ -60,13 +63,21 @@ const HackathonPageTeamCard = ({
     ),
   })
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const hackathonTeamCardStyles = clsx(styles.card, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={clsx(styles.card, className)}>
+    <div className={clsx(hackathonTeamCardStyles, className)}>
       <div className={styles.infoContainer}>
         <div className={styles.info}>
           <h5 className={styles.name}>{team.name}</h5>
         </div>
-        {isAllowedToSetScore && (
+        {canSetScores && isAllowedToSetScore ? (
           <div className={styles.actions}>
             {Array.isArray(criteria) && criteria.length > 0 ? (
               teamScore ? (
@@ -101,7 +112,7 @@ const HackathonPageTeamCard = ({
               <span>Нет критериев для оценки</span>
             )}
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   )

@@ -10,6 +10,7 @@ import { CriterionFormData } from '@/features/hackathons/model/schemas'
 import { Criterion } from '@/features/hackathons/model/types'
 import styles from './HackathonPageCriteria.module.scss'
 import { HackathonPageOptionCard } from '../../../cards/HackathonPageOptionCard'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface HackathonPageCriteriaProps {
   criteria: Criterion[] | undefined
@@ -31,8 +32,16 @@ const HackathonPageCriteria = ({
     return str.length > 8 ? `${str.slice(0, 8)}...` : str
   }
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const criteriaSectionStyles = clsx(styles.hackathonCriteria, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <Toolbar className={styles.hackathonCriteria}>
+    <Toolbar className={criteriaSectionStyles}>
       <div
         className={clsx(
           styles.hackathonSectionContainer,
@@ -45,7 +54,11 @@ const HackathonPageCriteria = ({
             <div className={styles.hackathonCriteriaContent}>
               <div className={styles.hackathonCriteriaList}>
                 {criteria?.map((criterion: Criterion) => (
-                  <HackathonPageOptionCard key={criterion.id} item={criterion}>
+                  <HackathonPageOptionCard
+                    key={criterion.id}
+                    item={criterion}
+                    className={styles.criteriaCard}
+                  >
                     <div className={styles.criterionWeight}>
                       <span className={styles.weightLabel}>вес</span>
                       <span className={styles.weightValue}>

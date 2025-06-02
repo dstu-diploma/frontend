@@ -1,3 +1,6 @@
+@use './media/tablet';
+@use './media/mobile';
+
 .sidebar {
   text-decoration: none;
   display: flex;
@@ -29,12 +32,23 @@
   max-width: 850px !important;
 }
 
+@media (max-width: 1024px) {
+  .editHackathonModal {
+    width: 75%;
+    max-width: 0;
+  }
+}
+
 .sidebarActions {
   margin-top: 1.25rem;
   width: 100%;
   display: flex;
 
-  button {
+  .sidebarAction {
     width: 100%;
+
+    button {
+      width: 100%;
+    }
   }
 }

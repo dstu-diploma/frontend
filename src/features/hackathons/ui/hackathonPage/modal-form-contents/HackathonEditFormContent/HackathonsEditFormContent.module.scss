@@ -1,3 +1,6 @@
+@use './media/mobile';
+@use './media/tablet';
+
 .dialogFormContentContainer {
   display: flex;
   flex-direction: column;
@@ -7,6 +10,7 @@
   border: 1px solid rgb(242, 242, 242);
   background: #fdfdff;
 }
+
 .dialogFormColumn {
   width: 50%;
   display: flex;

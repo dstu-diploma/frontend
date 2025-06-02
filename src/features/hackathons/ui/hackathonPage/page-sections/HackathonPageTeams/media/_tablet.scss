@@ -1,0 +1,11 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, min) {
+  .hackathonTeams.tablet {
+    .hackathonSectionContainer {
+      h4 {
+        font-size: 1rem;
+      }
+    }
+  }
+}

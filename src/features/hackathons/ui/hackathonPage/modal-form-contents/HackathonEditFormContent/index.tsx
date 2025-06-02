@@ -10,14 +10,26 @@ import {
 import { HackathonFormData } from '@/features/hackathons/model/schemas'
 import clsx from 'clsx'
 import CustomMDEditor from '@/shared/ui/custom/misc/CustomMDEditor/CustomMDEditor'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface HackathonEditFormContentProps {
   form: UseFormReturn<HackathonFormData>
 }
 
 const HackathonEditFormContent = ({ form }: HackathonEditFormContentProps) => {
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const editHackathonFormContentStyles = clsx(
+    styles.dialogFormContentContainer,
+    {
+      [styles.mobile]: isMobile,
+      [styles.tablet]: isTablet,
+      [styles.desktop]: isDesktop,
+      [styles.mediumDesktop]: isMediumDesktop,
+    },
+  )
+
   return (
-    <div className={styles.dialogFormContentContainer}>
+    <div className={editHackathonFormContentStyles}>
       <div className={styles.dialogFormRow}>
         <div className={styles.dialogFormColumn}>
           <div className={styles.dialogFormContentItem}>

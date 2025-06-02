@@ -1,0 +1,27 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, min) {
+  .hackathonAttachments.tablet {
+    .attachmentsList {
+      margin: 0.75rem 0;
+      margin-bottom: 0;
+    }
+    .noAttachments {
+      font-size: 0.75rem;
+      margin-top: 0.75rem;
+    }
+  }
+}
+
+@include media(tablet, min) {
+  .sidebarActions.tablet {
+    .attachmentsList {
+      margin: 0.75rem 0;
+      margin-bottom: 0;
+    }
+    .noAttachments {
+      font-size: 0.75rem;
+      margin-top: 0.75rem;
+    }
+  }
+}

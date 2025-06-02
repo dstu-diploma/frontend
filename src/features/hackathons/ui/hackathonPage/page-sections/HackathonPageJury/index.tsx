@@ -11,6 +11,7 @@ import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
 import { JuryFormData } from '@/features/hackathons/model/schemas'
 import { Judge } from '@/features/hackathons/model/types'
 import { HackathonPageOptionCard } from '../../../cards/HackathonPageOptionCard'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface HackathonPageJuryProps {
   juryInfo: Judge[] | undefined
@@ -25,8 +26,16 @@ export const HackathonPageJury: FC<HackathonPageJuryProps> = ({
   handleJuryAddition,
   handleJuryDeletion,
 }) => {
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const jurySectionStyles = clsx(styles.hackathonJury, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <Toolbar className={styles.hackathonJury}>
+    <Toolbar className={jurySectionStyles}>
       <div
         className={clsx(
           styles.hackathonSectionContainer,
@@ -38,8 +47,15 @@ export const HackathonPageJury: FC<HackathonPageJuryProps> = ({
           {juryInfo && juryInfo?.length > 0 ? (
             <div className={styles.hackathonJuryList}>
               {juryInfo.map(judge => (
-                <Link key={judge.id} href={`/user/${judge.user_id}`}>
-                  <HackathonPageOptionCard item={judge} />
+                <Link
+                  key={judge.id}
+                  href={`/user/${judge.user_id}`}
+                  className={styles.judgeLink}
+                >
+                  <HackathonPageOptionCard
+                    item={judge}
+                    className={styles.judgeItem}
+                  />
                 </Link>
               ))}
             </div>

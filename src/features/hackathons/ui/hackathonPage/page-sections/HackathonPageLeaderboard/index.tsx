@@ -7,6 +7,8 @@ import HackathonPageBoardCard from '../../../cards/HackathonPageBoardCard'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { Button } from '@/shared/ui/shadcn/button'
 import { notificationService } from '@/shared/lib/services/notification.service'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface HackathonPageLeaderboardProps {
   hackathonId: number
@@ -31,8 +33,16 @@ const HackathonPageLeaderboard = ({
     })
   }
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const leaderboardStyles = clsx(styles.hackathonLeaderboard, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <Toolbar className={styles.hackathonLeaderboard}>
+    <Toolbar className={leaderboardStyles}>
       <div className={styles.sectionInfo}>
         <h4>Таблица лидеров</h4>
         {user && (user.role === 'admin' || user.role === 'organizer') && (

@@ -18,6 +18,8 @@ import HackathonPageActionsToolbar from '@/features/hackathons/ui/hackathonPage/
 import styles from './hackathonPage.module.scss'
 import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
 import HackathonPageLeaderboard from '@/features/hackathons/ui/hackathonPage/page-sections/HackathonPageLeaderboard'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 const HackathonPage = () => {
   const { id } = useParams()
@@ -95,8 +97,24 @@ const HackathonPage = () => {
     return now >= endDate
   }, [hackathonInfo])
 
+  // Объект c правами на секции
+  const permissions = {
+    canSeeLeaderboard: hackathonInfo?.teams.length > 0 && isEndPeriod,
+    canSeeScores: canSeeScores && isScorePeriod,
+    canSetScores: isScorePeriod,
+  }
+
+  // Мобильные стили
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const hackathonPageStyles = clsx(styles.hackathonPageContainer, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.hackathonPageContainer}>
+    <div className={hackathonPageStyles}>
       {isHackathonLoading ? (
         <LayoutFallback text='Загрузка информации о хакатоне...' />
       ) : (
@@ -118,7 +136,7 @@ const HackathonPage = () => {
                   form={editDescriptionForm}
                   onSave={handleEditHackathonDescription}
                 />
-                {hackathonInfo?.teams.length > 0 && isEndPeriod && (
+                {permissions.canSeeLeaderboard && (
                   <HackathonPageLeaderboard hackathonId={hackathonInfo?.id} />
                 )}
                 <HackathonPageCriteria
@@ -134,7 +152,7 @@ const HackathonPage = () => {
                   handleJuryAddition={handleJuryAddition}
                   handleJuryDeletion={handleJuryDeletion}
                 />
-                {canSeeScores && isScorePeriod && (
+                {permissions.canSeeScores && (
                   <HackathonPageMyScores
                     hackathonId={hackathonInfo?.id}
                     scores={myTeamScores}
@@ -143,6 +161,7 @@ const HackathonPage = () => {
                 <HackathonPageTeams
                   scores={myTeamScores}
                   hackathonInfo={hackathonInfo}
+                  canSetScore={permissions.canSetScores}
                   onSetScore={handleSetJuryTeamScore}
                 />
               </div>

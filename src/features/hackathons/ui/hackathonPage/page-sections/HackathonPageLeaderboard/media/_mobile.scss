@@ -1,0 +1,32 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .hackathonLeaderboard.mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start !important;
+    padding: 1.25rem;
+
+    .leaders {
+      width: 100%;
+      display: flex;
+      gap: 1rem;
+
+      button {
+        padding: 0.5rem;
+      }
+    }
+
+    .sectionInfo {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+
+      h4 {
+        font-size: 1rem;
+      }
+    }
+  }
+}

@@ -2,6 +2,8 @@ import React from 'react'
 import styles from './GeneralInfoSidebarContent.module.scss'
 import { ISOStringToDateString } from '@/shared/lib/helpers/date'
 import { DetailedHackathon } from '@/features/hackathons/model/types'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface GeneralInfoSidebarContentProps {
   hackathon: DetailedHackathon
@@ -10,8 +12,16 @@ interface GeneralInfoSidebarContentProps {
 const GeneralInfoSidebarContent = ({
   hackathon,
 }: GeneralInfoSidebarContentProps) => {
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const sidebarInfoStyles = clsx(styles.sidebarInfo, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.sidebarInfo}>
+    <div className={sidebarInfoStyles}>
       <div className={styles.sidebarInfoItem}>
         <span className={styles.sidebarInfoLabel}>Дата начала:</span>
         <span className={styles.sidebarInfoValue}>

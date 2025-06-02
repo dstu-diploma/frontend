@@ -18,6 +18,7 @@ import '@uiw/react-md-editor/markdown-editor.css'
 import '@uiw/react-markdown-preview/markdown.css'
 import styles from './HackathonPageDescription.module.scss'
 import CustomMDEditor from '@/shared/ui/custom/misc/CustomMDEditor/CustomMDEditor'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface HackathonPageDescriptionProps {
   hackathonInfo: Hackathon | undefined
@@ -32,8 +33,16 @@ const HackathonPageDescription = ({
 }: HackathonPageDescriptionProps) => {
   const isPrivileged = isPrivilegedRole()
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const hackathonDescriptionStyles = clsx(styles.hackathonDescription, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <Toolbar className={styles.hackathonDescription}>
+    <Toolbar className={hackathonDescriptionStyles}>
       <div
         className={clsx(
           styles.hackathonSectionContainer,

@@ -1,0 +1,32 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(desktop, min) {
+  .hackathonPageContainer.desktop {
+    .hackathonPageContent {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      .hackathonPageInfo {
+        .hackathonInfo {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+
+          .hackathonDetailedInfo {
+            order: 2;
+          }
+
+          .hackathonSidebars {
+            order: 1;
+          }
+        }
+      }
+    }
+  }
+}

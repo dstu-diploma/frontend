@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './HackathonPageBoardCard.module.scss'
 import clsx from 'clsx'
 import { HackathonLeader } from '@/features/hackathons/model/types'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface HackathonPageBoardCardProps {
   leader: HackathonLeader
@@ -14,8 +15,16 @@ const HackathonPageBoardCard = ({
   className,
   position,
 }: HackathonPageBoardCardProps) => {
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const boardCard = clsx(styles.card, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={clsx(styles.card, className)}>
+    <div className={clsx(boardCard, className)}>
       <div className={styles.position}>
         {position <= 3 ? (
           <div className={clsx(styles.medal, styles[`medal${position}`])}>

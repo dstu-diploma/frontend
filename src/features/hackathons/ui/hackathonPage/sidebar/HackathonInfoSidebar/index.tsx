@@ -1,14 +1,16 @@
 import React from 'react'
 import styles from './HackathonInfoSidebar.module.scss'
-import { DetailedHackathon } from '../../../model/types'
 import { Button } from '@/shared/ui/shadcn/button'
 import { ActionModal } from '@/shared/ui/custom/modals/ActionModal'
 import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
 import HackathonEditFormContent from '../../modal-form-contents/HackathonEditFormContent'
 import { UseFormReturn } from 'react-hook-form'
-import { HackathonFormData } from '../../../model/schemas'
 import GeneralInfoSidebarContent from '../../sidebar-contents/GeneralInfoSidebarContent'
 import HackathonPageSidebar from '../HackathonPageSidebar'
+import { HackathonFormData } from '@/features/hackathons/model/schemas'
+import { DetailedHackathon } from '@/features/hackathons/model/types'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface HackathonInfoSidebarProps {
   hackathon: DetailedHackathon | null
@@ -24,12 +26,20 @@ const HackathonInfoSidebar = ({
 }: HackathonInfoSidebarProps) => {
   if (!hackathon) return null
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const sidebarActionsStyles = clsx(styles.sidebarActions, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
     <HackathonPageSidebar
       title='Информация о хакатоне'
       actions={
         isPrivilegedRole() && (
-          <div className={styles.sidebarActions}>
+          <div className={sidebarActionsStyles}>
             <ActionModal
               title='Редактирование хакатона'
               trigger={<Button>Редактировать</Button>}

@@ -4,18 +4,22 @@ import { Criterion, Judge } from '@/features/hackathons/model/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
 import { isJudge } from '@/features/hackathons/model/guards'
 import clsx from 'clsx'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface HackathonPageOptionCardProps {
   item: Judge | Criterion
   children?: React.ReactNode
   className?: string
+  avatarClassName?: string
+  titleBlockClassName?: string
 }
 
 interface AvatarSectionProps {
   item: Judge
+  className?: string
 }
 
-const AvatarSection = memo(({ item }: AvatarSectionProps) => {
+const AvatarSection = memo(({ item, className }: AvatarSectionProps) => {
   const avatarLink = useMemo(() => {
     const avatarUpload = item.user_uploads.find(
       upload => upload.type === 'avatar',
@@ -29,7 +33,10 @@ const AvatarSection = memo(({ item }: AvatarSectionProps) => {
   )
 
   return (
-    <Avatar key={avatarLink || 'fallback'} className={styles.avatar}>
+    <Avatar
+      key={avatarLink || 'fallback'}
+      className={clsx(styles.avatar, className)}
+    >
       {avatarLink ? (
         <AvatarImage
           src={avatarLink}
@@ -49,27 +56,45 @@ const AvatarSection = memo(({ item }: AvatarSectionProps) => {
 
 AvatarSection.displayName = 'AvatarSection'
 
-const TitleSection = memo(({ title }: { title: string }) => (
-  <div className={styles.titleBlock}>
-    <h5 className={styles.personName}>{title}</h5>
-  </div>
-))
+const TitleSection = memo(
+  ({ title, className }: { title: string; className?: string }) => (
+    <div className={clsx(styles.titleBlock, className)}>
+      <h5 className={styles.personName}>{title}</h5>
+    </div>
+  ),
+)
 
 TitleSection.displayName = 'TitleSection'
 
 export const HackathonPageOptionCard = memo(
-  ({ item, children, className }: HackathonPageOptionCardProps) => {
+  ({
+    item,
+    children,
+    className,
+    avatarClassName,
+    titleBlockClassName,
+  }: HackathonPageOptionCardProps) => {
     const isAvatar = isJudge(item)
     const title = useMemo(
       () => (isJudge(item) ? item.user_name : item.name),
       [item],
     )
 
+    const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+    const optionCardStyles = clsx(styles.item, {
+      [styles.mobile]: isMobile,
+      [styles.tablet]: isTablet,
+      [styles.desktop]: isDesktop,
+      [styles.mediumDesktop]: isMediumDesktop,
+    })
+
     return (
-      <div className={clsx(styles.item, className)}>
+      <div className={clsx(optionCardStyles, className)}>
         <div className={styles.header}>
-          {isAvatar && <AvatarSection item={item} />}
-          <TitleSection title={title} />
+          {isAvatar && (
+            <AvatarSection item={item} className={avatarClassName} />
+          )}
+          <TitleSection title={title} className={titleBlockClassName} />
         </div>
         {children}
       </div>

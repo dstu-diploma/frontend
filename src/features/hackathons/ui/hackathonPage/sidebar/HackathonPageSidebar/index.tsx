@@ -1,5 +1,7 @@
 import React from 'react'
 import styles from './HackathonPageSidebar.module.scss'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface HackathonPageSidebarProps {
   children: React.ReactNode
@@ -12,8 +14,16 @@ const HackathonPageSidebar = ({
   title,
   actions,
 }: HackathonPageSidebarProps) => {
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const sidebarStyles = clsx(styles.sidebar, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.sidebar}>
+    <div className={sidebarStyles}>
       <div className={styles.sidebarContent}>
         <div className={styles.sidebarSection}>
           <h4>{title}</h4>
