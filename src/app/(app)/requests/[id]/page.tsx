@@ -11,6 +11,8 @@ import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFal
 import { useRequestPageSocket } from '@/features/requests/hooks/useRequestPageSocket'
 import { FullUser } from '@/features/user/model/types'
 import RequestMessage from '@/features/requests/ui/RequestMessage'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 const RequestPage = () => {
   const { id } = useParams()
@@ -30,8 +32,16 @@ const RequestPage = () => {
     return <LayoutFallback text='Загрузка обращения...' />
   }
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const requestPageStyles = clsx(styles.requestContainer, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.requestContainer}>
+    <div className={requestPageStyles}>
       <div className={styles.requestContent}>
         <div className={styles.requestContentContainer}>
           <h1 className={styles.requestTitle}>
@@ -65,7 +75,11 @@ const RequestPage = () => {
                     placeholder='Введите сообщение...'
                     rows={1}
                   />
-                  <Button type='submit' disabled={!messageText}>
+                  <Button
+                    className={styles.sendButton}
+                    type='submit'
+                    disabled={!messageText}
+                  >
                     Отправить
                   </Button>
                   <ConfirmModal
@@ -78,12 +92,19 @@ const RequestPage = () => {
                       )
                     }
                   >
-                    <Button variant='destructive'>Закрыть обращение</Button>
+                    <Button
+                      className={styles.closeButton}
+                      variant='destructive'
+                    >
+                      Закрыть
+                    </Button>
                   </ConfirmModal>
                 </div>
               ) : (
                 <div className={styles.inputContainer}>
-                  <span className={styles.closed}>Обращение закрыто</span>
+                  <span className={clsx(styles.closed, styles.fullWidth)}>
+                    Обращение закрыто
+                  </span>
                 </div>
               )}
             </form>

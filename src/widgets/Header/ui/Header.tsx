@@ -31,7 +31,7 @@ export const Header = () => {
     <header className={headerStyles}>
       <div className={styles.headerContent}>
         <div className={styles.logoBlock}>
-          <MediaQuery maxWidth={1024}>
+          <MediaQuery maxWidth={1023}>
             <MobileSidebar>
               <RxHamburgerMenu className={styles.burgerIcon} />
             </MobileSidebar>

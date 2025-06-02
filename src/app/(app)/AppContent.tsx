@@ -24,7 +24,7 @@ export function AppContent({ children }: { children: React.ReactNode }) {
       <div className={layoutStyles}>
         <Header />
         <div className={styles.container}>
-          <MediaQuery minWidth={768}>
+          <MediaQuery minWidth={1024}>
             <Sidebar />
           </MediaQuery>
           <main className={styles.main}>{children}</main>

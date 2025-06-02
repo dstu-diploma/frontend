@@ -17,6 +17,7 @@ export default function NotFound() {
 
   return (
     <div className={`${styles.container} ${roboto.className}`}>
+      <h1 className={styles.brandTitle}>Packathon</h1>
       <div className={styles.content}>
         <h1 className={styles.title}>404</h1>
         <h2 className={styles.subtitle}>Страница не найдена</h2>
@@ -25,9 +26,11 @@ export default function NotFound() {
           перемещена.
         </p>
         <div className={styles.actions}>
-          <Button onClick={() => router.back()}>Назад</Button>
+          <Button className={styles.button} onClick={() => router.back()}>
+            Назад
+          </Button>
           <Link href='/'>
-            <Button>На главную</Button>
+            <Button className={styles.button}>На главную</Button>
           </Link>
         </div>
       </div>

@@ -20,12 +20,10 @@ export const metadata: Metadata = {
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html>
-      <body suppressHydrationWarning={true} className={roboto.className}>
-        <AppProvider>
-          <AppContent>{children}</AppContent>
-        </AppProvider>
-      </body>
-    </html>
+    <div suppressHydrationWarning={true} className={roboto.className}>
+      <AppProvider>
+        <AppContent>{children}</AppContent>
+      </AppProvider>
+    </div>
   )
 }

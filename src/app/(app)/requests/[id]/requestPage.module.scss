@@ -1,3 +1,6 @@
+@use './media/mobile';
+@use './media/tablet';
+
 .requestContainer {
   width: 100%;
   height: calc(100vh - 72px - 2rem * 2);
@@ -81,43 +84,6 @@
   
         &::placeholder {
           color: #94a3b8;
-        }
-      }
-  
-      .sendButton {
-        padding: 0.5rem 1rem;
-        background-color: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-  
-        &:hover {
-          background-color: #2563eb;
-        }
-  
-        &:disabled {
-          background-color: #94a3b8;
-          cursor: not-allowed;
-        }
-      }
-  
-      .closeButton {
-        padding: 0.5rem 1rem;
-        background-color: #ef4444;
-        color: white;
-        border: none;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-  
-        &:hover {
-          background-color: #dc2626;
         }
       }
 

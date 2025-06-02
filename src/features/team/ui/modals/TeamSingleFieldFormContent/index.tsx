@@ -2,6 +2,8 @@ import React from 'react'
 import styles from './TeamSingleFieldFormContent.module.scss'
 import { Label } from '@/shared/ui/shadcn/label'
 import { Input } from '@/shared/ui/shadcn/input'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface TeamSingleFieldFormContentProps {
   fieldName: string
@@ -14,8 +16,16 @@ interface TeamSingleFieldFormContentProps {
 }
 
 const TeamSingleFieldFormContent = (props: TeamSingleFieldFormContentProps) => {
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const teamSingleFieldFormContentStyles = clsx(styles.dialogFormContentItem, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.dialogFormContentItem}>
+    <div className={teamSingleFieldFormContentStyles}>
       <Label htmlFor={props.fieldName}>{props.labelText}</Label>
       <Input
         id={props.fieldName}
