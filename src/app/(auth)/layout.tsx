@@ -24,12 +24,10 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <html>
-      <body suppressHydrationWarning={true} className={roboto.className}>
-        <AppProvider>
-          <AuthContent>{children}</AuthContent>
-        </AppProvider>
-      </body>
-    </html>
+    <div suppressHydrationWarning={true} className={roboto.className}>
+      <AppProvider>
+        <AuthContent>{children}</AuthContent>
+      </AppProvider>
+    </div>
   )
 }

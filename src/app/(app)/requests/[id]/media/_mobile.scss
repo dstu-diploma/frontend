@@ -1,0 +1,108 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .requestContainer.mobile {
+    width: 100%;
+    height: calc(100vh - 72px - 2rem);
+    box-sizing: border-box;
+    .requestContent {
+      .requestContentContainer {
+        .requestTitle {
+          font-size: 1.25rem;
+          margin-bottom: 0.75rem;
+          margin-top: 0.25rem;
+        }
+        .requestChatWindow {
+          width: 100%;
+          margin-top: 0;
+          display: flex;
+        
+          .messagesContainer {
+            flex: 1;
+            padding: 0.75rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background-color: #f4f9ff;
+        
+            &::-webkit-scrollbar {
+              width: 8px;
+            }
+          
+            &::-webkit-scrollbar-track {
+              background: #f1f1f1;
+              border-radius: 4px;
+            }
+          
+            &::-webkit-scrollbar-thumb {
+              transition: all 0.4s ease-in;
+              background: #acd1f9;
+              border-radius: 4px;
+              
+              &:hover {
+                background: #3182ce;
+              }
+            }
+          }
+        
+          .inputForm {
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        
+            .inputContainer {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 1rem;
+
+              .fullWidth {
+                grid-column: 1 / -1;
+              }
+
+              .messageInput {
+                width: 100%;
+                grid-column: 1 / -1;
+                flex: 1;
+                padding: 0.5rem 0.65rem;
+                border: 1px solid #e2e8f0;
+                border-radius: 0.5rem;
+                font-size: 0.875rem;
+                resize: none;
+                min-height: 40px;
+                max-height: 120px;
+                transition: border-color 0.2s ease;
+          
+                &:focus {
+                  outline: none;
+                  border-color: #3b82f6;
+                }
+          
+                &::placeholder {
+                  color: #94a3b8;
+                }
+              }
+          
+              .sendButton {
+                grid-column: 1 / 2;
+                padding: 0.75rem;
+                font-size: 0.75rem;
+              }
+          
+              .closeButton {
+                grid-column: 2 / 3;
+                padding: 0.75rem;
+                font-size: 0.75rem;
+              }
+        
+              .closed {
+                width: 100%;
+                color: #ef4444;
+              }
+            }
+          }
+        } 
+      }
+    }
+  }
+}

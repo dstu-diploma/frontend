@@ -14,6 +14,8 @@ import styles from './ProfileAvatar.module.scss'
 import { useMemo } from 'react'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { useAvatar } from '@/providers/AvatarProvider'
+import clsx from 'clsx'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface ProfileAvatarProps {
   profile: User
@@ -65,9 +67,17 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
     }
   }, [profile])
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const profileAvatarStyles = clsx(styles.profileAvatarTrigger, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
     <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-      <DropdownMenuTrigger asChild className={styles.profileAvatarTrigger}>
+      <DropdownMenuTrigger asChild className={profileAvatarStyles}>
         <button
           className={styles.profileAvatarTriggerButton}
           onClick={e => {

@@ -18,6 +18,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@radix-ui/react-tabs'
 import { useForm } from 'react-hook-form'
 import styles from './requests.module.scss'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 const MyRequestsPage = () => {
   const { data: hackathonsList } = hackathonApi.useGetHackathonList()
@@ -48,17 +50,29 @@ const MyRequestsPage = () => {
   const canCreateRequest =
     (user && user.role === 'user') || user.role === 'judge'
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const requestsPageStyles = clsx(styles.requestsContainer, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.requestsContainer}>
+    <div className={requestsPageStyles}>
       <h1 className={styles.requestsTitle}>
         {user.role !== 'user' ? 'Все' : 'Мои'} обращения
       </h1>
       <div className={styles.requestsContent}>
         {canCreateRequest && (
-          <Toolbar>
+          <Toolbar className={styles.requestsToolbar}>
             <ActionModal
               title='Создание обращения'
-              trigger={<Button>Создать обращение</Button>}
+              trigger={
+                <Button className={styles.createRequestButton}>
+                  Создать обращение
+                </Button>
+              }
               submitButtonText='Создать'
               onSave={createRequestForm.handleSubmit(onSubmit)}
               isSubmitting={isCreatingRequest}

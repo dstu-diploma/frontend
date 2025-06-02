@@ -11,6 +11,7 @@ import {
 import { Dialog, DialogTrigger, DialogContent } from '@/shared/ui/shadcn/dialog'
 import styles from './ActionModal.module.scss'
 import clsx from 'clsx'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface ActionModalProps {
   title: string
@@ -64,6 +65,14 @@ export const ActionModal = (props: ActionModalProps) => {
     setIsOpen(false)
   }
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const actionModalContent = clsx(styles.dialogContent, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
     <Dialog
       open={isOpen}
@@ -78,13 +87,13 @@ export const ActionModal = (props: ActionModalProps) => {
         </div>
       </DialogTrigger>
       <DialogContent
-        className={clsx(styles.dialogContent, props.contentClassName)}
+        className={clsx(actionModalContent, props.contentClassName)}
         onOpenAutoFocus={preventAutoInputSelection}
       >
         <form onSubmit={handleSubmit} className={styles.dialogForm} noValidate>
           <DialogHeader>
             <DialogTitle></DialogTitle>
-            <h4>{props.title}</h4>
+            <h4 className={styles.dialogTitle}>{props.title}</h4>
           </DialogHeader>
           <div
             className={clsx(styles.dialogFormContent, props.contentClassName)}

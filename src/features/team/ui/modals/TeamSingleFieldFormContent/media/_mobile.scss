@@ -1,0 +1,11 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .dialogFormContentItem.mobile {
+    .dialogFormInput {
+      padding: 0 0.625rem;
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+  }
+}

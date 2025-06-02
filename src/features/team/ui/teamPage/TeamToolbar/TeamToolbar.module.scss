@@ -1,14 +1,20 @@
-.toolbarContent {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+@use '@/shared/styles/mixins' as *;
+@use './media/mobile';
+@use './media/tablet';
 
-  .toolbarControls {
-      flex: 1;
-      display: flex;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+.toolbar {
+  .toolbarContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  
+    .toolbarControls {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
   }
 }

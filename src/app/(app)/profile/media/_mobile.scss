@@ -3,12 +3,18 @@
 @include media(tablet, max) {
   .profileContainer.mobile {
     h1 {
-      font-size: 1.5rem;
+      margin-top: 0.5rem;
+      font-size: 1.25rem;
+    }
+
+    .coverSection {
+      margin-top: 1.5rem;
+      height: 200px;
     }
 
     .container {
       width: 100%;
-      padding: 1.25rem 1.5rem;
+      padding: 1.25rem 1rem;
       background: white;
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
@@ -30,6 +36,7 @@
           margin-bottom: 1rem;
 
           .userInfo {
+            margin-top: 0;
             margin-left: 0;
             margin-bottom: 0;
 

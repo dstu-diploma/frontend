@@ -10,6 +10,8 @@ import {
 import { Dialog, DialogTrigger, DialogContent } from '@/shared/ui/shadcn/dialog'
 import { ModalWarningObject } from '@/features/team/configs/confirmModalWarnings'
 import styles from './ConfirmModal.module.scss'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface ConfirmModalProps {
   children: React.ReactNode
@@ -21,10 +23,19 @@ interface ConfirmModalProps {
 
 export const ConfirmModal = (props: ConfirmModalProps) => {
   const [isOpen, setIsOpen] = useState(false)
+
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const confirmModalStyles = clsx(styles.dialogContent, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{props.children}</DialogTrigger>
-      <DialogContent className={styles.dialogContent}>
+      <DialogContent className={confirmModalStyles}>
         <form
           onSubmit={e => {
             props.onConfirm(e)

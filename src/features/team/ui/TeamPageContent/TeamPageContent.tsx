@@ -13,6 +13,8 @@ import styles from './TeamPageContent.module.scss'
 import HackathonTeamToolbar from '../hackathonPage/HackathonTeamToolbar/HackathonTeamToolbar'
 import HackathonTeamMembersList from '../hackathonPage/HackathonTeamMembersList/HackathonTeamMembersList'
 import HackathonTeamSubmissionSidebar from '../hackathonPage/HackathonTeamSubmissionSidebar'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface TeamPageContentProps {
   user: UserPartial
@@ -55,9 +57,17 @@ const BrandTeamContent = ({ user }: { user: UserPartial }) => {
     return <LayoutFallback text='Загрузка данных о команде...' />
   }
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const teamStyles = clsx(styles.teamContainer, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.teamContainer}>
-      <h1 className={styles.teamTitle}>Моя команда</h1>
+    <div className={teamStyles}>
+      <h1 className={styles.teamTitle}>Моя команда-бренд</h1>
       <div className={styles.teamContent}>
         <TeamToolbar user={user} settings={toolbarSettings} />
         {!hasTeam && !isTeamLoading && <TeamInvitesList />}

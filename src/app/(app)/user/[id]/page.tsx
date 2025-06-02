@@ -10,6 +10,8 @@ import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFal
 import { useUserPage } from '@/features/user/hooks/userpage/useUserPage'
 import CustomMDEditor from '@/shared/ui/custom/misc/CustomMDEditor/CustomMDEditor'
 import { mapRole } from '@/shared/lib/helpers/roleMapping'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 export default function UserPage() {
   const { id } = useParams()
@@ -32,6 +34,14 @@ export default function UserPage() {
     )
   }
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const userPageStyles = clsx(styles.userPage, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   if (!user) {
     return (
       <Toolbar className={styles.errorToolbar}>
@@ -44,7 +54,7 @@ export default function UserPage() {
   }
 
   return (
-    <>
+    <div className={userPageStyles}>
       <div
         className={styles.coverSection}
         style={{
@@ -130,6 +140,6 @@ export default function UserPage() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

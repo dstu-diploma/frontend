@@ -1,0 +1,62 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, min) {
+  .profileContainer.tablet {
+    h1 {
+      margin-top: 0.5rem;
+      font-size: 1.25rem;
+    }
+
+    .coverSection {
+      margin-top: 1.5rem;
+      height: 200px;
+    }
+
+    .container {
+      width: 100%;
+      padding: 1.25rem 1.5rem;
+      background: white;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      .header {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+
+        .info {
+          width: 100%;
+          display: flex;
+          margin-bottom: 1rem;
+
+          .userInfo {
+            margin-top: 0;
+            margin-left: 30px;
+            margin-bottom: 0;
+
+            .registerDate {
+              display: flex;
+              flex-direction: column;
+              gap: 0.25rem;
+            }
+          }
+
+          .avatarContainer {
+            margin-top: -50px;
+          }
+        }
+
+        .deleteButtonWrapper {
+          width: 100%;
+          display: flex;
+          justify-content: flex-start;
+        }
+      }
+    }
+  }
+}
