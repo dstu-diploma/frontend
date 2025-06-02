@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useHackathonForms } from '@/features/hackathons/hooks/useHackathonForms'
 import { useHackathonCriteria } from '@/features/hackathons/hooks/useHackathonCriteria'
 import { useHackathonJury } from '@/features/hackathons/hooks/useHackathonJury'
@@ -17,6 +17,7 @@ import HackathonInfoSidebar from '@/features/hackathons/ui/hackathonPage/sidebar
 import HackathonPageActionsToolbar from '@/features/hackathons/ui/hackathonPage/actionsToolbar'
 import styles from './hackathonPage.module.scss'
 import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFallback'
+import HackathonPageLeaderboard from '@/features/hackathons/ui/hackathonPage/page-sections/HackathonPageLeaderboard'
 
 const HackathonPage = () => {
   const { id } = useParams()
@@ -73,6 +74,27 @@ const HackathonPage = () => {
     user.role === 'judge' &&
     hackathonInfo?.judges.some(judge => judge.user_id === user.id)
 
+  // Проверка периода оценки
+  const isScorePeriod = useMemo(() => {
+    if (!hackathonInfo) return false
+
+    const now = new Date()
+    const scoreStartDate = new Date(hackathonInfo.score_start_date)
+    const endDate = new Date(hackathonInfo.end_date)
+
+    return now >= scoreStartDate && now < endDate
+  }, [hackathonInfo])
+
+  // Проверка периода оценки
+  const isEndPeriod = useMemo(() => {
+    if (!hackathonInfo) return false
+
+    const now = new Date()
+    const endDate = new Date(hackathonInfo.end_date)
+
+    return now >= endDate
+  }, [hackathonInfo])
+
   return (
     <div className={styles.hackathonPageContainer}>
       {isHackathonLoading ? (
@@ -96,6 +118,9 @@ const HackathonPage = () => {
                   form={editDescriptionForm}
                   onSave={handleEditHackathonDescription}
                 />
+                {hackathonInfo?.teams.length > 0 && isEndPeriod && (
+                  <HackathonPageLeaderboard hackathonId={hackathonInfo?.id} />
+                )}
                 <HackathonPageCriteria
                   criteria={hackathonInfo?.criteria}
                   criterionForm={criterionForm}
@@ -109,13 +134,14 @@ const HackathonPage = () => {
                   handleJuryAddition={handleJuryAddition}
                   handleJuryDeletion={handleJuryDeletion}
                 />
-                {canSeeScores && (
+                {canSeeScores && isScorePeriod && (
                   <HackathonPageMyScores
                     hackathonId={hackathonInfo?.id}
                     scores={myTeamScores}
                   />
                 )}
                 <HackathonPageTeams
+                  scores={myTeamScores}
                   hackathonInfo={hackathonInfo}
                   onSetScore={handleSetJuryTeamScore}
                 />

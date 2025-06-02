@@ -4,6 +4,7 @@ import styles from './HackathonPageTeamCard.module.scss'
 import {
   DetailedHackathon,
   HackathonTeam,
+  TeamJudgeScoreObject,
 } from '@/features/hackathons/model/types'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { ActionModal } from '@/features/team'
@@ -21,6 +22,7 @@ interface HackathonPageTeamCardProps {
   team: HackathonTeam
   hackathonInfo: DetailedHackathon
   className?: string
+  scores: Record<string, TeamJudgeScoreObject[]>
 }
 
 const HackathonPageTeamCard = ({
@@ -28,10 +30,16 @@ const HackathonPageTeamCard = ({
   team,
   className,
   onSetScore,
+  scores,
 }: HackathonPageTeamCardProps) => {
   const jury = hackathonInfo.judges
   const criteria = hackathonInfo.criteria
   const user = cookiesApi.getUser()
+
+  // Получаем оценку для текущей команды
+  const teamScore = useMemo(() => {
+    return scores[team.id]?.length > 0
+  }, [scores, team.id])
 
   // Проверка прав доступа на оставление оценок
   const isAllowedToSetScore = useMemo(() => {
@@ -43,15 +51,13 @@ const HackathonPageTeamCard = ({
 
   const form = useForm<ScoreFormData>({
     resolver: zodResolver(scoreFormSchema),
-    defaultValues: {
-      criteria: criteria.reduce(
-        (acc, curr) => {
-          acc[curr.name] = 0
-          return acc
-        },
-        {} as Record<string, number>,
-      ),
-    },
+    defaultValues: criteria.reduce(
+      (acc, curr) => {
+        acc[curr.name] = 0
+        return acc
+      },
+      {} as Record<string, number>,
+    ),
   })
 
   return (
@@ -61,28 +67,36 @@ const HackathonPageTeamCard = ({
           <h5 className={styles.name}>{team.name}</h5>
         </div>
         {isAllowedToSetScore && (
-          <div
-            className={styles.actions}
-            onClick={e => {
-              e.stopPropagation()
-              e.preventDefault()
-            }}
-          >
+          <div className={styles.actions}>
             {Array.isArray(criteria) && criteria.length > 0 ? (
-              <ActionModal
-                title='Оставить оценку команде'
-                trigger={<Button>Оценить по критериям</Button>}
-                submitButtonText='Оставить оценку'
-                form={form}
-                onSave={async e => {
-                  e.preventDefault()
-                  form.handleSubmit(data => {
-                    onSetScore(team.id, data)
-                  })()
-                }}
-              >
-                <HackathonScoreFormContent criteria={criteria} form={form} />
-              </ActionModal>
+              teamScore ? (
+                <span>Оценка уже установлена</span>
+              ) : (
+                <ActionModal
+                  title='Оставить оценку команде'
+                  trigger={<Button>Оценить по критериям</Button>}
+                  submitButtonText='Оставить оценку'
+                  form={form}
+                  onSave={async e => {
+                    try {
+                      const isValid = await form.trigger()
+                      if (isValid) {
+                        const data = form.getValues()
+                        onSetScore(team.id, data)
+                      } else {
+                        console.log(
+                          'Form validation failed:',
+                          form.formState.errors,
+                        )
+                      }
+                    } catch (error) {
+                      console.error('Error in form submission:', error)
+                    }
+                  }}
+                >
+                  <HackathonScoreFormContent criteria={criteria} form={form} />
+                </ActionModal>
+              )
             ) : (
               <span>Нет критериев для оценки</span>
             )}

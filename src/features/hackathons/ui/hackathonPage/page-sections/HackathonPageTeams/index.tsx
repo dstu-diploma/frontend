@@ -2,11 +2,15 @@ import React from 'react'
 import Toolbar from '@/shared/ui/custom/misc/Toolbar/Toolbar'
 import clsx from 'clsx'
 import styles from './HackathonPageTeams.module.scss'
-import { DetailedHackathon } from '@/features/hackathons/model/types'
+import {
+  DetailedHackathon,
+  TeamJudgeScoreObject,
+} from '@/features/hackathons/model/types'
 import { ScoreFormData } from '@/features/hackathons/model/schemas'
 import HackathonPageTeamCard from '../../../cards/HackathonPageTeamCard'
 
 interface HackathonPageTeamsProps {
+  scores: TeamJudgeScoreObject[]
   hackathonInfo: DetailedHackathon | null
   onSetScore: (teamId: number, data: ScoreFormData) => void
 }
@@ -14,6 +18,7 @@ interface HackathonPageTeamsProps {
 export const HackathonPageTeams = ({
   hackathonInfo,
   onSetScore,
+  scores,
 }: HackathonPageTeamsProps) => {
   return (
     <Toolbar className={styles.hackathonTeams}>
@@ -28,6 +33,7 @@ export const HackathonPageTeams = ({
           {hackathonInfo?.teams && hackathonInfo.teams.length > 0 ? (
             hackathonInfo.teams.map(team => (
               <HackathonPageTeamCard
+                scores={scores}
                 key={team.id}
                 team={team}
                 hackathonInfo={hackathonInfo}

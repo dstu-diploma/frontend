@@ -9,8 +9,11 @@ import { Button } from '@/shared/ui/shadcn/button'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import { hackathonApi } from '@/features/hackathons/api'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
 interface ScoreCardContentProps {
+  hackathonId: number
   teamScores: TeamJudgeScoreObject[]
   criteria: Criterion[]
 }
@@ -19,8 +22,13 @@ type FormData = {
   [key: string]: number
 }
 
-const ScoreCardContent = ({ teamScores, criteria }: ScoreCardContentProps) => {
+const ScoreCardContent = ({
+  teamScores,
+  criteria,
+  hackathonId,
+}: ScoreCardContentProps) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const { mutate: updateScore } = hackathonApi.useSetJuryScore(hackathonId)
 
   // Create dynamic validation schema based on teamScores
   const validationSchema = z.object(
@@ -54,8 +62,29 @@ const ScoreCardContent = ({ teamScores, criteria }: ScoreCardContentProps) => {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
     try {
-      // Here you would typically make an API call to update the scores
-      console.log('Form data:', data)
+      const scores = Object.entries(data).map(([criterion_id, score]) => ({
+        criterion_id: Number(criterion_id),
+        score: Number(score),
+      }))
+
+      const requestBody = {
+        team_id: teamScores[0]?.team_id,
+        scores,
+      }
+
+      console.log(requestBody)
+
+      updateScore(requestBody, {
+        onSuccess: () => {
+          notificationService.success(`Оценка команде успешно обновлена`)
+        },
+        onError: error => {
+          notificationService.errorRaw(
+            `Ошибка при обновлении оценки команде`,
+            `${error?.message || 'Неизвестная ошибка'}`,
+          )
+        },
+      })
     } catch (error) {
       console.error('Error submitting form:', error)
     } finally {

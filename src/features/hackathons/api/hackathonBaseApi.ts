@@ -73,4 +73,15 @@ export const hackathonBaseApi = {
       },
     })
   },
+  useGetLeaderboard: (hackathon_id: number) => {
+    return useQuery({
+      queryKey: ['hackathonLeaderboard', hackathon_id],
+      queryFn: async () => {
+        const response = await axiosInstance.get(
+          `${HACKATHON_SERVICE_API_URL}/${hackathon_id}/results`,
+        )
+        return response.data
+      },
+    })
+  },
 }

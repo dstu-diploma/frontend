@@ -26,6 +26,11 @@ const HackathonPageCriteria = ({
   handleCriterionUpdate,
   handleCriterionDeletion,
 }: HackathonPageCriteriaProps) => {
+  const cropCriteria = (criteria: number) => {
+    const str = criteria.toString()
+    return str.length > 8 ? `${str.slice(0, 8)}...` : str
+  }
+
   return (
     <Toolbar className={styles.hackathonCriteria}>
       <div
@@ -44,7 +49,7 @@ const HackathonPageCriteria = ({
                     <div className={styles.criterionWeight}>
                       <span className={styles.weightLabel}>вес</span>
                       <span className={styles.weightValue}>
-                        {criterion.weight}
+                        {cropCriteria(criterion.weight)}
                       </span>
                     </div>
                   </HackathonPageOptionCard>

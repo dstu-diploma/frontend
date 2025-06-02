@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Link from 'next/link'
 import styles from './HackathonPageActionsToolbar.module.scss'
 import { ConfirmModal } from '@/features/team'
@@ -8,9 +8,9 @@ import { DetailedHackathon } from '@/features/hackathons/model/types'
 
 interface HackathonPageActionsToolbarProps {
   hasTeam: boolean
-  onHackathonApply: () => Promise<void>
+  onHackathonApply: () => void
   isUserTeamApplied: boolean
-  hackathonInfo: DetailedHackathon | undefined
+  hackathonInfo: DetailedHackathon
 }
 
 const HackathonPageActionsToolbar = ({
@@ -19,9 +19,19 @@ const HackathonPageActionsToolbar = ({
   isUserTeamApplied,
   hackathonInfo,
 }: HackathonPageActionsToolbarProps) => {
+  const isHackathonStarted = useMemo(() => {
+    const now = new Date()
+    const startDate = new Date(hackathonInfo.start_date)
+    return now >= startDate
+  }, [hackathonInfo.start_date])
+
   return (
     <Toolbar className={styles.hackathonPageInfoToolbar}>
-      {hasTeam ? (
+      {!isUserTeamApplied && isHackathonStarted ? (
+        <div className={styles.message}>
+          <span>Хакатон уже начался</span>
+        </div>
+      ) : hasTeam ? (
         <div className={styles.hackathonPageInfoToolbarButtons}>
           {!isUserTeamApplied && (
             <ConfirmModal
@@ -39,7 +49,9 @@ const HackathonPageActionsToolbar = ({
           )}
         </div>
       ) : (
-        <span>У вас нет команды для записи на данный хакатон</span>
+        <div className={styles.message}>
+          <span>У вас нет команды для записи на данный хакатон</span>
+        </div>
       )}
     </Toolbar>
   )

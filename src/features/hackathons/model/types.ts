@@ -110,6 +110,13 @@ export interface Attachment {
   link: string
 }
 
+// Объект команды-лидера в таблице лидеров
+export interface HackathonLeader {
+  team_id: number
+  team_name: string
+  score: number
+}
+
 // Объекты с информацией о загрузке вложений в хакатоны
 export interface UploadHackathonAttachmentRequestBody {
   hackathon_id: number

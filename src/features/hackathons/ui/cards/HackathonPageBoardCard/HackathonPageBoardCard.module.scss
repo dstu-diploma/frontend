@@ -1,0 +1,116 @@
+.link {
+  text-decoration: none;
+}
+
+.card {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease-in-out;
+  background: #F8FAFC;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInadminTab 0.5s ease forwards;
+  gap: 1rem;
+
+  &:hover {
+    text-decoration: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .infoContainer {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.125rem;
+
+      .info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+
+          .name {
+              text-decoration: none;
+              font-weight: 500;
+          }
+          
+          .param {
+              text-decoration: none;
+              font-size: 0.875rem;
+              color: #6b7280;
+          }
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+  } 
+
+  .captainControls {
+      display: flex;
+      gap: 0.5rem;
+  }
+}
+
+.position {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  
+  .medal {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: white;
+    font-size: 1.25rem;
+    
+    &.medal1 {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+    
+    &.medal2 {
+      background: linear-gradient(135deg, #C0C0C0, #A9A9A9);
+      box-shadow: 0 0 10px rgba(192, 192, 192, 0.3);
+    }
+    
+    &.medal3 {
+      background: linear-gradient(135deg, #CD7F32, #8B4513);
+      box-shadow: 0 0 10px rgba(205, 127, 50, 0.3);
+    }
+  }
+  
+  .positionNumber {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #4b5563;
+    font-size: 1.25rem;
+  }
+}
+
+@keyframes fadeInadminTab {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

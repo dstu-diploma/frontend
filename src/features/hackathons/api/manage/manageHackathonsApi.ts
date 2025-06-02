@@ -50,4 +50,19 @@ export const manageHackathonsApi = {
       },
     })
   },
+  useCalculateHackathonResults: (hackathon_id: number) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+      mutationFn: async () => {
+        await axiosInstance.put(
+          `${HACKATHON_SERVICE_MANAGE_API_URL}/hackathon/${hackathon_id}/score`,
+        )
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['hackathonLeaderboard', hackathon_id],
+        })
+      },
+    })
+  },
 }

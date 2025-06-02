@@ -55,6 +55,7 @@ const HackathonPageMyScores = ({
                 <AccordionContent>
                   <div className={styles.criteriaScores}>
                     <ScoreCardContent
+                      hackathonId={hackathonId}
                       criteria={criteria}
                       teamScores={teamScores}
                     />
