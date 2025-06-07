@@ -10,6 +10,8 @@ import {
   SelectPortal,
 } from '@radix-ui/react-select'
 import { SelectOption } from '@/features/admin/hooks/useAdminSelect'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface TabSelectProps {
   selectedValue: string
@@ -23,9 +25,17 @@ const TabSelect = (props: TabSelectProps) => {
     option => option.value === props.selectedValue,
   )
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const selectTriggerStyles = clsx(styles.selectTrigger, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
     <Select value={props.selectedValue} onValueChange={props.handleSelect}>
-      <SelectTrigger className={styles.selectTrigger}>
+      <SelectTrigger className={selectTriggerStyles}>
         <SelectValue
           placeholder={props.placeholder}
           className={styles.selectValue}

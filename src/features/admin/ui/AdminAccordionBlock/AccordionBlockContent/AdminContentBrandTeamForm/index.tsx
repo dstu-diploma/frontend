@@ -1,15 +1,8 @@
-import { Button } from '@/shared/ui/shadcn/button'
-import { Input } from '@/shared/ui/shadcn/input'
 import React from 'react'
 import styles from './AdminContentBrandTeamForm.module.scss'
 import { TeamInfo } from '@/features/team'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  adminTeamFormSchema,
-  type AdminTeamFormData,
-} from '@/features/admin/model/schemas'
-import { useAdminSingleBrandTeam } from '@/features/admin/hooks/tabs/brandTeams/useAdminSingleBrandTeam'
+import { type AdminTeamFormData } from '@/features/admin/model/schemas'
+import { BrandTeamContent } from '@/features/team/ui/TeamPageContent/TeamPageContent'
 
 interface AdminContentBrandTeamFormProps {
   entity: TeamInfo
@@ -18,62 +11,28 @@ interface AdminContentBrandTeamFormProps {
 
 const AdminContentBrandTeamForm = ({
   entity,
-  onSubmit,
 }: AdminContentBrandTeamFormProps) => {
-  const { handleDeleteBrandTeam } = useAdminSingleBrandTeam(entity)
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<AdminTeamFormData>({
-    resolver: zodResolver(adminTeamFormSchema),
-    defaultValues: {
-      name: entity.name,
-    },
-  })
-
   return (
     <div className={styles.brandTeamContent}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className={styles.accordionBlockForm}
-      >
-        <div className={styles.accordionBlockFormColumns}>
-          <div className={styles.accordionBlockFormGroup}>
-            <div className={styles.accordionBlockFormRow}>
-              <div className={styles.accordionBlockFormItem}>
-                <label htmlFor='name' className={styles.formItemLabel}>
-                  Название команды
-                </label>
-                <Input
-                  id='name'
-                  {...register('name')}
-                  className={styles.accordionBlockFormInput}
-                />
-                {errors.name && (
-                  <span className={styles.errorText}>
-                    {typeof errors.name.message === 'string'
-                      ? errors.name.message
-                      : 'Ошибка валидации'}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={styles.accordionBlockFormButtons}>
-          <Button type='submit' disabled={isSubmitting}>
-            {isSubmitting ? 'Сохранение...' : 'Сохранить изменения'}
-          </Button>
-          <Button
-            variant='destructive'
-            disabled={isSubmitting}
-            onClick={handleDeleteBrandTeam}
-          >
-            Удалить команду
-          </Button>
-        </div>
-      </form>
+      <BrandTeamContent
+        user={{
+          id:
+            entity.mates.find(mate => mate.is_captain)?.user_id ??
+            entity.mates[0].user_id,
+          first_name:
+            entity.mates.find(mate => mate.is_captain)?.user_name ??
+            entity.mates[0].user_name,
+          last_name: '',
+          patronymic: '',
+          register_date: new Date().toISOString(),
+          is_captain: true,
+          role_desc:
+            entity.mates.find(mate => mate.is_captain)?.role_desc ??
+            entity.mates[0].role_desc,
+        }}
+        teamInfo={entity}
+        isAdmin={true}
+      />
     </div>
   )
 }

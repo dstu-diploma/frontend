@@ -28,9 +28,16 @@ export const adminBrandTeamsApi = {
   },
   useChangeBrandTeamName: () => {
     return useMutation({
-      mutationFn: async () => {
+      mutationFn: async ({
+        team_id,
+        new_name,
+      }: {
+        team_id: number
+        new_name: string
+      }) => {
         const response = await axiosInstance.post(
           `${TEAM_SERVICE_ADMIN_API_URL}/brand/name`,
+          { team_id, new_name },
         )
         return response.data
       },
@@ -50,13 +57,24 @@ export const adminBrandTeamsApi = {
       },
     })
   },
-  useChangeBrandTeamCaptainRights: () => {
+  useChangeBrandTeamCaptainRights: (team_id: number) => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async () => {
+      mutationFn: async ({
+        user_id,
+        is_captain,
+      }: {
+        user_id: number
+        is_captain: boolean
+      }) => {
         const response = await axiosInstance.post(
           `${TEAM_SERVICE_ADMIN_API_URL}/brand/captain-rights`,
+          { user_id, is_captain },
         )
         return response.data
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['teamMates', team_id] })
       },
     })
   },

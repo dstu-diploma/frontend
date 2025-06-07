@@ -6,6 +6,7 @@ import { isTeam, isUser } from '@/features/admin/model/guards'
 import { AccordionTrigger } from '@/shared/ui/shadcn/accordion'
 import { mapRole } from '@/shared/lib/helpers/roleMapping'
 import styles from './AccordionBlockTrigger.module.scss'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface AccordionBlockTriggerProps {
   entity: User | TeamInfo | undefined
@@ -16,8 +17,16 @@ const AccordionBlockTrigger = ({
   entity,
   className,
 }: AccordionBlockTriggerProps) => {
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const accordionBlockTriggerStyles = clsx(styles.card, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <AccordionTrigger className={clsx(styles.card, className)}>
+    <AccordionTrigger className={clsx(accordionBlockTriggerStyles, className)}>
       <div className={styles.infoContainer}>
         {isUser(entity) ? (
           <div className={styles.info}>

@@ -7,6 +7,8 @@ import { User } from '@/features/user'
 import { type AdminUserFormData } from '@/features/admin/model/schemas'
 import styles from './AdminContentUserForm.module.scss'
 import { useAdminSingleUser } from '@/features/admin/hooks/tabs/users/useAdminSingleUser'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface AdminContentUserFormProps {
   entity: User
@@ -24,12 +26,21 @@ const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
     isSubmitting,
   } = useAdminSingleUser(entity)
 
+  // Мобильные стили
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const accordionBlockFormStyles = clsx(styles.accordionBlockForm, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
     <form
       onSubmit={handleSubmit(submitHandler)}
-      className={styles.accordionBlockForm}
+      className={accordionBlockFormStyles}
     >
-      <div className={styles.accordionBlockFormСontainer}>
+      <div className={styles.accordionBlockFormContainer}>
         <div className={styles.accordionBlockFormColumns}>
           <div className={styles.accordionBlockFormGroup}>
             <div className={styles.accordionBlockFormRow}>
@@ -154,7 +165,7 @@ const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
             {isSubmitting ? 'Сохранение...' : 'Сохранить изменения'}
           </Button>
           {entity.role !== 'admin' && (
-            <>
+            <div className={styles.adminButtons}>
               <Button
                 type='button'
                 variant='destructive'
@@ -171,7 +182,7 @@ const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
               >
                 {entity.is_banned ? 'Разблокировать' : 'Заблокировать'}
               </Button>
-            </>
+            </div>
           )}
         </div>
       </div>

@@ -29,6 +29,7 @@ class NotificationService {
   public success(message: string): void {
     this.listeners.forEach(callback => callback.success(message))
   }
+
   public successRaw(title: string, description: string): void {
     this.listeners.forEach(callback => callback.successRaw(title, description))
   }

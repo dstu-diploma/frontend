@@ -12,6 +12,8 @@ import styles from './HackathonTeamToolbar.module.scss'
 import { UserPartial } from '@/features/user/model/types'
 import { useHackathonSetRoleModal } from '@/features/team/hooks/hackathonTeam/dialogs/useHackathonSetRoleModal'
 import { useAddMemberModal } from '@/features/team/hooks/hackathonTeam/dialogs/useAddMemberModal'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface HackathonTeamToolbarProps {
   hackathonId: number
@@ -49,8 +51,16 @@ const HackathonTeamToolbar = (props: HackathonTeamToolbarProps) => {
 
   const modalWarning = confirmModalWarning(teamMates, user)
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const toolbarStyles = clsx(styles.toolbar, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <Toolbar>
+    <Toolbar className={toolbarStyles}>
       <div className={styles.toolbarContent}>
         {isTeamLoading && <span>Загрузка данных о команде...</span>}
         {!isTeamLoading && !hasTeam && <span>Вы не состоите в команде</span>}

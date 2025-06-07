@@ -1,0 +1,38 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .adminTabFilter.mobile {
+    width: 100%;
+    display: flex;
+    gap: 0.25rem;
+
+    .adminTabFilterInputs {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      .adminTabFilterInput {
+        flex: 1;
+        height: 100%;
+        background-color: white;
+        padding: 0.5rem 0.5rem;
+        font-size: 0.75rem;
+    
+        &:hover {
+          border-color: #3182ce;
+        }
+    
+        &:focus {
+          border-color: #3182ce;
+        }
+      }
+
+      .filterSelects {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+    }
+  }
+}

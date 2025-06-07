@@ -1,3 +1,6 @@
+@use './media/mobile';
+@use './media/tablet';
+
 .adminPage {
     display: flex;
     flex-direction: column;

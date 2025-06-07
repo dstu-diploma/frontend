@@ -1,0 +1,11 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .selectTrigger.mobile {
+    padding: 0.5rem 0.875rem;
+    justify-content: flex-start;
+    span {
+      font-size: 0.75rem;
+    }
+  }
+}
