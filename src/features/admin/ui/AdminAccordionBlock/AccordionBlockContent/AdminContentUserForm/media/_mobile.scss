@@ -1,0 +1,49 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .accordionBlockForm.mobile {
+    .accordionBlockFormContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      width: 100%;
+      .accordionBlockFormColumns {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        .accordionBlockFormGroup {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          .accordionBlockFormRow {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            .accordionBlockFormItem {
+              width: 100%;
+              display: flex;
+              flex-direction: column;
+              gap: 0.5rem;
+            }
+          }
+        }
+      }
+      .accordionBlockFormButtons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+
+        .adminButtons {
+          width: 100%;
+          display: flex;
+          gap: 0.5rem;
+
+          button {
+            width: 50%;
+          }
+        }
+      }
+    }
+  }
+}

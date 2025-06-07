@@ -9,7 +9,6 @@ import { notificationService } from '@/shared/lib/services/notification.service'
 
 export const useTeam = () => {
   // Данные о команде
-
   const queryClient = useQueryClient()
   const {
     data: teamInfo,

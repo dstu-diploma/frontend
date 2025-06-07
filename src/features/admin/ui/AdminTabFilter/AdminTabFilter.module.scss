@@ -1,3 +1,6 @@
+@use './media/mobile';
+@use './media/tablet';
+
 .adminTabFilter {
   width: 100%;
   display: flex;
@@ -20,6 +23,11 @@
       &:focus {
         border-color: #3182ce;
       }
+    }
+
+    .filterSelects {
+      display: flex;
+      gap: 1rem;
     }
   }
 }

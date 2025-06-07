@@ -1,0 +1,22 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, min) {
+  .toolbar.tablet {
+    display: flex;
+    justify-content: flex-start;
+
+    .toolbarContent {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    
+      .toolbarControls {
+        flex: 1;
+        display: flex;
+        justify-content: flex-start;
+        gap: 1rem;
+      }
+    }
+  }
+}

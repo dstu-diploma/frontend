@@ -1,0 +1,64 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .adminPage.mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    h1 {
+      font-size: 1.25rem;
+    }
+
+    p {
+      font-size: 0.75rem;
+    }
+    
+    .adminPageContent {
+      margin-top: 10px;
+
+      .tabs {
+        width: 100%;
+
+        .tabContent {
+          margin-top: 0.75rem;
+        }
+
+        .tabsList {
+          width: 100%;
+          display: flex;
+          gap: 0.25rem;
+    
+          .tabsTrigger {
+            width: 50%;
+            padding: 15px 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #fff;
+            color: #222e3a;
+            font-weight: 500;
+            font-size: 0.75rem;
+            margin-right: 8px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+                  
+            &:last-child {
+              margin-right: 0;
+              width: 50%;
+              font-size: 0.75rem;
+            }
+                  
+            &[data-state="active"] {
+              background: #e6f0fa;
+              color: #2563eb;
+              border-color: #2563eb;
+              font-weight: 700;
+              width: 50%;
+              font-size: 0.75rem;
+            }
+          }
+        }   
+      } 
+    }
+  }
+}

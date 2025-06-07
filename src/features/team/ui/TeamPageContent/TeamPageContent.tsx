@@ -15,45 +15,90 @@ import HackathonTeamMembersList from '../hackathonPage/HackathonTeamMembersList/
 import HackathonTeamSubmissionSidebar from '../hackathonPage/HackathonTeamSubmissionSidebar'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
+import { TeamInfo } from '@/features/team/model/types'
+import { useAdminSingleBrandTeam } from '@/features/admin/hooks/tabs/brandTeams/useAdminSingleBrandTeam'
 
 interface TeamPageContentProps {
   user: UserPartial
   path: string
 }
 
-const BrandTeamContent = ({ user }: { user: UserPartial }) => {
+interface BrandTeamContentProps {
+  user: UserPartial
+  teamInfo?: TeamInfo
+  isAdmin?: boolean
+}
+
+export const BrandTeamContent = ({
+  user,
+  teamInfo: providedTeamInfo,
+  isAdmin = false,
+}: BrandTeamContentProps) => {
   const {
     isCaptain,
     isTeamLoading,
     isTeamMatesLoading,
     hasTeam,
     teamName,
-    teamMates,
-    teamInfo,
+    teamMates: fetchedTeamMates,
+    teamInfo: fetchedTeamInfo,
     handleTeamLeave,
     handleTeamKick,
     handleChangeCaptain,
   } = useTeam()
 
+  // Выбираем, какие у нас данные: либо страница моей команды, либо админка
+  const teamInfo = providedTeamInfo ?? fetchedTeamInfo
+  const hasTeamInfo = Boolean(providedTeamInfo) || hasTeam
+  const teamMates = providedTeamInfo?.mates ?? fetchedTeamMates
+
+  const {
+    currentBrandTeamName,
+    setNewBrandTeamName,
+    currentNewCaptain,
+    setCurrentNewCaptain,
+    handleDeleteTeam,
+    handleBrandTeamRename,
+    handleBrandTeamNameChange,
+    handleNewCaptainChange,
+    handleChangeCaptainRights,
+  } = useAdminSingleBrandTeam(teamInfo)
+
   const toolbarSettings = {
-    hasTeam,
+    hasTeam: hasTeamInfo,
     isCaptain,
     isTeamLoading,
-    teamName: teamName ?? '',
+    teamName: teamInfo?.name ?? '',
     teamMates: teamMates ?? [],
     handleTeamLeave,
     handleChangeCaptain,
   }
 
+  const adminSettings =
+    isAdmin && teamInfo
+      ? {
+          currentBrandTeamName,
+          setNewBrandTeamName,
+          currentNewCaptain,
+          setCurrentNewCaptain,
+          handleDeleteTeam,
+          handleBrandTeamRename,
+          handleBrandTeamNameChange,
+          handleTeamNameChange: handleBrandTeamNameChange,
+          handleNewCaptainChange,
+          handleChangeCaptainRights,
+        }
+      : undefined
+
   const membersListSettings = {
-    isTeamMatesLoading,
+    isTeamMatesLoading: providedTeamInfo ? false : isTeamMatesLoading,
     teamMates: teamMates ?? [],
     isCaptain,
     handleTeamKick,
     handleChangeCaptain,
   }
 
-  if (isTeamLoading) {
+  if (isTeamLoading && !providedTeamInfo) {
     return <LayoutFallback text='Загрузка данных о команде...' />
   }
 
@@ -67,16 +112,32 @@ const BrandTeamContent = ({ user }: { user: UserPartial }) => {
 
   return (
     <div className={teamStyles}>
-      <h1 className={styles.teamTitle}>Моя команда-бренд</h1>
+      <h1
+        className={clsx(styles.teamTitle, {
+          [styles.smallTitle]: providedTeamInfo,
+        })}
+      >
+        {providedTeamInfo
+          ? `Команда «${providedTeamInfo.name}»`
+          : 'Моя команда-бренд'}
+      </h1>
       <div className={styles.teamContent}>
-        <TeamToolbar user={user} settings={toolbarSettings} />
-        {!hasTeam && !isTeamLoading && <TeamInvitesList />}
-        {hasTeam && teamInfo && (
+        <TeamToolbar
+          user={user}
+          settings={toolbarSettings}
+          isAdmin={isAdmin}
+          adminSettings={adminSettings}
+        />
+        {!hasTeamInfo && !isTeamLoading && <TeamInvitesList />}
+        {hasTeamInfo && teamInfo && (
           <div className={styles.teamContents}>
-            <h3>Участники команды</h3>
-            <div className={styles.membersContainer}>
-              <TeamMembersList user={user} settings={membersListSettings} />
-              <TeamSidebar team={teamInfo} teamName={teamName ?? ''} />
+            <div className={clsx(styles.membersContainer, styles.mobileBrand)}>
+              <TeamMembersList
+                className={styles.mobileTeamMembers}
+                user={user}
+                settings={membersListSettings}
+              />
+              <TeamSidebar team={teamInfo} teamName={teamInfo.name ?? ''} />
             </div>
           </div>
         )}
@@ -116,6 +177,7 @@ const HackathonTeamContent = ({
   }
 
   const membersListSettings = {
+    isTeamMatesLoading: false,
     teamMates: teamMates ?? [],
     isCaptain,
     handleTeamKick,
@@ -126,8 +188,16 @@ const HackathonTeamContent = ({
     return <LayoutFallback text='Загрузка данных о команде...' />
   }
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const teamStyles = clsx(styles.teamContainer, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.teamContainer}>
+    <div className={teamStyles}>
       <h1 className={styles.teamTitle}>Команда «{teamInfo?.name}»</h1>
       <div className={styles.teamContent}>
         <HackathonTeamToolbar
@@ -138,12 +208,15 @@ const HackathonTeamContent = ({
         {!hasTeam && !isTeamLoading && <TeamInvitesList />}
         {hasTeam && teamInfo && (
           <div className={styles.teamContents}>
-            <h3>Участники команды</h3>
             <div className={styles.membersContainer}>
-              <HackathonTeamMembersList
-                user={user}
-                settings={membersListSettings}
-              />
+              <div className={styles.members}>
+                <h3>Участники команды</h3>
+                <HackathonTeamMembersList
+                  user={user}
+                  className={styles.teamMates}
+                  settings={membersListSettings}
+                />
+              </div>
               <div className={styles.hackathonTeamSidebars}>
                 <TeamSidebar team={teamInfo} teamName={teamName ?? ''} />
                 <HackathonTeamSubmissionSidebar

@@ -52,14 +52,6 @@ export const teamBaseApi = {
           throw error
         }
       },
-      staleTime: 60 * 1000 * 10,
-      retry: (failureCount, error) => {
-        const axiosError = error as AxiosError
-        return axiosError.response?.status !== 400 && failureCount < 3
-      },
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
     })
   },
   useGetTeamInfoById: (teamId: number) => {
@@ -90,14 +82,6 @@ export const teamBaseApi = {
           throw error
         }
       },
-      staleTime: 60 * 1000 * 10,
-      retry: (failureCount, error) => {
-        const axiosError = error as AxiosError
-        return axiosError.response?.status !== 400 && failureCount < 3
-      },
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
     })
   },
   useRenameTeam: () => {

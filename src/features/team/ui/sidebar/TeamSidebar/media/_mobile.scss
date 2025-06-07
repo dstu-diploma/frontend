@@ -16,6 +16,10 @@
     .sidebarBlock {
         padding: 0.5rem 0;
 
+        h4 {
+          font-size: 1rem;
+        }
+
         &:first-child {
             padding-top: 0;
         }

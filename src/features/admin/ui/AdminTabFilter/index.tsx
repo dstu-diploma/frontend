@@ -4,6 +4,8 @@ import { Input } from '@/shared/ui/shadcn/input'
 import { useAdminSelect } from '@/features/admin/hooks/useAdminSelect'
 import { FilterType } from '@/features/admin/hooks/useAdminSelect'
 import TabSelect from './TabSelect/TabSelect'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface AdminTabFilterProps {
   className?: string
@@ -37,8 +39,16 @@ export const AdminTabFilter = ({
     },
   )
 
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const adminTabFilterStyles = clsx(styles.adminTabFilter, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={`${styles.adminTabFilter} ${className ?? ''}`}>
+    <div className={`${adminTabFilterStyles} ${className ?? ''}`}>
       <div className={styles.adminTabFilterInputs}>
         <Input
           type='text'
@@ -47,7 +57,7 @@ export const AdminTabFilter = ({
           onChange={e => setSearchInputValue(e.target.value)}
           className={styles.adminTabFilterInput}
         />
-        {filterSelects}
+        <div className={styles.filterSelects}>{filterSelects}</div>
       </div>
     </div>
   )
