@@ -7,7 +7,7 @@ import { Button } from '@/shared/ui/shadcn/button'
 import styles from './HackathonPageJury.module.scss'
 import HackathonJuryFormContent from '../../modal-form-contents/HackathonJuryFormContent'
 import { UseFormReturn } from 'react-hook-form'
-import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
+import { isAdminOrOrganizer } from '@/shared/lib/helpers/roleMapping'
 import { JuryFormData } from '@/features/hackathons/model/schemas'
 import { Judge } from '@/features/hackathons/model/types'
 import { HackathonPageOptionCard } from '../../../cards/HackathonPageOptionCard'
@@ -62,7 +62,7 @@ export const HackathonPageJury: FC<HackathonPageJuryProps> = ({
           ) : (
             <span>Комиссия членов жюри отсутствует</span>
           )}
-          {isPrivilegedRole() && (
+          {isAdminOrOrganizer() && (
             <div className={styles.hackathonJuryActions}>
               <ActionModal
                 title='Добавить члена жюри'

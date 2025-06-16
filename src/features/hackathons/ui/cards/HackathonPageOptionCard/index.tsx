@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useState } from 'react'
 import styles from './HackathonPageOptionCard.module.scss'
 import { Criterion, Judge } from '@/features/hackathons/model/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
@@ -20,6 +20,7 @@ interface AvatarSectionProps {
 }
 
 const AvatarSection = memo(({ item, className }: AvatarSectionProps) => {
+  const [imageError, setImageError] = useState(false)
   const avatarLink = useMemo(() => {
     const avatarUpload = item.user_uploads.find(
       upload => upload.type === 'avatar',
@@ -37,17 +38,18 @@ const AvatarSection = memo(({ item, className }: AvatarSectionProps) => {
       key={avatarLink || 'fallback'}
       className={clsx(styles.avatar, className)}
     >
-      {avatarLink ? (
+      {avatarLink && !imageError ? (
         <AvatarImage
           src={avatarLink}
           alt={`${item.user_name} avatar`}
           width={150}
           height={150}
           className={styles.avatarImage}
+          onError={() => setImageError(true)}
         />
       ) : (
         <AvatarFallback className={styles.avatarFallback}>
-          {`${firstName.charAt(0)} ${lastName.charAt(0)}`}
+          {firstName && lastName ? `${firstName.charAt(0)}${lastName.charAt(0)}` : 'U'}
         </AvatarFallback>
       )}
     </Avatar>

@@ -39,7 +39,7 @@ const HackathonPageBoardCard = ({
           <h5 className={styles.name}>{leader.team_name}</h5>
         </div>
         <div className={styles.score}>
-          Счёт по оценкам:{' '}
+          Оценка команды:{' '}
           <span className={styles.scoreValue}>{leader.score}</span>
         </div>
       </div>

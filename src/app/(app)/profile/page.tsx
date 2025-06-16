@@ -143,7 +143,7 @@ export default function ProfilePage() {
                 <Input
                   type='datetime-local'
                   id='birthday'
-                  value={isoToDateTimeLocal(watch('birthday'))}
+                  value={isoToDateTimeLocal(watch('birthday')) || ''}
                   onChange={e => {
                     setValue('birthday', dateTimeLocalToIso(e.target.value))
                   }}

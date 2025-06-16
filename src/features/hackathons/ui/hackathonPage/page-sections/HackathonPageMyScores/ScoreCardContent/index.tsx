@@ -83,6 +83,7 @@ const ScoreCardContent = ({
             `Ошибка при обновлении оценки команде`,
             `${error?.message || 'Неизвестная ошибка'}`,
           )
+          console.log(`Ошибка при обновлении оценки команде:`, error)
         },
       })
     } catch (error) {

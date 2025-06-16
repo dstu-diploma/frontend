@@ -5,7 +5,10 @@ import Toolbar from '@/shared/ui/custom/misc/Toolbar/Toolbar'
 import { Button } from '@/shared/ui/shadcn/button'
 import HackathonCriteriaFormContent from '../../modal-form-contents/HackathonCriteriaFormContent'
 import { UseFormReturn } from 'react-hook-form'
-import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
+import {
+  isAdminOrOrganizer,
+  isPrivilegedRole,
+} from '@/shared/lib/helpers/roleMapping'
 import { CriterionFormData } from '@/features/hackathons/model/schemas'
 import { Criterion } from '@/features/hackathons/model/types'
 import styles from './HackathonPageCriteria.module.scss'
@@ -68,7 +71,7 @@ const HackathonPageCriteria = ({
                   </HackathonPageOptionCard>
                 ))}
               </div>
-              {isPrivilegedRole() && (
+              {isAdminOrOrganizer() && (
                 <div className={styles.hackathonCriteriaActions}>
                   <ActionModal
                     title='Создать критерий'
@@ -113,7 +116,7 @@ const HackathonPageCriteria = ({
           ) : (
             <div className={styles.noCriteria}>
               <span>Критерии для оценки работ команд отсутствуют</span>
-              {isPrivilegedRole() && (
+              {isAdminOrOrganizer() && (
                 <div className={styles.hackathonCriteriaActions}>
                   <ActionModal
                     title='Создать критерий'

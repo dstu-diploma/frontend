@@ -36,7 +36,7 @@ export const manageHackathonsApi = {
   useUpdateHackathonInfo: (hackathonId: number) => {
     const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async (data: DetailedHackathon) => {
+      mutationFn: async (data: Partial<DetailedHackathon>) => {
         const response = await axiosInstance.patch(
           `${HACKATHON_SERVICE_MANAGE_API_URL}/hackathon/${hackathonId}`,
           data,

@@ -11,8 +11,12 @@ export function middleware(request: NextRequest) {
     '/requests',
   ]
   const isAuthenticated = request.cookies.has('access_token')
-
+  
   if (request.nextUrl.pathname === '/') {
+    if (!isAuthenticated) {
+      const response = NextResponse.redirect(new URL('/login', request.url))
+      return response
+    }
     const response = NextResponse.redirect(new URL('/hackathons', request.url))
     return response
   }
@@ -36,6 +40,8 @@ export const config = {
     '/',
     '/profile/:path*',
     '/admin/:path*',
+    '/hackathons',
+    '/hackathons/:path*',
     '/team/:path*',
     '/user/:path*',
     '/requests/:path*',

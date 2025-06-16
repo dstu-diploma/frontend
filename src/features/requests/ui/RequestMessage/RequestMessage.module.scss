@@ -55,4 +55,16 @@
     opacity: 0.8;
     margin-top: 0.25rem;
   }
+
+  .avatarPlaceholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    color: #6b7280;
+    border-radius: 50%;
+    font-size: 0.875rem;
+    background-color: #e2e8f0;
+  }
 }

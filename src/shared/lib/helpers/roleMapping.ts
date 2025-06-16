@@ -1,4 +1,5 @@
 import { cookiesApi } from './cookies'
+import { useUser } from '@/providers/UserProvider'
 
 const user = cookiesApi.getUser()
 
@@ -18,6 +19,15 @@ export const mapRole = (roleKey: string): string => {
 
 export const mapRoleKey = (role: string): string => {
   return Object.keys(roleMap).find(key => roleMap[key] === role) || role
+}
+
+export const isAdmin = (): boolean => {
+  return user.role === 'admin'
+}
+
+export const isAdminOrOrganizer = (): boolean => {
+  const { user: currentUser } = useUser()
+  return currentUser && (currentUser.role === 'admin' || currentUser.role === 'organizer')
 }
 
 export const isPrivilegedRole = (): boolean => {

@@ -103,8 +103,7 @@ export const useHackathonPage = (page_id: number) => {
   const handleEditHackathonDescription = async (data: DescriptionFormData) => {
     updateHackathon(
       {
-        hackathon_id: Number(page_id),
-        data: { description: data.description },
+        description: data.description,
       },
       {
         onSuccess: async () => {

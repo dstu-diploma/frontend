@@ -1,5 +1,8 @@
 import React from 'react'
-import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
+import {
+  isAdminOrOrganizer,
+  isPrivilegedRole,
+} from '@/shared/lib/helpers/roleMapping'
 import { Button } from '@/shared/ui/shadcn/button'
 import HackathonPageSidebar from '../HackathonPageSidebar'
 import styles from './HackathonAttachmentsSidebar.module.scss'
@@ -39,7 +42,7 @@ const HackathonAttachmentsSidebar = ({
     <HackathonPageSidebar
       title='Приложения к хакатону'
       actions={
-        isPrivilegedRole() && (
+        isAdminOrOrganizer() && (
           <div className={sidebarActionsStyles}>
             <div
               style={{ position: 'relative' }}

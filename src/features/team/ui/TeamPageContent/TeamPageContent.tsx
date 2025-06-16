@@ -98,10 +98,6 @@ export const BrandTeamContent = ({
     handleChangeCaptain,
   }
 
-  if (isTeamLoading && !providedTeamInfo) {
-    return <LayoutFallback text='Загрузка данных о команде...' />
-  }
-
   const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
   const teamStyles = clsx(styles.teamContainer, {
     [styles.mobile]: isMobile,
@@ -109,6 +105,10 @@ export const BrandTeamContent = ({
     [styles.desktop]: isDesktop,
     [styles.mediumDesktop]: isMediumDesktop,
   })
+
+  if (isTeamLoading && !providedTeamInfo) {
+    return <LayoutFallback text='Загрузка данных о команде...' />
+  }
 
   return (
     <div className={teamStyles}>
@@ -184,10 +184,6 @@ const HackathonTeamContent = ({
     handleChangeCaptain,
   }
 
-  if (isTeamLoading) {
-    return <LayoutFallback text='Загрузка данных о команде...' />
-  }
-
   const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
   const teamStyles = clsx(styles.teamContainer, {
     [styles.mobile]: isMobile,
@@ -195,6 +191,10 @@ const HackathonTeamContent = ({
     [styles.desktop]: isDesktop,
     [styles.mediumDesktop]: isMediumDesktop,
   })
+
+  if (isTeamLoading) {
+    return <LayoutFallback text='Загрузка данных о команде...' />
+  }
 
   return (
     <div className={teamStyles}>

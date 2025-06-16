@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import styles from './RequestMessage.module.scss'
 import { ChatMessage } from '../../model/types'
 import { FullUser } from '@/features/user/model/types/user'
 import { formatToDateTime } from '@/shared/lib/helpers/date'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
+
 
 interface RequestMessageProps {
   message: ChatMessage
@@ -16,6 +18,7 @@ const RequestMessage = ({ message, currentUser }: RequestMessageProps) => {
   const userAvatar = message.user_uploads?.find(
     upload => upload.type === 'avatar',
   )?.url
+  const [imageError, setImageError] = useState(false)
   const isCurrentUser = message.user_id === currentUser?.id
 
   const { isSmallMobile, isMobile, isTablet, isDesktop, isMediumDesktop } =
@@ -40,14 +43,19 @@ const RequestMessage = ({ message, currentUser }: RequestMessageProps) => {
       }`}
     >
       <div className={styles.messageUserInfo}>
-        {userAvatar && (
+        {userAvatar && !imageError ? (
           <Image
             src={userAvatar}
             alt={isCurrentUser ? 'Я' : message.user_name}
             className={styles.userAvatar}
             width={32}
             height={32}
+            onError={() => setImageError(true)}
           />
+        ) : (
+          <Link href='/profile' className={styles.avatarPlaceholder}>
+            {message.user_name.charAt(0).toUpperCase() || 'U'}
+          </Link>
         )}
         <span
           className={

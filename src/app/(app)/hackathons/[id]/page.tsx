@@ -161,7 +161,7 @@ const HackathonPage = () => {
                 <HackathonPageTeams
                   scores={myTeamScores}
                   hackathonInfo={hackathonInfo}
-                  canSetScore={permissions.canSetScores}
+                  canSetScores={permissions.canSetScores}
                   onSetScore={handleSetJuryTeamScore}
                 />
               </div>

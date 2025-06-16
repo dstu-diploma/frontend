@@ -2,7 +2,6 @@ import React from 'react'
 import styles from './HackathonInfoSidebar.module.scss'
 import { Button } from '@/shared/ui/shadcn/button'
 import { ActionModal } from '@/shared/ui/custom/modals/ActionModal'
-import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
 import HackathonEditFormContent from '../../modal-form-contents/HackathonEditFormContent'
 import { UseFormReturn } from 'react-hook-form'
 import GeneralInfoSidebarContent from '../../sidebar-contents/GeneralInfoSidebarContent'
@@ -11,6 +10,7 @@ import { HackathonFormData } from '@/features/hackathons/model/schemas'
 import { DetailedHackathon } from '@/features/hackathons/model/types'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
+import { isAdminOrOrganizer } from '@/shared/lib/helpers/roleMapping'
 
 interface HackathonInfoSidebarProps {
   hackathon: DetailedHackathon | null
@@ -38,7 +38,7 @@ const HackathonInfoSidebar = ({
     <HackathonPageSidebar
       title='Информация о хакатоне'
       actions={
-        isPrivilegedRole() && (
+        isAdminOrOrganizer() && (
           <div className={sidebarActionsStyles}>
             <ActionModal
               title='Редактирование хакатона'

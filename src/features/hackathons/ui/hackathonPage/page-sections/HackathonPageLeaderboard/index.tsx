@@ -9,6 +9,8 @@ import { Button } from '@/shared/ui/shadcn/button'
 import { notificationService } from '@/shared/lib/services/notification.service'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
+import EntityLoading from '@/shared/ui/custom/fallback/EntityLoading'
+import { isAdminOrOrganizer } from '@/shared/lib/helpers/roleMapping'
 
 interface HackathonPageLeaderboardProps {
   hackathonId: number
@@ -45,19 +47,25 @@ const HackathonPageLeaderboard = ({
     <Toolbar className={leaderboardStyles}>
       <div className={styles.sectionInfo}>
         <h4>Таблица лидеров</h4>
-        {user && (user.role === 'admin' || user.role === 'organizer') && (
+        {user && isAdminOrOrganizer() && (
           <Button onClick={calculateResults}>Рассчитать результаты</Button>
         )}
       </div>
       <div className={styles.leaders}>
-        {leaderboard &&
+        {leaderboard && leaderboard.length > 0 ? (
           leaderboard.map((team: HackathonLeader, index: number) => (
             <HackathonPageBoardCard
               key={team.team_name}
               leader={team}
               position={index + 1}
             />
-          ))}
+          ))
+        ) : (
+          <span className={styles.noLeaderboardMessage}>
+            Члены жюри не устанавливали оценок командам в течение хакатона
+          </span>
+        )}
+        {!leaderboard && <EntityLoading />}
       </div>
     </Toolbar>
   )

@@ -44,7 +44,7 @@ const HackathonPageActionsToolbar = ({
           )}
           {isUserTeamApplied && (
             <Link href={`/hackathons/${hackathonInfo?.id}/my`}>
-              <Button>Моя команда</Button>
+              <Button>Моя команда на хакатоне</Button>
             </Link>
           )}
         </div>

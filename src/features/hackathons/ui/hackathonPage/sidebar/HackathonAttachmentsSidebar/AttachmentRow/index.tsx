@@ -7,7 +7,7 @@ import { IoTrashOutline } from 'react-icons/io5'
 import styles from './AttachmentRow.module.scss'
 import { ConfirmModal } from '@/features/team'
 import Link from 'next/link'
-import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
+import { isAdminOrOrganizer } from '@/shared/lib/helpers/roleMapping'
 
 interface AttachmentRowProps {
   fileName: string
@@ -27,15 +27,18 @@ const AttachmentRow: React.FC<AttachmentRowProps> = ({
   )?.icon
 
   const proccessedFileName =
-    fileName.length > 30 ? `${fileName.slice(0, 30)}...` : fileName
+    fileName.length > 30 ? `${fileName.slice(0, 50)}...` : fileName
+
+  const displayableFileName =
+    fileName.length > 50 ? `${fileName.slice(0, 50)}...` : fileName
 
   return (
     <div className={styles.attachmentRow}>
       <Link href={link} className={styles.attachmentInfo}>
         <div className={styles.iconWrapper}>{icon}</div>
-        <span className={styles.fileName}>{fileName}</span>
+        <span className={styles.fileName}>{displayableFileName}</span>
       </Link>
-      {isPrivilegedRole() && onDelete && (
+      {isAdminOrOrganizer() && onDelete && (
         <ConfirmModal
           title={`Вы действительно хотите удалить приложение "${proccessedFileName}..."?`}
           submitButtonText='Удалить'

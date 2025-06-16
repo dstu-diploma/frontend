@@ -40,29 +40,29 @@ const HackathonPageMyScores = ({
           {Object.entries(scores).length === 0 ? (
             <div>У Вас нет ранее установленных оценок</div>
           ) : (
-            Object.entries(scores).map(([teamId, teamScores]) => (
-              <AccordionItem key={teamId} value={`team-${teamId}`}>
-                <AccordionTrigger className={styles.scoreTriggerWrapper}>
-                  <HackathonPageScoreCard
-                    key={teamId}
-                    className={styles.scoreTrigger}
-                    teamName={teamScores
-                      .map(score => score.team_name)
-                      .join(', ')}
-                    teamScores={teamScores}
-                  />
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className={styles.criteriaScores}>
-                    <ScoreCardContent
-                      hackathonId={hackathonId}
-                      criteria={criteria}
+            Object.entries(scores)
+              .filter(([, teamScores]) => teamScores.length > 0)
+              .map(([teamId, teamScores]) => (
+                <AccordionItem key={teamId} value={`team-${teamId}`}>
+                  <AccordionTrigger className={styles.scoreTriggerWrapper}>
+                    <HackathonPageScoreCard
+                      key={teamId}
+                      className={styles.scoreTrigger}
+                      teamName={teamScores[0].team_name}
                       teamScores={teamScores}
                     />
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className={styles.criteriaScores}>
+                      <ScoreCardContent
+                        hackathonId={hackathonId}
+                        criteria={criteria}
+                        teamScores={teamScores}
+                      />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))
           )}
         </Accordion>
       </div>

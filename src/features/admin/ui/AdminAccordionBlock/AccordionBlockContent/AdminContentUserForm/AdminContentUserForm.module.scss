@@ -71,6 +71,11 @@
   margin-top: 0.5rem;
   display: flex;
   gap: 1rem;
+
+  .adminButtons {
+    display: flex;
+    gap: 1rem;
+  }
 }
 
 .accordionBlockFormInput {

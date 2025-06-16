@@ -29,7 +29,7 @@ const RequestList = ({ requests, type }: RequestsListProps) => {
       {requests && requests?.length > 0 ? (
         requests?.map(renderRequest)
       ) : (
-        <span>Нет {type === 'opened' ? 'активных' : 'закрытых'} обращений</span>
+        <span className={styles.noRequests}>Нет {type === 'opened' ? 'активных' : 'закрытых'} обращений</span>
       )}
     </div>
   )

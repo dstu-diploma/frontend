@@ -13,7 +13,7 @@ import {
 import { Hackathon } from '@/features/hackathons/model/types'
 import { DescriptionFormData } from '@/features/hackathons/model/schemas'
 import { UseFormReturn } from 'react-hook-form'
-import { isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
+import { isAdmin, isPrivilegedRole } from '@/shared/lib/helpers/roleMapping'
 import '@uiw/react-md-editor/markdown-editor.css'
 import '@uiw/react-markdown-preview/markdown.css'
 import styles from './HackathonPageDescription.module.scss'
@@ -31,7 +31,8 @@ const HackathonPageDescription = ({
   form,
   onSave,
 }: HackathonPageDescriptionProps) => {
-  const isPrivileged = isPrivilegedRole()
+  const isAdminUser = isAdmin()
+  console.log(hackathonInfo)
 
   const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
   const hackathonDescriptionStyles = clsx(styles.hackathonDescription, {
@@ -50,7 +51,7 @@ const HackathonPageDescription = ({
         )}
       >
         <h4>Описание хакатона</h4>
-        {isPrivileged ? (
+        {isAdminUser ? (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSave)} className={styles.form}>
               <FormField
