@@ -11,11 +11,15 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 
   span {
     font-size: 16px;
+    display: block;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
   }
 
   &:hover {
@@ -27,6 +31,23 @@
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+
+  &.disabled {
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+
+    &:hover {
+      border-color: #e2e8f0;
+      background-color: #f1f5f9;
+    }
+
+    &:focus {
+      border-color: #e2e8f0;
+      box-shadow: none;
+    }
   }
 }
 
@@ -65,19 +86,20 @@
   font-family: 'Roboto Fallback';
   font-size: 14px;
 
-  &:hover {
-    background-color: #f8fafc;
-    color: #3b82f6;
-  }
-
   &[data-state="checked"] {
-    background-color: #3b82f6;
-    color: white;
+    background-color: rgb(37, 99, 235) !important;
+    color: white !important;
     font-weight: 500;
 
     &:hover {
-      background-color: #3b82f6;
+      background-color: rgb(37, 99, 235) !important;
+      color: white !important;
     }
+  }
+
+  &:hover:not([data-state="checked"]) {
+    background-color: #f8fafc;
+    color: rgb(37, 99, 235);
   }
 
   &:focus {

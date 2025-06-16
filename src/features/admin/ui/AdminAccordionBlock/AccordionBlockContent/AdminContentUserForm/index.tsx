@@ -9,6 +9,9 @@ import styles from './AdminContentUserForm.module.scss'
 import { useAdminSingleUser } from '@/features/admin/hooks/tabs/users/useAdminSingleUser'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
+import TabSelect from '@/features/admin/ui/AdminTabFilter/TabSelect/TabSelect'
+import { roleMap } from '@/shared/lib/helpers/roleMapping'
 
 interface AdminContentUserFormProps {
   entity: User
@@ -24,7 +27,10 @@ const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
     handleDeleteUser,
     errors,
     isSubmitting,
+    watch,
+    setValue,
   } = useAdminSingleUser(entity)
+  const user = cookiesApi.getUser()
 
   // Мобильные стили
   const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
@@ -34,6 +40,11 @@ const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
     [styles.desktop]: isDesktop,
     [styles.mediumDesktop]: isMediumDesktop,
   })
+
+  const roleOptions = Object.entries(roleMap).map(([key, value]) => ({
+    value: key,
+    label: value,
+  }))
 
   return (
     <form
@@ -59,10 +70,20 @@ const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
                 <label htmlFor='role' className={styles.formItemLabel}>
                   Роль
                 </label>
-                <Input
-                  id='role'
-                  {...register('role')}
-                  className={styles.accordionBlockFormInput}
+                <TabSelect
+                  selectedValue={watch('role')}
+                  handleSelect={(value: string) => {
+                    if (Object.keys(roleMap).includes(value)) {
+                      setValue('role', value, { 
+                        shouldValidate: true, 
+                        shouldDirty: true,
+                        shouldTouch: true 
+                      })
+                    }
+                  }}
+                  placeholder="Выберите роль"
+                  options={roleOptions}
+                  disabled={entity.id === user?.id}
                 />
               </div>
             </div>

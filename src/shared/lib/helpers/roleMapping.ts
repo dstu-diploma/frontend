@@ -25,7 +25,7 @@ export const isAdmin = (): boolean => {
   return user.role === 'admin'
 }
 
-export const isAdminOrOrganizer = (): boolean => {
+export const isAdminOrOrganizer = (): boolean | null => {
   const { user: currentUser } = useUser()
   return currentUser && (currentUser.role === 'admin' || currentUser.role === 'organizer')
 }

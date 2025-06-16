@@ -2,23 +2,27 @@ import {
   ISOStringToDateString,
   dateStringToISO,
 } from '@/shared/lib/helpers/date'
-import { mapRole, mapRoleKey } from '@/shared/lib/helpers/roleMapping'
+import { roleMap } from '@/shared/lib/helpers/roleMapping'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { adminApi } from '../../../api'
 import { AdminUserFormData, adminUserFormSchema } from '../../../model/schemas'
 import { User } from '@/features/user'
 import { notificationService } from '@/shared/lib/services/notification.service'
+import { cookiesApi } from '@/shared/lib/helpers/cookies'
 
 export const useAdminSingleUser = (entity: User) => {
   const { mutate: updateUser } = adminApi.useUpdateUserInfo()
   const { mutate: deleteUser } = adminApi.useDeleteUser()
   const { mutate: banUser } = adminApi.useBanUser()
+  const user = cookiesApi.getUser()
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    watch,
+    setValue,
   } = useForm<AdminUserFormData>({
     resolver: zodResolver(adminUserFormSchema),
     mode: 'onSubmit',
@@ -31,12 +35,12 @@ export const useAdminSingleUser = (entity: User) => {
       birthday: entity.birthday
         ? ISOStringToDateString(entity.birthday)
         : undefined,
-      role: mapRole(entity.role),
+      role: entity.role ?? undefined,
       password: '',
       confirmPassword: '',
     },
   })
-
+  
   // Блокировка пользователя
   const handleBanUser = async () => {
     const requestBody = { userId: entity.id, is_banned: !entity.is_banned }
@@ -69,11 +73,11 @@ export const useAdminSingleUser = (entity: User) => {
 
   // Обновление данных о пользователе
   const submitHandler = (data: AdminUserFormData) => {
-    const { password, ...restData } = data
+    const { password, role, ...restData } = data
     const transformedData = {
       ...restData,
       birthday: data.birthday ? dateStringToISO(data.birthday) : undefined,
-      role: mapRoleKey(data.role),
+      ...(entity.id !== user?.id ? { role } : {}),
       ...(password && password.trim() !== '' ? { password } : {}),
     }
     const requestBody = { userId: entity.id, data: transformedData }
@@ -100,5 +104,7 @@ export const useAdminSingleUser = (entity: User) => {
     handleDeleteUser,
     errors,
     isSubmitting,
+    watch,
+    setValue,
   }
 }

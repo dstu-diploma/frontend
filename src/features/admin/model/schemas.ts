@@ -38,7 +38,7 @@ export const adminUserFormSchema = z
         { message: 'Дата рождения должна содержать минимум 10 символов' },
       )
       .optional(),
-    role: z.enum(Object.values(roleMap) as [string, ...string[]], {
+    role: z.enum(['user', 'admin', 'organizer', 'helper', 'judge'] as const, {
       message:
         'Доступные роли: Администратор, Тех.поддержка, Участник, Организатор, Член жюри',
     }),

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './TabSelect.module.scss'
 import {
   Select,
@@ -9,38 +9,58 @@ import {
   SelectItem,
   SelectPortal,
 } from '@radix-ui/react-select'
-import { SelectOption } from '@/features/admin/hooks/useAdminSelect'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
+import { IoMdArrowDropdown } from "react-icons/io";
+
+interface SelectOption {
+  value: string
+  label: string
+}
 
 interface TabSelectProps {
   selectedValue: string
   handleSelect: (value: string) => void
   placeholder: string
   options: SelectOption[]
+  disabled?: boolean
 }
 
 const TabSelect = (props: TabSelectProps) => {
-  const selectedOption = props.options.find(
-    option => option.value === props.selectedValue,
-  )
-
+  const [currentValue, setCurrentValue] = useState(props.selectedValue)
   const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
   const selectTriggerStyles = clsx(styles.selectTrigger, {
     [styles.mobile]: isMobile,
     [styles.tablet]: isTablet,
     [styles.desktop]: isDesktop,
     [styles.mediumDesktop]: isMediumDesktop,
+    [styles.disabled]: props.disabled,
   })
 
+  useEffect(() => {
+    if (props.selectedValue) {
+      setCurrentValue(props.selectedValue)
+    }
+  }, [props.selectedValue])
+
+  const selectedOption = props.options.find(opt => opt.value === currentValue)
+  
+  const handleValueChange = (value: string) => {
+    if (props.disabled) return
+    setCurrentValue(value)
+    props.handleSelect(value)
+  }
+
   return (
-    <Select value={props.selectedValue} onValueChange={props.handleSelect}>
+    <Select
+      value={currentValue}
+      onValueChange={handleValueChange}
+      disabled={props.disabled}
+    >
       <SelectTrigger className={selectTriggerStyles}>
-        <SelectValue
-          placeholder={props.placeholder}
-          className={styles.selectValue}
-        >
-          Роль:&nbsp;{selectedOption?.label}
+        <SelectValue className={styles.selectValue}>
+          <span>{selectedOption?.label || props.placeholder}</span>
+          <IoMdArrowDropdown />
         </SelectValue>
       </SelectTrigger>
       <SelectPortal>
@@ -56,6 +76,7 @@ const TabSelect = (props: TabSelectProps) => {
                 key={option.value}
                 value={option.value}
                 className={styles.selectItem}
+                disabled={props.disabled}
               >
                 {option.label}
               </SelectItem>
