@@ -43,7 +43,6 @@ const CustomMDEditor = ({
         preview={preview || 'live'}
         highlightEnable={highlightEnable || true}
         enableScroll={enableScroll || true}
-        visiableDragbar={visiableDragbar || true}
         minHeight={minHeight || 200}
         maxHeight={maxHeight || 800}
         tabSize={tabSize || 2}
