@@ -2,6 +2,7 @@
 
 @include media(tablet, max) {
   .hackathonCriteria.mobile {
+    padding: 1rem;
     .hackathonSectionContainer {
       display: flex;
       flex-direction: column;
@@ -18,9 +19,13 @@
         gap: 1rem;
         .hackathonCriteriaContent {
           display: flex;
-          flex-direction: column;   
-          gap: 1rem;
+          flex-direction: column;
+          gap: 0.75rem;
           width: 100%;
+          span {
+            margin-top: 0 !important;
+            font-size: 0.75rem;
+          }
           .hackathonCriteriaList {
             order: 2;
             display: flex;

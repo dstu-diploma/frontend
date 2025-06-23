@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { Username } from '@/providers/UsernameProvider'
 import { useAvatar } from '@/providers/AvatarProvider'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import styles from './UserAvatar.module.css'
+import styles from './UserAvatar.module.scss'
 import { useUsername } from '@/providers/UsernameProvider'
 
 interface UserAvatarProps {
@@ -38,7 +38,7 @@ export default function UserAvatar({ username }: UserAvatarProps) {
   return (
     <div className={styles.avatarWrapper}>
       {avatarLink && !imageError ? (
-        <Link href='/profile'>
+        <Link href='/profile' className={styles.avatarLinkWrapper}>
           <Image
             src={avatarLink || ''}
             alt='avatar'

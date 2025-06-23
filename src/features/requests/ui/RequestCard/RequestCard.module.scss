@@ -1,3 +1,7 @@
+@use './media/mobile';
+@use './media/tablet';
+@use './media/desktop';
+
 .link {
   text-decoration: none;
 }
@@ -21,102 +25,104 @@
 
   &:hover {
     text-decoration: none;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
   .infoContainer {
-      width: 100%;
-      flex: 1;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.125rem;
+
+    .info {
+      width: 80%;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 0.125rem;
 
-      .info {
-          width: 80%;
-          display: flex;
-          justify-content: space-between;
-
-          .basicInfo {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-
-            .paramBlock {
-              .defaultParam {
-                text-decoration: none;
-                font-weight: 500;
-                font-size: 0.875rem;
-              }
-
-              .defaultParamValue {
-                text-decoration: none;
-                color: #828282;
-                font-size: 0.875rem;
-              }
-
-              .successParamValue {
-                text-decoration: none;
-                font-weight: 500;
-                color: #72ab5b;
-                font-size: 0.875rem;
-              }
-
-              .closedParamValue {
-                text-decoration: none;
-                font-weight: 500;
-                color: #ff6464;
-                font-size: 0.875rem;
-              }
-            }
-
-            .name {
-              margin-bottom: 0.25rem;
-              text-decoration: none;
-              font-weight: 500;
-            }
-          }
-
-          .dateCreated {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            background-color: #f8fafc;
-            border-radius: 0.5rem;
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
-
-            &:hover {
-              background-color: #f1f5f9;
-              border-color: #cbd5e1;
-            }
-
-            .param {
-              font-size: 0.875rem;
-              font-weight: 500;
-              color: #64748b;
-            }
-
-            .value {
-              text-align: center;
-              font-size: 0.875rem;
-              color: #334155;
-              font-weight: 600;
-            }
-          }
-      }
-
-      .actions {
+      .basicInfo {
         display: flex;
-        gap: 0.5rem;
-      }
-  } 
+        flex-direction: column;
+        gap: 0.25rem;
 
-  .captainControls {
+        .paramBlock {
+          .defaultParam {
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+          }
+
+          .defaultParamValue {
+            text-decoration: none;
+            color: #828282;
+            font-size: 0.875rem;
+          }
+
+          .successParamValue {
+            text-decoration: none;
+            font-weight: 500;
+            color: #72ab5b;
+            font-size: 0.875rem;
+          }
+
+          .closedParamValue {
+            text-decoration: none;
+            font-weight: 500;
+            color: #ff6464;
+            font-size: 0.875rem;
+          }
+        }
+
+        .name {
+          margin-bottom: 0.25rem;
+          text-decoration: none;
+          font-weight: 500;
+        }
+      }
+
+      .dateCreated {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        background-color: #f8fafc;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: #f1f5f9;
+          border-color: #cbd5e1;
+        }
+
+        .param {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #64748b;
+        }
+
+        .value {
+          text-align: center;
+          font-size: 0.875rem;
+          color: #334155;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .actions {
       display: flex;
       gap: 0.5rem;
+    }
+  }
+
+  .captainControls {
+    display: flex;
+    gap: 0.5rem;
   }
 }
 
@@ -126,5 +132,3 @@
     transform: translateY(0);
   }
 }
-
-

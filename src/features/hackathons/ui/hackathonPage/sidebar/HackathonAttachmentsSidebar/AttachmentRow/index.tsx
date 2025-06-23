@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import {
   allowedMimeTypes,
@@ -8,6 +10,8 @@ import styles from './AttachmentRow.module.scss'
 import { ConfirmModal } from '@/features/team'
 import Link from 'next/link'
 import { isAdminOrOrganizer } from '@/shared/lib/helpers/roleMapping'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 interface AttachmentRowProps {
   fileName: string
@@ -32,8 +36,17 @@ const AttachmentRow: React.FC<AttachmentRowProps> = ({
   const displayableFileName =
     fileName.length > 50 ? `${fileName.slice(0, 50)}...` : fileName
 
+  // Мобильные стили
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const attachmentRowStyles = clsx(styles.attachmentRow, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={styles.attachmentRow}>
+    <div className={attachmentRowStyles}>
       <Link href={link} className={styles.attachmentInfo}>
         <div className={styles.iconWrapper}>{icon}</div>
         <span className={styles.fileName}>{displayableFileName}</span>

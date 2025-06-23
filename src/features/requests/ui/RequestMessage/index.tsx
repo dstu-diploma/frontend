@@ -8,7 +8,6 @@ import { formatToDateTime } from '@/shared/lib/helpers/date'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
 
-
 interface RequestMessageProps {
   message: ChatMessage
   currentUser: FullUser
@@ -65,7 +64,7 @@ const RequestMessage = ({ message, currentUser }: RequestMessageProps) => {
           {isCurrentUser
             ? currentUserName
             : isMobile || isSmallMobile
-              ? message.user_name.split(' ').slice(0, 2)
+              ? `${message.user_name.split(' ')[0]} ${message.user_name.split(' ')[1]}`
               : message.user_name}
         </span>
       </div>

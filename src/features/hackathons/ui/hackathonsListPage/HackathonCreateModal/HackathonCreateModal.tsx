@@ -7,12 +7,23 @@ import { Button } from '@/shared/ui/shadcn/button'
 import { useHackathonCreate } from '@/features/hackathons/hooks/useHackathonCreate'
 import styles from './HackathonCreateModal.module.scss'
 import HackathonEditFormContent from '../../hackathonPage/modal-form-contents/HackathonEditFormContent'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 const HackathonCreateModal = () => {
   const { createForm, hackathonCreationHandler } = useHackathonCreate()
 
+  // Мобильные стили
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const hackathonsListToolbarStyles = clsx(styles.hackathonsListToolbar, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <Toolbar>
+    <Toolbar className={hackathonsListToolbarStyles}>
       <div className={styles.toolbarContent}>
         <ActionModal
           title='Объявление хакатона'

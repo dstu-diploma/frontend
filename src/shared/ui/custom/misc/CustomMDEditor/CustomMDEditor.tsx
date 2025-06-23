@@ -2,6 +2,7 @@ import React from 'react'
 import MDEditor, { PreviewType } from '@uiw/react-md-editor'
 import styles from './CustomMDEditor.module.scss'
 import clsx from 'clsx'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface CustomMDEditorProps {
   value: string
@@ -10,7 +11,6 @@ interface CustomMDEditorProps {
   preview?: PreviewType | undefined
   highlightEnable?: boolean | undefined
   enableScroll?: boolean | undefined
-  visiableDragbar?: boolean | undefined
   minHeight?: number | undefined
   maxHeight?: number | undefined
   tabSize?: number | undefined
@@ -26,7 +26,6 @@ const CustomMDEditor = ({
   preview,
   highlightEnable,
   enableScroll,
-  visiableDragbar,
   minHeight,
   maxHeight,
   tabSize,
@@ -34,8 +33,16 @@ const CustomMDEditor = ({
   mdClassName,
   wrapperClassName,
 }: CustomMDEditorProps) => {
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const mdEditorStyles = clsx(styles.mdEditor, wrapperClassName, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={clsx(styles.mdEditor, wrapperClassName)}>
+    <div className={mdEditorStyles}>
       <MDEditor
         value={value}
         onChange={onChange}

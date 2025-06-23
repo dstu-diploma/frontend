@@ -1,0 +1,289 @@
+@use '@/shared/styles/mixins' as *;
+@use '@/shared/styles/variables' as *;
+
+@include media(tablet, max) {
+  .mdEditor.mobile {
+    :global {
+      .w-md-editor {
+        margin-top: 0.5rem;
+        font-family: inherit;
+        font-size: 14px;
+        background: #fafbfc;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e1e5e9;
+        color: black !important;
+        transition: box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .w-md-editor-toolbar {
+        height: auto !important;
+        background: #f8fafc;
+        border-radius: 8px 8px 0 0;
+        font-family: inherit;
+        font-size: 14px;
+        color: #6b7280;
+        border-bottom: 1px solid #e1e5e9;
+        padding: 0.5rem 0.75rem;
+
+        ul {
+          li {
+            button {
+              padding: 0.5rem;
+              height: 100%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              color: #6b7280;
+              border: none;
+              background: transparent;
+              border-radius: 4px;
+              transition: all 0.2s;
+
+              &:hover {
+                background: #f3f4f6;
+                color: black !important;
+              }
+
+              svg {
+                width: 12px;
+                height: 12px;
+                fill: currentColor;
+              }
+            }
+          }
+        }
+      }
+
+      .w-md-editor-content {
+        background: #fff;
+        border-radius: 0 0 8px 8px;
+        font-family: inherit;
+        font-size: 14px;
+        color: #374151;
+        flex: 1;
+        border: none;
+        display: flex;
+        flex-direction: column;
+
+        .w-md-editor-input {
+          .w-md-editor-text {
+            .wmde-markdown-color pre {
+              font-size: 18px;
+              font-size:
+                'Fira Code', 'JetBrains Mono', 'Consolas', 'Menlo', monospace;
+            }
+          }
+        }
+      }
+
+      .w-md-editor-text-pre > code,
+      .w-md-editor-text-input {
+        font-family:
+          'Fira Code', 'JetBrains Mono', 'Consolas', 'Menlo', monospace !important;
+        font-size: 18px;
+        color: #374151;
+        line-height: 1.6;
+        background: transparent;
+        border: none;
+        outline: none;
+      }
+
+      .w-md-editor-input {
+        font-family:
+          'Fira Code', 'JetBrains Mono', 'Consolas', 'Menlo', monospace !important;
+        font-size: 18px !important;
+        line-height: 1.6 !important;
+
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          transition: all 0.4s ease-in;
+          background: #acd1f9;
+          border-radius: 4px;
+
+          &:hover {
+            background: #3182ce;
+          }
+        }
+
+        .wmde-markdown-color {
+          font-family: inherit !important;
+          font-size: 18px !important;
+          line-height: 1.6 !important;
+
+          p {
+          }
+
+          pre,
+          code,
+          span,
+          div {
+            font-family:
+              'Fira Code', 'JetBrains Mono', 'Consolas', 'Menlo', monospace !important;
+            font-size: 18px !important;
+            line-height: 1.6 !important;
+            color: black;
+          }
+        }
+      }
+
+      .w-md-editor-preview {
+        font-size: 14px;
+        color: #374151;
+        background: #fff;
+        padding: 1rem;
+        line-height: 1.6;
+        border-left: #e1e5e9;
+
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          transition: all 0.4s ease-in;
+          background: #acd1f9;
+          border-radius: 4px;
+
+          &:hover {
+            background: #3182ce;
+          }
+        }
+
+        .wmde-markdown-color {
+          background-color: white !important;
+          p {
+            color: black;
+          }
+        }
+
+        .wmde-markdown {
+          -webkit-text-size-adjust: 100%;
+          font-family:
+            -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif,
+            'Apple Color Emoji', 'Segoe UI Emoji';
+          font-size: 16px;
+          line-height: 1.5;
+          word-wrap: break-word;
+          color: #111827;
+          background-color: #fff !important;
+        }
+      }
+
+      .w-md-editor-preview pre,
+      .w-md-editor-preview code {
+        background: #f3f4f6;
+        border-radius: 4px;
+        padding: 0.2em 0.4em;
+        font-size: 13px;
+        font-family:
+          'Fira Code', 'JetBrains Mono', 'Consolas', 'Menlo', monospace;
+      }
+
+      .w-md-editor-preview blockquote {
+        border-left: 4px solid #3b82f6;
+        background: #f8fafc;
+        color: #6b7280;
+        margin: 0.5em 0;
+        padding: 0.5em 1em;
+        border-radius: 4px;
+      }
+
+      .w-md-editor-preview ul,
+      .w-md-editor-preview ol {
+        margin-left: 1.5em;
+        padding-left: 0.5em;
+      }
+
+      .w-md-editor-preview h1,
+      .w-md-editor-preview h2,
+      .w-md-editor-preview h3,
+      .w-md-editor-preview h4,
+      .w-md-editor-preview h5,
+      .w-md-editor-preview h6 {
+        font-size: 1.1em;
+        font-weight: 600;
+        margin: 1em 0 0.5em 0;
+        color: #111827;
+      }
+
+      .w-md-editor-preview p {
+        margin: 0.5em 0;
+      }
+
+      .w-md-editor-show-live,
+      .w-md-editor-show-edit,
+      .w-md-editor-show-preview {
+        .w-md-editor-bar {
+          position: absolute;
+          cursor: s-resize;
+          right: 0;
+          bottom: 5px;
+          margin-right: 0;
+          width: 14px;
+          z-index: 3;
+          height: 10px;
+          border-radius: 0 0 3px 0;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          user-select: none;
+          background: #e1e5e9;
+        }
+      }
+
+      .w-md-editor-show-live {
+        .w-md-editor-content {
+          .w-md-editor-input {
+            border-right: 1px solid rgb(225, 229, 233) !important;
+            border-left: none !important;
+            border-top: none !important;
+            border-bottom: none !important;
+            width: 100%;
+          }
+
+          .w-md-editor-preview {
+            border-left: none !important;
+            border-right: none !important;
+            border-top: none !important;
+            border-bottom: none !important;
+            width: 100%;
+
+            &::before {
+              display: none;
+            }
+          }
+        }
+
+        .w-md-editor-bar {
+          background: transparent !important;
+          border: none !important;
+          display: none !important;
+        }
+
+        // Дополнительные селекторы для переопределения встроенных стилей
+        .w-md-editor-text {
+          border-right: 1px solid rgb(225, 229, 233) !important;
+        }
+
+        .w-md-editor-text-pre {
+          border-right: 1px solid rgb(225, 229, 233) !important;
+        }
+      }
+    }
+  }
+}
