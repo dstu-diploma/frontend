@@ -1,0 +1,16 @@
+@use '@/shared/styles/mixins' as *;
+
+@include media(tablet, max) {
+  .hackathonsListToolbar.mobile {
+    padding: 1rem;
+    .toolbarContent {
+      width: 100%;
+      div {
+        width: 100%;
+        button {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

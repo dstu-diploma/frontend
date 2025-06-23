@@ -44,10 +44,24 @@ const RequestPage = () => {
     <div className={requestPageStyles}>
       <div className={styles.requestContent}>
         <div className={styles.requestContentContainer}>
-          <h1 className={styles.requestTitle}>
-            Обращение «{currentRequest?.subject}» по хакатону «
-            {currentRequest?.hackathon_name}»
-          </h1>
+          <div className={styles.requestTitle}>
+            <div className={styles.titleBlock}>
+              <span className={clsx(styles.titleItem, styles.titleHeading)}>
+                Обращение
+              </span>
+              <span className={clsx(styles.titleItem, styles.titleValue)}>
+                {currentRequest?.subject}
+              </span>
+            </div>
+            <div className={styles.titleBlock}>
+              <span className={clsx(styles.titleItem, styles.titleHeading)}>
+                Хакатон
+              </span>
+              <span className={clsx(styles.titleItem, styles.titleValue)}>
+                {currentRequest?.hackathon_name}
+              </span>
+            </div>
+          </div>
           <div className={styles.requestChatWindow}>
             <div className={styles.messagesContainer}>
               {currentRequest?.messages.map(message => (

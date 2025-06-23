@@ -13,62 +13,64 @@
     transition: box-shadow 0.2s ease-in-out;
     background: white;
     cursor: pointer;
-  
+
     &:hover {
       text-decoration: none;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
-  
+
     .infoContainer {
-        flex: 1;
+      flex: 1;
+      display: flex;
+      gap: 0.125rem;
+
+      .info {
         display: flex;
+        flex-direction: column;
         gap: 0.125rem;
-  
-        .info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.125rem;
-  
-            .name {
-              text-decoration: none;
-              font-weight: 500;
-              margin-bottom: 0.25rem;
-              font-size: 0.75rem;
-            }
-            
-            .paramBlock {
-              .defaultParam {
-                text-decoration: none;
-                font-weight: 500;
-                font-size: 0.65rem;
-              }
-  
-              .defaultParamValue {
-                text-decoration: none;
-                color: rgb(130, 130, 130);
-                font-size: 0.65rem;
-              }
-  
-              .successParamValue {
-                text-decoration: none;
-                font-weight: 500;
-                color: #72ab5b;
-                font-size: 0.65rem;
-              }
-  
-              .closedParamValue {
-                text-decoration: none;
-                font-weight: 500;
-                color: rgb(255, 100, 100);
-                font-size: 0.65rem;
-              }
-            }
+
+        .name {
+          text-decoration: none;
+          font-weight: 500;
+          margin-bottom: 0.25rem;
+          font-size: 1rem;
         }
-    } 
-  
+
+        .paramBlock {
+          .defaultParam {
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.75rem;
+          }
+
+          .defaultParamValue {
+            text-decoration: none;
+            color: rgb(130, 130, 130);
+            font-size: 0.75rem;
+          }
+
+          .successParamValue {
+            text-decoration: none;
+            font-weight: 500;
+            color: #72ab5b;
+            font-size: 0.75rem;
+          }
+
+          .closedParamValue {
+            text-decoration: none;
+            font-weight: 500;
+            color: rgb(255, 100, 100);
+            font-size: 0.75rem;
+          }
+        }
+      }
+    }
+
     .captainControls {
-        display: flex;
-        gap: 0.5rem;
+      display: flex;
+      gap: 0.5rem;
     }
   }
 }

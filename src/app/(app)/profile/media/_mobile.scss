@@ -64,10 +64,17 @@
           width: 100%;
           display: flex;
           justify-content: flex-start;
+
+          button {
+            width: 100%;
+          }
         }
       }
 
       .profileForm {
+        .formSubmit {
+          width: 100%;
+        }
         .details {
           width: 100%;
           display: flex;

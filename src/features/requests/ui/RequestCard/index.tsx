@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import styles from './RequestCard.module.scss'
 import clsx from 'clsx'
@@ -6,6 +8,7 @@ import { ISOStringToDateString } from '@/shared/lib/helpers/date'
 import { Button } from '@/shared/ui/shadcn/button'
 import { useSingleRequest } from '../../hooks/useSingleRequest'
 import { useQueryClient } from '@tanstack/react-query'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface RequestCardProps {
   request: Request
@@ -16,8 +19,17 @@ const RequestCard = ({ request, className }: RequestCardProps) => {
   const queryClient = useQueryClient()
   const { handleCloseRequest } = useSingleRequest(request.id)
 
+  // Мобильные стили
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
+  const requestCardStyles = clsx(styles.card, className, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   return (
-    <div className={clsx(styles.card, className)}>
+    <div className={requestCardStyles}>
       <div className={styles.infoContainer}>
         <div className={styles.info}>
           <div className={styles.basicInfo}>
@@ -58,15 +70,18 @@ const RequestCard = ({ request, className }: RequestCardProps) => {
             </div>
           </div>
         </div>
-        {!request.closed_by_user_id && <Button 
-          variant='destructive' 
-          onClick={(e) => {
-            handleCloseRequest(e)
-            queryClient.invalidateQueries({ queryKey: ['allRequests'] })
-          }}
-        >
-          Закрыть обращение
-        </Button>}
+        {!request.closed_by_user_id && (
+          <Button
+            className={styles.closeRequestButton}
+            variant='destructive'
+            onClick={e => {
+              handleCloseRequest(e)
+              queryClient.invalidateQueries({ queryKey: ['allRequests'] })
+            }}
+          >
+            Закрыть обращение
+          </Button>
+        )}
       </div>
     </div>
   )

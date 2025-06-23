@@ -3,20 +3,34 @@
 @include media(tablet, max) {
   .requestsContainer.mobile {
     .requestsTitle {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
+      margin: 0.5rem 0;
     }
-
     .requestsContent {
+      gap: 1rem;
       .requestsToolbar {
         padding: 0.75rem;
-        .createRequestButton {
+        div {
           width: 100%;
-          font-size: 0.75rem;
+          .createRequestButton {
+            width: 100%;
+            font-size: 0.75rem;
+          }
         }
       }
       .requestsListContainer {
         h3 {
           font-size: 1.25rem;
+        }
+
+        .tabs {
+          margin-top: 0;
+
+          .tabsList {
+            .tabsTrigger {
+              font-size: 0.75rem;
+            }
+          }
         }
       }
     }

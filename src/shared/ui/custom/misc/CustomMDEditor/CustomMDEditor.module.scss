@@ -65,7 +65,7 @@
       font-size: 14px;
       color: #374151;
       flex: 1;
-      border: none;
+      border: none !important;
 
       .w-md-editor-input {
         .w-md-editor-text {
@@ -95,6 +95,7 @@
         'Fira Code', 'JetBrains Mono', 'Consolas', 'Menlo', monospace !important;
       font-size: 18px !important;
       line-height: 1.6 !important;
+      border-right: none !important;
 
       &::-webkit-scrollbar {
         width: 8px;
@@ -136,13 +137,17 @@
       }
     }
 
+    .w-md-editor-area {
+      border: none !important;
+    }
+
     .w-md-editor-preview {
       font-size: 14px;
       color: #374151;
       background: #fff;
       padding: 1rem;
       line-height: 1.6;
-      border-left: #e1e5e9;
+      border-left: none !important;
 
       &::-webkit-scrollbar {
         width: 8px;
@@ -246,8 +251,11 @@
 
     .w-md-editor-show-live {
       .w-md-editor-content {
+        &::before {
+          display: none;
+        }
         .w-md-editor-input {
-          border-right: 1px solid rgb(225, 229, 233) !important;
+          border-right: none !important;
           border-left: none !important;
           border-top: none !important;
           border-bottom: none !important;
@@ -269,12 +277,19 @@
 
       // Дополнительные селекторы для переопределения встроенных стилей
       .w-md-editor-text {
-        border-right: 1px solid rgb(225, 229, 233) !important;
+        border-right: none !important;
       }
 
       .w-md-editor-text-pre {
-        border-right: 1px solid rgb(225, 229, 233) !important;
+        border-right: none !important;
       }
+    }
+
+    .w-md-editor-divider,
+    .w-md-editor-split {
+      background: none !important;
+      border: none !important;
+      width: 0 !important;
     }
   }
 }

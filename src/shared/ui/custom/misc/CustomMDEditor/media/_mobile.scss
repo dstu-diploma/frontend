@@ -253,6 +253,7 @@
             border-left: none !important;
             border-top: none !important;
             border-bottom: none !important;
+            width: 100%;
           }
 
           .w-md-editor-preview {
@@ -260,6 +261,11 @@
             border-right: none !important;
             border-top: none !important;
             border-bottom: none !important;
+            width: 100%;
+
+            &::before {
+              display: none;
+            }
           }
         }
 

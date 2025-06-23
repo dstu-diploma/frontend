@@ -2,9 +2,19 @@
 
 @include media(tablet, max) {
   .hackathonTeams.mobile {
+    padding: 1rem;
     .hackathonSectionContainer {
       h4 {
         font-size: 1rem;
+      }
+
+      .hackathonTeamsList {
+        .noCriteria {
+          span {
+            margin-top: 0 !important;
+            font-size: 0.75rem;
+          }
+        }
       }
     }
   }
