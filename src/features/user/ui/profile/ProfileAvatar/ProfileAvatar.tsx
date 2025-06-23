@@ -11,7 +11,7 @@ import {
 import { User, UserUpload } from '../../../model/types'
 import { useProfileAvatar } from '../../../hooks/profile/useProfileAvatar'
 import styles from './ProfileAvatar.module.scss'
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { useAvatar } from '@/providers/AvatarProvider'
 import clsx from 'clsx'
@@ -42,9 +42,10 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
       return avatarSrc
     }
     if (user && 'uploads' in user) {
-      return user?.uploads?.find(
+      const found = user?.uploads?.find(
         (upload: UserUpload) => upload.type === 'avatar',
       )
+      return found
     }
     return null
   }, [avatarSrc, isAvatarDeleted, user])

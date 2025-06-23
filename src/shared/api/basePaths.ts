@@ -1,5 +1,5 @@
 // Основной базовый URL для всех API
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost'
+export const API_URL = 'http://localhost'
 
 // Базовые URL для всех сервисов
 export const USER_SERVICE_API_URL = API_URL + '/user'

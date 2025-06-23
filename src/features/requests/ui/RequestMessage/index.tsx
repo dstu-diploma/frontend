@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import styles from './RequestMessage.module.scss'
 import { ChatMessage } from '../../model/types'
@@ -43,7 +42,7 @@ const RequestMessage = ({ message, currentUser }: RequestMessageProps) => {
     >
       <div className={styles.messageUserInfo}>
         {userAvatar && !imageError ? (
-          <Image
+          <img
             src={userAvatar}
             alt={isCurrentUser ? 'Я' : message.user_name}
             className={styles.userAvatar}
