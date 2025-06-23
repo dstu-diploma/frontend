@@ -12,7 +12,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@radix-ui/react-accordion'
+} from '@/shared/ui/shadcn/accordion'
 import ScoreCardContent from './ScoreCardContent'
 
 interface HackathonPageMyScoresProps {
@@ -44,13 +44,8 @@ const HackathonPageMyScores = ({
               .filter(([, teamScores]) => teamScores.length > 0)
               .map(([teamId, teamScores]) => (
                 <AccordionItem key={teamId} value={`team-${teamId}`}>
-                  <AccordionTrigger className={styles.scoreTriggerWrapper}>
-                    <HackathonPageScoreCard
-                      key={teamId}
-                      className={styles.scoreTrigger}
-                      teamName={teamScores[0].team_name}
-                      teamScores={teamScores}
-                    />
+                  <AccordionTrigger className={styles.teamScores}>
+                    <h5>{teamScores[0].team_name}</h5>
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className={styles.criteriaScores}>

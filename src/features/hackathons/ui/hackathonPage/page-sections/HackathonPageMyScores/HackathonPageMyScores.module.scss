@@ -24,4 +24,52 @@
       }
     }
   }
+
+  .link {
+    text-decoration: none;
+  }
+
+  .teamScores {
+    width: 100%;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease-in-out;
+    background: #f8fafc;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInadminTab 0.5s ease forwards;
+    text-decoration: none;
+
+    h5 {
+      font-weight: 500;
+    }
+
+    &:hover {
+      text-decoration: none;
+      box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .dropdownIcon {
+      width: 20px;
+      height: 20px;
+      stroke: black;
+      fill: white;
+    }
+  }
+
+  @keyframes fadeInadminTab {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }

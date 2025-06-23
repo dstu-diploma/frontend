@@ -9,23 +9,42 @@ import {
   isAdminOrOrganizer,
   isPrivilegedRole,
 } from '@/shared/lib/helpers/roleMapping'
-import { CriterionFormData } from '@/features/hackathons/model/schemas'
-import { Criterion } from '@/features/hackathons/model/types'
+import {
+  CriterionFormData,
+  CriterionDeletionData,
+} from '@/features/hackathons/model/schemas'
+import { Criterion, DetailedHackathon } from '@/features/hackathons/model/types'
 import styles from './HackathonPageCriteria.module.scss'
 import { HackathonPageOptionCard } from '../../../cards/HackathonPageOptionCard'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface HackathonPageCriteriaProps {
+  isStartPeriod: boolean
   criteria: Criterion[] | undefined
   criterionForm: UseFormReturn<CriterionFormData>
-  handleCriterionCreation: (data: CriterionFormData) => void
-  handleCriterionUpdate: (data: CriterionFormData) => void
-  handleCriterionDeletion: (data: CriterionFormData) => void
+  criterionDeletionForm: UseFormReturn<CriterionDeletionData>
+  handleCriterionCreation: (
+    data: CriterionFormData,
+    form: UseFormReturn<{
+      name: string
+      weight: string
+    }>,
+  ) => void
+  handleCriterionUpdate: (
+    data: CriterionFormData,
+    form: UseFormReturn<CriterionFormData>,
+  ) => void
+  handleCriterionDeletion: (
+    data: CriterionDeletionData,
+    form: UseFormReturn<CriterionDeletionData>,
+  ) => void
 }
 
 const HackathonPageCriteria = ({
+  isStartPeriod,
   criteria,
   criterionForm,
+  criterionDeletionForm,
   handleCriterionCreation,
   handleCriterionUpdate,
   handleCriterionDeletion,
@@ -71,66 +90,150 @@ const HackathonPageCriteria = ({
                   </HackathonPageOptionCard>
                 ))}
               </div>
-              {isAdminOrOrganizer() && (
-                <div className={styles.hackathonCriteriaActions}>
-                  <ActionModal
-                    title='Создать критерий'
-                    trigger={<Button>Создать</Button>}
-                    submitButtonText='Объявить'
-                    onSave={e => {
-                      e.preventDefault()
-                      criterionForm.handleSubmit(handleCriterionCreation)(e)
-                    }}
-                  >
-                    <HackathonCriteriaFormContent form={criterionForm} />
-                  </ActionModal>
-                  <ActionModal
-                    title='Обновление критерия'
-                    trigger={<Button>Обновить</Button>}
-                    submitButtonText='Обновить'
-                    onSave={e => {
-                      e.preventDefault()
-                      criterionForm.handleSubmit(handleCriterionUpdate)(e)
-                    }}
-                  >
-                    <HackathonCriteriaFormContent form={criterionForm} />
-                  </ActionModal>
-                  <ActionModal
-                    title='Удаление критерия'
-                    trigger={<Button variant='destructive'>Удалить</Button>}
-                    destructive={true}
-                    submitButtonText='Удалить'
-                    onSave={e => {
-                      e.preventDefault()
-                      criterionForm.handleSubmit(handleCriterionDeletion)(e)
-                    }}
-                  >
-                    <HackathonCriteriaFormContent
+              {isAdminOrOrganizer() ? (
+                !isStartPeriod ? (
+                  <div className={styles.hackathonCriteriaActions}>
+                    <ActionModal
+                      title='Создать критерий'
+                      trigger={<Button>Создать</Button>}
+                      submitButtonText='Создать'
                       form={criterionForm}
-                      deletion={true}
-                    />
-                  </ActionModal>
-                </div>
-              )}
+                      onSave={async e => {
+                        e.preventDefault()
+                        try {
+                          await new Promise<void>((resolve, reject) => {
+                            criterionForm.handleSubmit(
+                              data => {
+                                handleCriterionCreation(data, criterionForm)
+                                resolve()
+                              },
+                              errors => {
+                                reject(errors)
+                              },
+                            )(e)
+                          })
+                          return true // Закрыть модалку при успехе
+                        } catch (errors) {
+                          return false // Не закрывать модалку при ошибках
+                        }
+                      }}
+                    >
+                      <HackathonCriteriaFormContent form={criterionForm} />
+                    </ActionModal>
+                    <ActionModal
+                      title='Обновление критерия'
+                      trigger={<Button>Обновить</Button>}
+                      submitButtonText='Обновить'
+                      form={criterionForm}
+                      onSave={async e => {
+                        e.preventDefault()
+                        try {
+                          await new Promise<void>((resolve, reject) => {
+                            criterionForm.handleSubmit(
+                              data => {
+                                handleCriterionUpdate(data, criterionForm)
+                                resolve()
+                              },
+                              errors => {
+                                reject(errors)
+                              },
+                            )(e)
+                          })
+                          return true // Закрыть модалку при успехе
+                        } catch (errors) {
+                          return false // Не закрывать модалку при ошибках
+                        }
+                      }}
+                    >
+                      <HackathonCriteriaFormContent
+                        form={criterionForm}
+                        update={true}
+                        criteria={criteria}
+                      />
+                    </ActionModal>
+                    <ActionModal
+                      title='Удаление критерия'
+                      trigger={<Button variant='destructive'>Удалить</Button>}
+                      destructive={true}
+                      submitButtonText='Удалить'
+                      form={criterionDeletionForm}
+                      onSave={async e => {
+                        e.preventDefault()
+                        try {
+                          await new Promise<void>((resolve, reject) => {
+                            criterionDeletionForm.handleSubmit(
+                              data => {
+                                handleCriterionDeletion(
+                                  data,
+                                  criterionDeletionForm,
+                                )
+                                resolve()
+                              },
+                              errors => {
+                                reject(errors)
+                              },
+                            )(e)
+                          })
+                          return true // Закрыть модалку при успехе
+                        } catch (errors) {
+                          return false // Не закрывать модалку при ошибках
+                        }
+                      }}
+                    >
+                      <HackathonCriteriaFormContent
+                        form={criterionDeletionForm}
+                        deletion={true}
+                        criteria={criteria}
+                      />
+                    </ActionModal>
+                  </div>
+                ) : (
+                  <span style={{ marginTop: '20px' }}>
+                    Критерии можно изменять только до начала хакатона
+                  </span>
+                )
+              ) : null}
             </div>
           ) : (
             <div className={styles.noCriteria}>
               <span>Критерии для оценки работ команд отсутствуют</span>
-              {isAdminOrOrganizer() && (
-                <div className={styles.hackathonCriteriaActions}>
-                  <ActionModal
-                    title='Создать критерий'
-                    trigger={<Button>Создать критерий</Button>}
-                    submitButtonText='Создать'
-                    onSave={e => {
-                      e.preventDefault()
-                      criterionForm.handleSubmit(handleCriterionCreation)(e)
-                    }}
-                  >
-                    <HackathonCriteriaFormContent form={criterionForm} />
-                  </ActionModal>
-                </div>
-              )}
+              {isAdminOrOrganizer() ? (
+                !isStartPeriod ? (
+                  <div className={styles.hackathonCriteriaActions}>
+                    <ActionModal
+                      title='Создать критерий'
+                      trigger={<Button>Создать критерий</Button>}
+                      submitButtonText='Создать'
+                      form={criterionForm}
+                      onSave={async e => {
+                        e.preventDefault()
+                        try {
+                          await new Promise<void>((resolve, reject) => {
+                            criterionForm.handleSubmit(
+                              data => {
+                                handleCriterionCreation(data, criterionForm)
+                                resolve()
+                              },
+                              errors => {
+                                reject(errors)
+                              },
+                            )(e)
+                          })
+                          return true // Закрыть модалку при успехе
+                        } catch (errors) {
+                          return false // Не закрывать модалку при ошибках
+                        }
+                      }}
+                    >
+                      <HackathonCriteriaFormContent form={criterionForm} />
+                    </ActionModal>
+                  </div>
+                ) : (
+                  <span style={{ marginTop: '20px' }}>
+                    Критерии можно изменять только до начала хакатона
+                  </span>
+                )
+              ) : null}
             </div>
           )}
         </div>

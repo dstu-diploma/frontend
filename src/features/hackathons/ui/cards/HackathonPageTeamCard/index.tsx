@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import styles from './HackathonPageTeamCard.module.scss'
 import {
   DetailedHackathon,
@@ -7,7 +7,6 @@ import {
   TeamJudgeScoreObject,
 } from '@/features/hackathons/model/types'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
-import { ActionModal } from '@/features/team'
 import { Button } from '@/shared/ui/shadcn/button'
 import {
   ScoreFormData,
@@ -17,6 +16,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import HackathonScoreFormContent from '../../hackathonPage/modal-form-contents/HackathonScoreFormContent'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import { isAdmin } from '@/shared/lib/helpers/roleMapping'
+import { adminApi } from '@/features/admin/api'
+import { notificationService } from '@/shared/lib/services/notification.service'
+import { ActionModal, ConfirmModal } from '@/features/team'
 
 interface HackathonPageTeamCardProps {
   onSetScore: (teamId: number, data: ScoreFormData) => void
@@ -38,6 +41,26 @@ const HackathonPageTeamCard = ({
   const jury = hackathonInfo.judges
   const criteria = hackathonInfo.criteria
   const user = cookiesApi.getUser()
+  const { mutate: deleteTeamFromHackathon } = adminApi.useDeleteHackathonTeam(
+    hackathonInfo.id,
+  )
+
+  // Исключение админом команды с хакатона
+  const handleTeamUnregister = useCallback(() => {
+    deleteTeamFromHackathon(team.id, {
+      onSuccess: () => {
+        notificationService.success(
+          `Команда «${team.name}» исключена с хакатона «${hackathonInfo.name}»`,
+        )
+      },
+      onError: error => {
+        notificationService.error(
+          error,
+          `Ошибка при исключении команды с хакатона «${hackathonInfo.name}»`,
+        )
+      },
+    })
+  }, [isAdmin])
 
   // Получаем оценку для текущей команды
   const teamScore = useMemo(() => {
@@ -111,6 +134,16 @@ const HackathonPageTeamCard = ({
             ) : (
               <span>Нет критериев для оценки</span>
             )}
+          </div>
+        ) : isAdmin() ? (
+          <div className={styles.actions}>
+            <ConfirmModal
+              title={`Вы точно хотите cнять команду «${team.name}»?`}
+              submitButtonText='Удалить'
+              onConfirm={handleTeamUnregister}
+            >
+              <Button variant='destructive'>Исключить команду</Button>
+            </ConfirmModal>
           </div>
         ) : null}
       </div>

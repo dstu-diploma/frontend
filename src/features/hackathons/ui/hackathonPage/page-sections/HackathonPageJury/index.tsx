@@ -14,6 +14,7 @@ import { HackathonPageOptionCard } from '../../../cards/HackathonPageOptionCard'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 
 interface HackathonPageJuryProps {
+  isStartPeriod: boolean
   juryInfo: Judge[] | undefined
   juryForm: UseFormReturn<JuryFormData>
   handleJuryAddition: (data: JuryFormData) => void
@@ -21,6 +22,7 @@ interface HackathonPageJuryProps {
 }
 
 export const HackathonPageJury: FC<HackathonPageJuryProps> = ({
+  isStartPeriod,
   juryInfo,
   juryForm,
   handleJuryAddition,
@@ -62,32 +64,38 @@ export const HackathonPageJury: FC<HackathonPageJuryProps> = ({
           ) : (
             <span>Комиссия членов жюри отсутствует</span>
           )}
-          {isAdminOrOrganizer() && (
-            <div className={styles.hackathonJuryActions}>
-              <ActionModal
-                title='Добавить члена жюри'
-                submitButtonText='Добавить'
-                trigger={<Button>Добавить в жюри</Button>}
-                onSave={e => {
-                  e.preventDefault()
-                  juryForm.handleSubmit(handleJuryAddition)(e)
-                }}
-              >
-                <HackathonJuryFormContent form={juryForm} />
-              </ActionModal>
-              <ActionModal
-                title='Снятие члена жюри'
-                submitButtonText='Снять'
-                trigger={<Button variant='destructive'>Снять с жюри</Button>}
-                onSave={e => {
-                  e.preventDefault()
-                  juryForm.handleSubmit(handleJuryDeletion)(e)
-                }}
-              >
-                <HackathonJuryFormContent form={juryForm} />
-              </ActionModal>
-            </div>
-          )}
+          {isAdminOrOrganizer() ? (
+            !isStartPeriod ? (
+              <div className={styles.hackathonJuryActions}>
+                <ActionModal
+                  title='Добавить члена жюри'
+                  submitButtonText='Добавить'
+                  trigger={<Button>Добавить в жюри</Button>}
+                  onSave={e => {
+                    e.preventDefault()
+                    juryForm.handleSubmit(handleJuryAddition)(e)
+                  }}
+                >
+                  <HackathonJuryFormContent form={juryForm} />
+                </ActionModal>
+                <ActionModal
+                  title='Снятие члена жюри'
+                  submitButtonText='Снять'
+                  trigger={<Button variant='destructive'>Снять с жюри</Button>}
+                  onSave={e => {
+                    e.preventDefault()
+                    juryForm.handleSubmit(handleJuryDeletion)(e)
+                  }}
+                >
+                  <HackathonJuryFormContent form={juryForm} />
+                </ActionModal>
+              </div>
+            ) : (
+              <span style={{ marginTop: '20px' }}>
+                Состав членов жюри можно изменять только до начала хакатона
+              </span>
+            )
+          ) : null}
         </div>
       </div>
     </Toolbar>

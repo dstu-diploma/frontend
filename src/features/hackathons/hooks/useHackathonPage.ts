@@ -4,10 +4,12 @@ import { hackathonApi } from '../api'
 import { DescriptionFormData, HackathonFormData } from '../model/schemas'
 import { useQueryClient } from '@tanstack/react-query'
 import { notificationService } from '@/shared/lib/services/notification.service'
+import { useRouter } from 'next/navigation'
 
 export const useHackathonPage = (page_id: number) => {
   const queryClient = useQueryClient()
   const hackathonId = Number(page_id)
+  const router = useRouter()
 
   // Полученные данных о сущностях
   const {
@@ -66,14 +68,15 @@ export const useHackathonPage = (page_id: number) => {
     applyToHackathon(requestBody, {
       onSuccess: async () => {
         notificationService.success(
-          `Заявка на участие в хакатоне ${hackathonInfo?.name} отправлена`,
+          `Вы успешно записали команду на хакатон «${hackathonInfo?.name}»`,
         )
         setIsUserTeamApplied(true)
+        router.push(`/hackathons/${page_id}/my`)
       },
       onError: error =>
         notificationService.error(
           error,
-          `Ошибка при отправлении заявки на хакатон`,
+          `Ошибка при записи команды на хакатон`,
         ),
     })
   }

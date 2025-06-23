@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form'
 import {
   CriterionFormData,
   criterionFormSchema,
+  CriterionDeletionData,
+  criterionDeletionSchema,
   JuryFormData,
   juryFormSchema,
   HackathonFormData,
@@ -18,7 +20,14 @@ export const useHackathonForms = (hackathonInfo: DetailedHackathon | null) => {
     resolver: zodResolver(criterionFormSchema),
     defaultValues: {
       name: '',
-      weight: 0,
+      weight: '',
+    },
+  })
+
+  const criterionDeletionForm = useForm<CriterionDeletionData>({
+    resolver: zodResolver(criterionDeletionSchema),
+    defaultValues: {
+      name: '',
     },
   })
 
@@ -53,6 +62,7 @@ export const useHackathonForms = (hackathonInfo: DetailedHackathon | null) => {
 
   return {
     criterionForm,
+    criterionDeletionForm,
     juryForm,
     editForm,
     editDescriptionForm,

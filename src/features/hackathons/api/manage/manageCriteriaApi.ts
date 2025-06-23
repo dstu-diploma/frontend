@@ -30,6 +30,12 @@ export const manageCriteriaApi = {
         queryClient.invalidateQueries({
           queryKey: ['hackathonById', hackathon_id],
         })
+        queryClient.invalidateQueries({
+          queryKey: ['hackathonCriteria', hackathon_id],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['criteriaList', hackathon_id],
+        })
       },
     })
   },
@@ -56,6 +62,12 @@ export const manageCriteriaApi = {
         queryClient.invalidateQueries({
           queryKey: ['hackathonById', hackathon_id],
         })
+        queryClient.invalidateQueries({
+          queryKey: ['hackathonCriteria', hackathon_id],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['criteriaList', hackathon_id],
+        })
       },
     })
   },
@@ -69,6 +81,12 @@ export const manageCriteriaApi = {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ['hackathonById', hackathon_id],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['hackathonCriteria', hackathon_id],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['criteriaList', hackathon_id],
         })
       },
     })

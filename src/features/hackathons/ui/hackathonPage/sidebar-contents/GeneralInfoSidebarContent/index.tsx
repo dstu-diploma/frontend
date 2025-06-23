@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './GeneralInfoSidebarContent.module.scss'
-import { ISOStringToDateString } from '@/shared/lib/helpers/date'
+import { ISOStringToDateTimeString } from '@/shared/lib/helpers/date'
 import { DetailedHackathon } from '@/features/hackathons/model/types'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
@@ -25,19 +25,19 @@ const GeneralInfoSidebarContent = ({
       <div className={styles.sidebarInfoItem}>
         <span className={styles.sidebarInfoLabel}>Дата начала:</span>
         <span className={styles.sidebarInfoValue}>
-          {ISOStringToDateString(hackathon.start_date)}
+          {ISOStringToDateTimeString(hackathon.start_date)}
         </span>
       </div>
       <div className={styles.sidebarInfoItem}>
         <span className={styles.sidebarInfoLabel}>Дата начала оценок:</span>
         <span className={styles.sidebarInfoValue}>
-          {ISOStringToDateString(hackathon.score_start_date)}
+          {ISOStringToDateTimeString(hackathon.score_start_date)}
         </span>
       </div>
       <div className={styles.sidebarInfoItem}>
         <span className={styles.sidebarInfoLabel}>Дата окончания:</span>
         <span className={styles.sidebarInfoValue}>
-          {ISOStringToDateString(hackathon.end_date)}
+          {ISOStringToDateTimeString(hackathon.end_date)}
         </span>
       </div>
       <div className={styles.sidebarInfoItem}>

@@ -30,7 +30,6 @@ const ScoreCardContent = ({
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const { mutate: updateScore } = hackathonApi.useSetJuryScore(hackathonId)
 
-  // Create dynamic validation schema based on teamScores
   const validationSchema = z.object(
     teamScores.reduce(
       (acc, score) => ({

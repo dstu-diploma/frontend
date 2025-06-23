@@ -10,6 +10,7 @@ interface HackathonPageActionsToolbarProps {
   hasTeam: boolean
   onHackathonApply: () => void
   isUserTeamApplied: boolean
+  isUserTeamCaptain: boolean
   hackathonInfo: DetailedHackathon
 }
 
@@ -17,6 +18,7 @@ const HackathonPageActionsToolbar = ({
   hasTeam,
   onHackathonApply,
   isUserTeamApplied,
+  isUserTeamCaptain,
   hackathonInfo,
 }: HackathonPageActionsToolbarProps) => {
   const isHackathonStarted = useMemo(() => {
@@ -29,17 +31,17 @@ const HackathonPageActionsToolbar = ({
     <Toolbar className={styles.hackathonPageInfoToolbar}>
       {!isUserTeamApplied && isHackathonStarted ? (
         <div className={styles.message}>
-          <span>Хакатон уже начался</span>
+          <span>Запись на данный хакатон уже закрыта</span>
         </div>
-      ) : hasTeam ? (
+      ) : hasTeam && isUserTeamCaptain ? (
         <div className={styles.hackathonPageInfoToolbarButtons}>
-          {!isUserTeamApplied && (
+          {!isUserTeamApplied && isUserTeamCaptain && (
             <ConfirmModal
-              title={`Подать заявку на участие в хакатоне ${hackathonInfo?.name}?`}
-              submitButtonText='Подать'
+              title={`Произвести запись команды на хакатон «${hackathonInfo?.name}»?`}
+              submitButtonText='Записать'
               onConfirm={onHackathonApply}
             >
-              <Button>Подать заявку на участие</Button>
+              <Button>Записать свою команду на хакатон</Button>
             </ConfirmModal>
           )}
           {isUserTeamApplied && (
@@ -47,6 +49,12 @@ const HackathonPageActionsToolbar = ({
               <Button>Моя команда на хакатоне</Button>
             </Link>
           )}
+        </div>
+      ) : hasTeam && !isUserTeamCaptain ? (
+        <div className={styles.message}>
+          <span>
+            Вам нужно быть капитаном Вашей команды, чтобы записаться на хакатон
+          </span>
         </div>
       ) : (
         <div className={styles.message}>

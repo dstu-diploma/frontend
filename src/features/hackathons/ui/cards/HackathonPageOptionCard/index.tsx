@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
 import { isJudge } from '@/features/hackathons/model/guards'
 import clsx from 'clsx'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import { userApi } from '@/features/user'
 
 interface HackathonPageOptionCardProps {
   item: Judge | Criterion
@@ -21,12 +22,18 @@ interface AvatarSectionProps {
 
 const AvatarSection = memo(({ item, className }: AvatarSectionProps) => {
   const [imageError, setImageError] = useState(false)
+  const { data: userData } = userApi.useGetSingleUser(item.user_id)
+  console.log('Current judge api response:', userData)
+
   const avatarLink = useMemo(() => {
-    const avatarUpload = item.user_uploads.find(
-      upload => upload.type === 'avatar',
-    )
-    return avatarUpload?.url || ''
-  }, [item.user_uploads])
+    if (userData) {
+      const avatarUpload = userData.uploads.find(
+        upload => upload.type === 'avatar',
+      )
+      return avatarUpload?.url || ''
+    }
+    return null
+  }, [userData])
 
   const [firstName, lastName] = useMemo(
     () => item.user_name.split(' '),
