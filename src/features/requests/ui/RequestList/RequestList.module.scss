@@ -8,11 +8,18 @@
   }
 }
 
+.requestsListContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
 .requestsList {
-  margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  margin: 1rem 0;
   flex: 1;
   overflow-y: auto;
 
@@ -40,4 +47,5 @@
   display: block;
   margin: 0.5rem 0;
   font-size: 1rem;
+  color: #64748b;
 }

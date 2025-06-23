@@ -3,6 +3,9 @@ import styles from './RequestCard.module.scss'
 import clsx from 'clsx'
 import { Request } from '../../model/types'
 import { ISOStringToDateString } from '@/shared/lib/helpers/date'
+import { Button } from '@/shared/ui/shadcn/button'
+import { useSingleRequest } from '../../hooks/useSingleRequest'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface RequestCardProps {
   request: Request
@@ -10,6 +13,9 @@ interface RequestCardProps {
 }
 
 const RequestCard = ({ request, className }: RequestCardProps) => {
+  const queryClient = useQueryClient()
+  const { handleCloseRequest } = useSingleRequest(request.id)
+
   return (
     <div className={clsx(styles.card, className)}>
       <div className={styles.infoContainer}>
@@ -52,6 +58,15 @@ const RequestCard = ({ request, className }: RequestCardProps) => {
             </div>
           </div>
         </div>
+        {!request.closed_by_user_id && <Button 
+          variant='destructive' 
+          onClick={(e) => {
+            handleCloseRequest(e)
+            queryClient.invalidateQueries({ queryKey: ['allRequests'] })
+          }}
+        >
+          Закрыть обращение
+        </Button>}
       </div>
     </div>
   )

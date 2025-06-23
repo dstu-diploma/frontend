@@ -2,8 +2,10 @@ import { AxiosError } from 'axios'
 import { useCallback } from 'react'
 import { requestsApi } from '../api'
 import { notificationService } from '@/shared/lib/services/notification.service'
+import { useQueryClient } from '@tanstack/react-query'
 
 export const useSingleRequest = (requestId: number) => {
+  const queryClient = useQueryClient()
   const { data: currentRequest, isLoading: isRequestLoading } =
     requestsApi.useGetRequestById(requestId)
   const { mutate: closeRequest } = requestsApi.useCloseRequest(requestId)
@@ -40,6 +42,10 @@ export const useSingleRequest = (requestId: number) => {
           }
           notificationService.error(error, `Ошибка при закрытии обращения`)
         },
+        onSuccess: () => {
+          notificationService.success(`Обращение успешно закрыто!`)
+          queryClient.invalidateQueries({ queryKey: ['allRequests'] })
+        }
       })
     },
     [closeRequest],

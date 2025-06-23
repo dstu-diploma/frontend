@@ -2,11 +2,12 @@ import { notificationService } from '@/shared/lib/services/notification.service'
 import { requestsApi } from '../api'
 import {
   CreateRequestFormData,
+  CreateRequestFormInputData,
   createRequestFormSchema,
 } from '../model/schemas'
 import { useEffect, useCallback, useMemo } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, UseFormReturn } from 'react-hook-form'
 
 export const useRequests = () => {
   const {
@@ -48,7 +49,10 @@ export const useRequests = () => {
 
   // Создание обращения
   const handleCreateRequest = useCallback(
-    (data: CreateRequestFormData) => {
+    (
+      data: CreateRequestFormData,
+      form: UseFormReturn<CreateRequestFormInputData>,
+    ) => {
       // Предотвращаем повторную отправку во время выполнения мутации
       if (isCreatingRequest) {
         return
@@ -65,7 +69,10 @@ export const useRequests = () => {
           notificationService.error(error, 'Ошибка при создании обращения')
         },
         onSuccess: () => {
-          createRequestForm.reset()
+          notificationService.success(
+            `Обращение «${data.subject}» успешно создано!`,
+          )
+          form.reset()
         },
       })
     },

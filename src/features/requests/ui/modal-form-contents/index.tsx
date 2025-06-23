@@ -1,20 +1,14 @@
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { CreateRequestBody } from '@/features/requests/model/types'
+import { CreateRequestFormInputData } from '@/features/requests/model/schemas'
 import { Label } from '@/shared/ui/shadcn/label'
 import { Input } from '@/shared/ui/shadcn/input'
 import styles from './CreateRequestFormContent.module.scss'
 import { Hackathon } from '@/features/hackathons/model/types'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/ui/shadcn/select'
+import TabSelect from '@/features/admin/ui/AdminTabFilter/TabSelect/TabSelect'
 
 interface CreateRequestFormContentProps {
-  form: UseFormReturn<CreateRequestBody>
+  form: UseFormReturn<CreateRequestFormInputData>
   hackathonList: Hackathon[] | undefined
 }
 
@@ -22,42 +16,34 @@ const CreateRequestFormContent = ({
   form,
   hackathonList,
 }: CreateRequestFormContentProps) => {
+  const options =
+    hackathonList?.map(hackathon => ({
+      value: hackathon.id.toString(),
+      label: hackathon.name,
+    })) || []
+
   return (
     <div className={styles.requestForm}>
       <div className={styles.requestFormItem}>
         <Label htmlFor='hackathon_id'>Хакатон</Label>
-        <Select
-          value={form.watch('hackathon_id')?.toString()}
-          onValueChange={value => {
-            form.setValue('hackathon_id', Number(value))
+        <TabSelect
+          key={form.watch('hackathon_id')?.toString() || 'default'}
+          selectedValue={form.watch('hackathon_id')?.toString() || undefined}
+          handleSelect={value => {
+            if (value) {
+              form.setValue('hackathon_id', Number(value))
+            } else {
+              form.setValue('hackathon_id', undefined)
+            }
           }}
-        >
-          <SelectTrigger className={styles.selectTrigger}>
-            <SelectValue
-              placeholder='Выберите хакатон'
-              className={styles.selectValue}
-            />
-          </SelectTrigger>
-          <SelectContent
-            position='popper'
-            sideOffset={4}
-            className={styles.selectContent}
-            align='start'
-            side='bottom'
-          >
-            {hackathonList?.map(hackathon => {
-              return (
-                <SelectItem
-                  key={hackathon.id}
-                  value={hackathon.id.toString()}
-                  className={styles.selectItem}
-                >
-                  {hackathon.name}
-                </SelectItem>
-              )
-            })}
-          </SelectContent>
-        </Select>
+          placeholder='Выберите хакатон'
+          options={options}
+          position='popper'
+          sideOffset={4}
+          align='start'
+          side='bottom'
+          triggerClassName={styles.hackathonChooseSelectTrigger}
+        />
       </div>
       <div className={styles.requestFormItem}>
         <Label htmlFor='subject'>Тема</Label>

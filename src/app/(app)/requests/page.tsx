@@ -4,8 +4,8 @@ import { hackathonApi } from '@/features/hackathons/api'
 import { useRequests } from '@/features/requests/hooks/useRequests'
 import { useRequestsListSocket } from '@/features/requests/hooks/useRequestsListSocket'
 import {
-  CreateRequestFormData,
-  createRequestFormSchema,
+  CreateRequestFormInputData,
+  createRequestFormInputSchema,
 } from '@/features/requests/model/schemas'
 import CreateRequestFormContent from '@/features/requests/ui/modal-form-contents'
 import RequestList from '@/features/requests/ui/RequestList'
@@ -31,10 +31,9 @@ const MyRequestsPage = () => {
     isCreatingRequest,
   } = useRequests()
 
-  const createRequestForm = useForm<CreateRequestFormData>({
-    resolver: zodResolver(createRequestFormSchema),
+  const createRequestForm = useForm<CreateRequestFormInputData>({
+    resolver: zodResolver(createRequestFormInputSchema),
     defaultValues: {
-      hackathon_id: 0,
       message: '',
       subject: '',
     },
@@ -42,13 +41,25 @@ const MyRequestsPage = () => {
 
   useRequestsListSocket()
 
-  const onSubmit = (data: CreateRequestFormData) => {
-    handleCreateRequest(data)
+  const onSubmit = (
+    data: CreateRequestFormInputData,
+    form: typeof createRequestForm,
+  ) => {
+    if (data.hackathon_id) {
+      handleCreateRequest(
+        {
+          hackathon_id: data.hackathon_id,
+          message: data.message,
+          subject: data.subject,
+        },
+        form,
+      )
+    }
   }
 
   const user = cookiesApi.getUser()
   const canCreateRequest =
-    (user && user.role === 'user') || user.role === 'judge'
+    user && (user.role === 'user' || user.role === 'judge')
 
   const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
   const requestsPageStyles = clsx(styles.requestsContainer, {
@@ -74,7 +85,9 @@ const MyRequestsPage = () => {
                 </Button>
               }
               submitButtonText='Создать'
-              onSave={createRequestForm.handleSubmit(onSubmit)}
+              onSave={createRequestForm.handleSubmit(data => {
+                onSubmit(data, createRequestForm)
+              })}
               isSubmitting={isCreatingRequest}
             >
               <CreateRequestFormContent
@@ -85,7 +98,6 @@ const MyRequestsPage = () => {
           </Toolbar>
         )}
         <div className={styles.requestsListContainer}>
-          <h3>Список обращений</h3>
           {isRequestsLoading ? (
             <EntityLoading />
           ) : (
