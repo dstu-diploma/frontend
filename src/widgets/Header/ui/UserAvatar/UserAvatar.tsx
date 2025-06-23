@@ -2,18 +2,12 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-import { Username } from '@/providers/UsernameProvider'
 import { useAvatar } from '@/providers/AvatarProvider'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import styles from './UserAvatar.module.scss'
 import { useUsername } from '@/providers/UsernameProvider'
 
-interface UserAvatarProps {
-  username: Username | null
-}
-
-export default function UserAvatar({ username }: UserAvatarProps) {
+export default function UserAvatar() {
   const { avatarSrc, isAvatarDeleted } = useAvatar()
   const user = cookiesApi.getUser()
   const { username: usernameFromProvider } = useUsername()
@@ -30,7 +24,9 @@ export default function UserAvatar({ username }: UserAvatarProps) {
       const avatarUpload = user.uploads.find(
         (upload: { type?: string }) => upload.type === 'avatar',
       )
-      return avatarUpload?.url || null
+      return avatarUpload?.url
+        ? `${avatarUpload.url}?v=${user.updatedAt || Date.now()}`
+        : null
     }
     return null
   }, [isAvatarDeleted, avatarSrc, user])
@@ -39,13 +35,12 @@ export default function UserAvatar({ username }: UserAvatarProps) {
     <div className={styles.avatarWrapper}>
       {avatarLink && !imageError ? (
         <Link href='/profile' className={styles.avatarLinkWrapper}>
-          <Image
+          <img
             src={avatarLink || ''}
             alt='avatar'
             width={40}
             height={40}
             className={styles.avatar}
-            priority
             onError={() => setImageError(true)}
           />
         </Link>
