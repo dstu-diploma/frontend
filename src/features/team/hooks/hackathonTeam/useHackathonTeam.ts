@@ -1,16 +1,23 @@
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { teamApi } from '../../api'
 import { TeamMateRef } from '../../model/types'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from '@/shared/hooks/use-toast'
 import { useQueryClient } from '@tanstack/react-query'
 import { notificationService } from '@/shared/lib/services/notification.service'
+import { useRouter } from 'next/navigation'
+import { hackathonApi } from '@/features/hackathons/api'
 
 export const useHackathonTeam = (page_id: number) => {
   // Данные о команде
   const hackathonId = Number(page_id)
 
+  const router = useRouter()
+  const [hasLeftTeam, setHasLeftTeam] = useState(false)
+
   const queryClient = useQueryClient()
+  const { data: hackathonInfo, isLoading: isHackathonLoading } =
+    hackathonApi.useGetHackathonById(hackathonId)
   const {
     data: teamInfo,
     isPending: isTeamLoading,
@@ -18,20 +25,19 @@ export const useHackathonTeam = (page_id: number) => {
   } = teamApi.useGetMyHackathonTeamInfo(hackathonId)
 
   // Мутации для изменения данных
-  const { mutate: leaveTeam } = teamApi.useLeaveHackathonTeam()
   const { mutate: kickMate } = teamApi.useKickHackathonTeamMate(hackathonId)
   const { mutate: setCaptainRights } =
     teamApi.useSetHackathonTeamCaptainRights(hackathonId)
 
   useEffect(() => {
-    if (isTeamLoadingError) {
+    if (isTeamLoadingError && !hasLeftTeam) {
       toast({
         title: 'Ошибка загрузки',
         description: 'Не удалось загрузить информацию о команде',
         variant: 'destructive',
       })
     }
-  }, [isTeamLoadingError])
+  }, [isTeamLoadingError, hasLeftTeam])
 
   // Вычисленные значения
   const hasTeam = !!teamInfo
@@ -47,14 +53,25 @@ export const useHackathonTeam = (page_id: number) => {
   // Обработчик выхода из команды
   const handleTeamLeave = async (event: React.FormEvent) => {
     event.preventDefault()
-    leaveTeam(hackathonId, {
-      onSuccess: async () =>
-        notificationService.success(
-          `Вы успешно покинули команду ${teamInfo?.name}`,
-        ),
-      onError: error =>
-        notificationService.error(error, `Ошибка при выходе из команды`),
-    })
+    setHasLeftTeam(true)
+    kickMate(
+      { mate_id: Number(currentUser?.user_id) },
+      {
+        onSuccess: async () => {
+          notificationService.success(
+            `Вы успешно покинули команду «${teamInfo?.name}»`,
+          )
+          queryClient.invalidateQueries({
+            queryKey: ['hackathonById', hackathonId],
+          })
+          router.push(`/hackathons/${page_id}`)
+        },
+        onError: error => {
+          setHasLeftTeam(false)
+          notificationService.error(error, `Ошибка при выходе из команды`)
+        },
+      },
+    )
   }
 
   // Обработчик исключения участника из команды
@@ -102,6 +119,8 @@ export const useHackathonTeam = (page_id: number) => {
   }
 
   return {
+    hackathonInfo,
+    isHackathonLoading,
     isCaptain,
     teamName,
     teamRole,

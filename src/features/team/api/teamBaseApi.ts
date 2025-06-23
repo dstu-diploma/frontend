@@ -91,7 +91,7 @@ export const teamBaseApi = {
         await axiosInstance.post(`${TEAM_SERVICE_API_URL}/name`, team_name)
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['teamInfo'] })
+        queryClient.invalidateQueries({ queryKey: ['myTeamInfo'] })
       },
     })
   },

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { TeamMateRef } from '@/features/team/model/types'
+import { TeamInfo, TeamMateRef } from '@/features/team/model/types'
 import { ActionModal } from '@/shared/ui/custom/modals/ActionModal'
 import { ConfirmModal } from '@/shared/ui/custom/modals/ConfirmModal'
 import Toolbar from '@/shared/ui/custom/misc/Toolbar/Toolbar'
@@ -66,13 +66,10 @@ const TeamToolbar = (props: TeamToolbarProps) => {
   } = props.settings
 
   const {
-    currentBrandTeamName,
-    currentNewCaptain,
-    handleDeleteTeam,
-    handleBrandTeamRename,
-    handleBrandTeamNameChange,
-    handleNewCaptainChange,
-    handleChangeCaptainRights,
+    currentBrandTeamName = '',
+    handleDeleteTeam = () => {},
+    handleBrandTeamRename = () => {},
+    handleBrandTeamNameChange = () => {},
   } = props.adminSettings ?? {}
 
   const { role, handleMateRoleChange, handleMateRoleSave } = useSetRoleModal()
@@ -99,7 +96,9 @@ const TeamToolbar = (props: TeamToolbarProps) => {
   return (
     <Toolbar className={toolbarStyles}>
       <div className={styles.toolbarContent}>
-        {isTeamLoading && <span>Загрузка данных о команде...</span>}
+        {isTeamLoading && !props.adminSettings && (
+          <span>Загрузка данных о команде...</span>
+        )}
         {!isAdmin && !isTeamLoading && !hasTeam && (
           <span>Вы не состоите в команде</span>
         )}
@@ -210,23 +209,13 @@ const TeamToolbar = (props: TeamToolbarProps) => {
             >
               <TeamSingleFieldFormContent
                 fieldName='name'
-                defaultValue={currentBrandTeamName}
-                onChange={handleBrandTeamNameChange}
                 placeholder='Введите название новой команды'
-                fieldType='text'
-              />
-            </ActionModal>
-            <ActionModal
-              title='Установить права капитана'
-              submitButtonText='Установить'
-              onSave={handleChangeCaptainRights}
-              trigger={<Button>Установить права капитана</Button>}
-            >
-              <TeamSingleFieldFormContent
-                fieldName='name'
-                value={currentNewCaptain}
-                onChange={handleNewCaptainChange}
-                placeholder='Введите email пользователя'
+                value={currentBrandTeamName}
+                onChange={
+                  handleBrandTeamNameChange as (
+                    e: React.ChangeEvent<HTMLInputElement>,
+                  ) => void
+                }
                 fieldType='text'
               />
             </ActionModal>

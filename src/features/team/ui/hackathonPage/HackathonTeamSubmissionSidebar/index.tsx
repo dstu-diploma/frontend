@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Button } from '@/shared/ui/shadcn/button'
 import styles from './HackathonTeamSubmissionSidebar.module.scss'
 import { useParams } from 'next/navigation'
@@ -6,23 +6,37 @@ import HackathonPageSidebar from '@/features/hackathons/ui/hackathonPage/sidebar
 import AttachmentRow from '@/features/hackathons/ui/hackathonPage/sidebar/HackathonAttachmentsSidebar/AttachmentRow'
 import { useHackathonTeamSubmission } from '@/features/team/hooks/hackathonTeam/useHackathonTeamSubmission'
 import { HackathonTeamSubmission } from '@/features/team/model/types'
+import { DetailedHackathon } from '@/features/hackathons/model/types'
 
 interface HackathonTeamSubmissionSidebarProps {
   submission: HackathonTeamSubmission | undefined
+  hackathonInfo: DetailedHackathon | undefined
 }
 
 const HackathonAttachmentsSidebar = ({
   submission,
+  hackathonInfo,
 }: HackathonTeamSubmissionSidebarProps) => {
   const { id } = useParams()
   const hackathon_id = Number(id)
   const { handleUploadSubmission } = useHackathonTeamSubmission(hackathon_id)
 
+  // Проверка, наступила ли дата окончания хакатона
+  const isEndPeriod = useMemo(() => {
+    if (!hackathonInfo) return false
+
+    const now = new Date()
+    const endDate = new Date(hackathonInfo.end_date)
+
+    return now >= endDate
+  }, [hackathonInfo])
+
   return (
     <HackathonPageSidebar
       title='Вложение команды'
       actions={
-        !submission && (
+        !submission &&
+        !isEndPeriod && (
           <div className={styles.sidebarActions}>
             <div style={{ position: 'relative' }}>
               <input

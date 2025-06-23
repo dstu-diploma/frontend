@@ -1,49 +1,51 @@
-import React, { useMemo, useState } from 'react'
-import Image from 'next/image'
-import { TeamMateRef } from '@/features/team/model/types'
+import { FC, useMemo } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
 import styles from './TeamMemberCardAvatar.module.scss'
-import { cookiesApi } from '@/shared/lib/helpers/cookies'
+import { userApi } from '@/features/user'
 
 interface TeamMemberCardAvatarProps {
-  member: TeamMateRef
+  member: {
+    user_id: number
+    user_name: string
+  }
 }
 
-export const TeamMemberCardAvatar = ({ member }: TeamMemberCardAvatarProps) => {
-  const [imageError, setImageError] = useState(false)
+export const TeamMemberCardAvatar: FC<TeamMemberCardAvatarProps> = ({ member }) => {
+  const { data: memberExtended, isLoading } = userApi.useGetSingleUser(member.user_id)
 
   const avatarUrl = useMemo(() => {
-    if (member && member.user_uploads.length > 0) {
-      const avatarUpload = member.user_uploads.find(
+    if (!member || !memberExtended) return null
+    
+    if (memberExtended.uploads?.length > 0) {
+      const avatarUpload = memberExtended.uploads.find(
         upload => upload.type === 'avatar',
       )
       return avatarUpload?.url || null
     }
     return null
-  }, [member])
+  }, [member, memberExtended])
 
-  const user = cookiesApi.getUser()
-  console.log(user)
+
+  if (isLoading) {
+    return (
+      <Avatar className={styles.avatarContainer}>
+        <AvatarFallback className={styles.avatarFallback}>
+          {member.user_name.slice(0, 2).toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
+    )
+  }
 
   return (
-    <div className={styles.avatarContainer}>
-      {avatarUrl && !imageError ? (
-        <Image
-          src={avatarUrl}
-          alt={`${member.user_name}`}
-          className={styles.avatarImage}
-          width={200}
-          height={200}
-          priority
-          loading='eager'
-          onError={() => setImageError(true)}
-        />
+    <Avatar className={styles.avatarContainer}>
+      {avatarUrl ? (
+        <AvatarImage src={avatarUrl} alt={member.user_name} />
       ) : (
-        <div className={styles.avatarPlaceholder}>
-          {member.user_name.split(' ')[0].charAt(0)}
-          {member.user_name.split(' ')[1].charAt(0)}
-        </div>
+        <AvatarFallback className={styles.avatarFallback}>
+          {member.user_name.slice(0, 2).toUpperCase()}
+        </AvatarFallback>
       )}
-    </div>
+    </Avatar>
   )
 }
 

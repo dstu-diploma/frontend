@@ -1,3 +1,4 @@
+import React from 'react'
 import TeamMemberCardAvatar from './TeamMemberCardAvatar'
 import { Button } from '@/shared/ui/shadcn/button'
 import { ConfirmModal } from '../../../../../shared/ui/custom/modals/ConfirmModal'
@@ -8,6 +9,7 @@ import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
 
 interface TeamMemberCardProps {
+  isAdmin: boolean | undefined
   isCaptain: boolean
   member: TeamMateRef
   onChangeRights: (e: React.FormEvent, member: TeamMateRef) => void
@@ -15,11 +17,13 @@ interface TeamMemberCardProps {
 }
 
 export const TeamMemberCard = ({
+  isAdmin,
   isCaptain,
   member,
   onChangeRights,
   onKick,
 }: TeamMemberCardProps) => {
+  console.log('TeamMemberCard member:', member)
   const user = cookiesApi.getUser()
   if (!user) {
     return
@@ -55,7 +59,7 @@ export const TeamMemberCard = ({
             e.preventDefault()
           }}
         >
-          {!member.is_captain && (
+          {(!member.is_captain || isAdmin) && (
             <ConfirmModal
               title={`Назначить пользователя ${member.user_name} капитаном?`}
               submitButtonText='Назначить'
@@ -64,7 +68,7 @@ export const TeamMemberCard = ({
               <Button>Установить капитаном</Button>
             </ConfirmModal>
           )}
-          {member.is_captain && (
+          {(member.is_captain || isAdmin) && (
             <ConfirmModal
               title={`Снять права капитана с пользователя ${member.user_name}?`}
               submitButtonText='Cнять права'

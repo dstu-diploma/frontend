@@ -10,6 +10,7 @@ import { UserPartial } from '@/features/user/model/types'
 import clsx from 'clsx'
 
 interface TeamMembersListProps {
+  isAdmin?: boolean
   user: UserPartial
   className?: string
   settings: {
@@ -28,7 +29,7 @@ interface TeamMembersListProps {
 }
 
 const TeamMembersList = memo(
-  ({ user, settings, className }: TeamMembersListProps) => {
+  ({ user, settings, className, isAdmin }: TeamMembersListProps) => {
     const {
       isTeamMatesLoading,
       teamMates,
@@ -61,7 +62,6 @@ const TeamMembersList = memo(
 
     return (
       <div className={clsx(styles.teamMembers, className)}>
-        <h3>Участники команды</h3>
         {teamMates.map(member => (
           <Link
             key={member.user_id}
@@ -77,6 +77,7 @@ const TeamMembersList = memo(
               isCaptain={isCaptain}
               onChangeRights={handleChangeCaptain}
               onKick={handleTeamKick}
+              isAdmin={isAdmin}
             />
           </Link>
         ))}

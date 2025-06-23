@@ -17,6 +17,9 @@ import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
 import { TeamInfo } from '@/features/team/model/types'
 import { useAdminSingleBrandTeam } from '@/features/admin/hooks/tabs/brandTeams/useAdminSingleBrandTeam'
+import Toolbar from '@/shared/ui/custom/misc/Toolbar/Toolbar'
+import { hackathonApi } from '@/features/hackathons/api'
+import { notificationService } from '@/shared/lib/services/notification.service'
 
 interface TeamPageContentProps {
   user: UserPartial
@@ -65,12 +68,15 @@ export const BrandTeamContent = ({
   } = useAdminSingleBrandTeam(teamInfo)
 
   const toolbarSettings = {
-    hasTeam: hasTeamInfo,
+    hasTeam,
     isCaptain,
     isTeamLoading,
     teamName: teamInfo?.name ?? '',
     teamMates: teamMates ?? [],
-    handleTeamLeave,
+    handleTeamLeave: (event: React.FormEvent) => {
+      console.log('Toolbar - handleTeamLeave called')
+      return handleTeamLeave(event)
+    },
     handleChangeCaptain,
   }
 
@@ -112,15 +118,17 @@ export const BrandTeamContent = ({
 
   return (
     <div className={teamStyles}>
-      <h1
-        className={clsx(styles.teamTitle, {
-          [styles.smallTitle]: providedTeamInfo,
-        })}
-      >
-        {providedTeamInfo
-          ? `Команда «${providedTeamInfo.name}»`
-          : 'Моя команда-бренд'}
-      </h1>
+      {!providedTeamInfo && (
+        <h1
+          className={clsx(styles.teamTitle, {
+            [styles.smallTitle]: providedTeamInfo,
+          })}
+        >
+          {providedTeamInfo
+            ? `Команда «${providedTeamInfo.name}»`
+            : 'Моя команда-бренд'}
+        </h1>
+      )}
       <div className={styles.teamContent}>
         <TeamToolbar
           user={user}
@@ -132,12 +140,12 @@ export const BrandTeamContent = ({
         {hasTeamInfo && teamInfo && (
           <div className={styles.teamContents}>
             <div className={clsx(styles.membersContainer, styles.mobileBrand)}>
+              <TeamSidebar team={teamInfo} teamName={teamInfo.name ?? ''} />
               <TeamMembersList
                 className={styles.mobileTeamMembers}
                 user={user}
                 settings={membersListSettings}
               />
-              <TeamSidebar team={teamInfo} teamName={teamInfo.name ?? ''} />
             </div>
           </div>
         )}
@@ -154,7 +162,10 @@ const HackathonTeamContent = ({
   path: string
 }) => {
   const pageId = Number(path.split('/')[2])
+
   const {
+    hackathonInfo,
+    isHackathonLoading,
     isCaptain,
     isTeamLoading,
     hasTeam,
@@ -172,7 +183,10 @@ const HackathonTeamContent = ({
     isTeamLoading,
     teamName: teamName ?? '',
     teamMates: teamMates ?? [],
-    handleTeamLeave,
+    handleTeamLeave: (event: React.FormEvent) => {
+      console.log('Toolbar - handleTeamLeave called')
+      return handleTeamLeave(event)
+    },
     handleChangeCaptain,
   }
 
@@ -192,42 +206,50 @@ const HackathonTeamContent = ({
     [styles.mediumDesktop]: isMediumDesktop,
   })
 
-  if (isTeamLoading) {
+  if (isTeamLoading || isHackathonLoading) {
     return <LayoutFallback text='Загрузка данных о команде...' />
   }
 
   return (
-    <div className={teamStyles}>
-      <h1 className={styles.teamTitle}>Команда «{teamInfo?.name}»</h1>
-      <div className={styles.teamContent}>
-        <HackathonTeamToolbar
-          hackathonId={pageId}
-          user={user}
-          settings={toolbarSettings}
-        />
-        {!hasTeam && !isTeamLoading && <TeamInvitesList />}
-        {hasTeam && teamInfo && (
-          <div className={styles.teamContents}>
-            <div className={styles.membersContainer}>
-              <div className={styles.members}>
-                <h3>Участники команды</h3>
-                <HackathonTeamMembersList
-                  user={user}
-                  className={styles.teamMates}
-                  settings={membersListSettings}
-                />
+    <>
+      {teamInfo ? (
+        <div className={teamStyles}>
+          <h1 className={styles.teamTitle}>Команда «{teamInfo?.name}»</h1>
+          <div className={styles.teamContent}>
+            <HackathonTeamToolbar
+              hackathonInfo={hackathonInfo}
+              user={user}
+              settings={toolbarSettings}
+            />
+            {!hasTeam && !isTeamLoading && <TeamInvitesList />}
+            {hasTeam && teamInfo && (
+              <div className={styles.teamContents}>
+                <div className={styles.membersContainer}>
+                  <div className={styles.hackathonTeamSidebars}>
+                    <TeamSidebar team={teamInfo} teamName={teamName ?? ''} />
+                    <HackathonTeamSubmissionSidebar
+                      hackathonInfo={hackathonInfo}
+                      submission={teamInfo?.submission}
+                    />
+                  </div>
+                  <div className={styles.members}>
+                    <HackathonTeamMembersList
+                      user={user}
+                      className={styles.teamMates}
+                      settings={membersListSettings}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className={styles.hackathonTeamSidebars}>
-                <TeamSidebar team={teamInfo} teamName={teamName ?? ''} />
-                <HackathonTeamSubmissionSidebar
-                  submission={teamInfo?.submission}
-                />
-              </div>
-            </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      ) : (
+        <Toolbar className={styles.noTeamToolbar}>
+          Вы не записывали свою команду-бренд на данный хакатон
+        </Toolbar>
+      )}
+    </>
   )
 }
 

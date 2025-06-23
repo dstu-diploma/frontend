@@ -13,7 +13,7 @@ const TeamInfoBlock = memo(({ team, teamName }: TeamInfoBlockProps) => {
   // Чтобы название не влезало на текст опции
   const cropTeamName = (teamName: string | undefined) => {
     if (!teamName) return
-    return teamName.length > 15 ? `${teamName.slice(0, 20)}...` : teamName
+    return teamName.length > 30 ? `${teamName.slice(0, 30)}...` : teamName
   }
 
   return (
