@@ -1,0 +1,5 @@
+@use '@/shared/styles/mixins' as *;
+@use '@/shared/styles/variables' as *;
+
+@include media(tablet, min) {
+}

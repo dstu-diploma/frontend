@@ -66,6 +66,9 @@ export default function ProfilePage() {
     [styles.desktop]: isDesktop,
     [styles.mediumDesktop]: isMediumDesktop,
   })
+  const registerDateStyles = clsx(styles.registerDate, {
+    [styles.mobile]: styles.detailItem,
+  })
 
   if (!profile) {
     return <LayoutFallback text='Загрузка профиля...' />
@@ -103,8 +106,8 @@ export default function ProfilePage() {
                   {profile.last_name} {profile.first_name} {profile.patronymic}
                 </MediaQuery>
               </h1>
-              <p className={styles.registerDate}>
-                Дата регистрации:&nbsp;
+              <p className={registerDateStyles}>
+                Дата регистрации&nbsp;
                 <span>
                   {formatDate(profileData.register_date) || 'Не указана'}
                 </span>
@@ -121,6 +124,15 @@ export default function ProfilePage() {
                 {isLoading ? 'Загрузка...' : 'Удалить обложку'}
               </Button>
             </div>
+          )}
+          {!coverUrl && (
+            <MediaQuery maxWidth={767}>
+              <div className={styles.deleteButtonWrapper}>
+                <Button onClick={handleCoverClick} disabled={isLoading}>
+                  {isLoading ? 'Загрузка...' : 'Установить обложку'}
+                </Button>
+              </div>
+            </MediaQuery>
           )}
         </div>
         <form onSubmit={submitHandler} className={styles.profileForm}>
