@@ -63,6 +63,20 @@
 
     .info {
         display: flex;
+        width: 90%;
+        justify-content: flex-start;
+        align-items: flex-start;
+
+        .userInfo {
+            margin-top: 0.5rem;
+            margin-bottom: 2rem;
+            margin-left: 2rem;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
     }
 
     form {
@@ -99,18 +113,6 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-}
-
-.userInfo {
-    margin-top: 0.5rem;
-    margin-bottom: 2rem;
-    margin-left: 2rem;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    max-width: 600px;
 }
 
 .name {

@@ -12,10 +12,12 @@ import CustomMDEditor from '@/shared/ui/custom/misc/CustomMDEditor/CustomMDEdito
 import { mapRole } from '@/shared/lib/helpers/roleMapping'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
+import { useState } from 'react'
 
 export default function UserPage() {
   const { id } = useParams()
   const page_id = Number(id)
+  const [imageError, setImageError] = useState(false)
   const {
     user,
     isUserLoading,
@@ -65,13 +67,14 @@ export default function UserPage() {
         <div className={styles.header}>
           <div className={styles.avatarContainer}>
             <div className={styles.avatar}>
-              {avatarUrl ? (
+              {avatarUrl && !imageError ? (
                 <Image
                   className={styles.avatarImage}
                   src={avatarUrl}
                   alt='Аватар пользователя'
                   width={200}
                   height={200}
+                  onError={() => setImageError(true)}
                 />
               ) : (
                 getInitials()

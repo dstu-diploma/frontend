@@ -53,6 +53,7 @@ export const userBaseApi = {
         )
         return response.data
       },
+      enabled: !!user_id,
     })
   },
   useGetUsers: (userIds: number[]) => {
@@ -82,3 +83,4 @@ export const userBaseApi = {
     return axiosInstance.patch(`${USER_SERVICE_API_URL}/`, data)
   },
 }
+

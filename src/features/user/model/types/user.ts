@@ -47,7 +47,7 @@ export type FullUser = {
   role?: string | undefined
   register_date?: Date | undefined
   is_banned: boolean
-  uploads: UserUpload[]
+  user_uploads: UserUpload[]
 }
 
 export interface RegisterRequestBody {
