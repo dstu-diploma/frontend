@@ -16,8 +16,8 @@ export const QueryProvider = ({ children }: QueryProviderProps) => {
           queries: {
             refetchOnWindowFocus: false,
             retry: false,
-            staleTime: 5 * 60 * 1000,
-            gcTime: 10 * 60 * 1000,
+            staleTime: 0,
+            gcTime: 0,
             refetchOnMount: false,
             refetchOnReconnect: false,
           },

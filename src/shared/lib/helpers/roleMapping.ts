@@ -1,7 +1,5 @@
 import { cookiesApi } from './cookies'
-import { useUser } from '@/providers/UserProvider'
-
-const user = cookiesApi.getUser()
+import { FullUser } from '@/features/user/model/types'
 
 export const roleMap: Record<string, string> = {
   user: 'Участник',
@@ -22,16 +20,18 @@ export const mapRoleKey = (role: string): string => {
 }
 
 export const isAdmin = (): boolean => {
-  return user.role === 'admin'
+  const user = cookiesApi.getUser() as FullUser | null
+  return Boolean(user && user.role === 'admin')
 }
 
-export const isAdminOrOrganizer = (): boolean | null => {
-  const { user: currentUser } = useUser()
-  return currentUser && (currentUser.role === 'admin' || currentUser.role === 'organizer')
+export const isAdminOrOrganizer = (): boolean => {
+  const user = cookiesApi.getUser() as FullUser | null
+  return Boolean(user && user.role && (user.role === 'admin' || user.role === 'organizer'))
 }
 
 export const isPrivilegedRole = (): boolean => {
-  return (
+  const user = cookiesApi.getUser() as FullUser | null
+  return Boolean(user && user.role && (
     user.role === 'admin' || user.role === 'organizer' || user.role === 'judge'
-  )
+  ))
 }
