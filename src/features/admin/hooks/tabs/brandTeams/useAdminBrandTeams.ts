@@ -1,5 +1,5 @@
 import { adminApi } from '../../../api'
-import { TeamRef } from '@/features/team/model/types'
+import { TeamInfo, TeamRef } from '@/features/team/model/types'
 import { useQueries } from '@tanstack/react-query'
 import axiosInstance from '@/shared/api/axios'
 import { TEAM_SERVICE_API_URL } from '@/shared/api/basePaths'
@@ -10,7 +10,7 @@ export const useAdminBrandTeams = () => {
 
   const teamQueries = useQueries({
     queries:
-      brandTeamsRefs?.map((ref: TeamRef) => ({
+      brandTeamsRefs?.map((ref: TeamInfo) => ({
         queryKey: ['teamInfo', ref.id],
         queryFn: async () => {
           const response = await axiosInstance.get(

@@ -13,7 +13,7 @@ import { useAdminUsers } from '../../hooks/tabs/users/useAdminUsers'
 import { useAdminBrandTeams } from '../../hooks/tabs/brandTeams/useAdminBrandTeams'
 import { useAdminHackathonTeams } from '../../hooks/tabs/hackathonTeams/useAdminHackathonTeams'
 
-type AdminTabType = 'users' | 'brandTeams' | 'hackathonTeams'
+export type AdminTabType = 'users' | 'brandTeams'
 type AdminEntityType = User | TeamInfo
 type FilterType = 'role' | 'status' | 'team'
 
@@ -32,7 +32,7 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
     searchTerms,
     filterValues,
     updateSearchTerm,
-    updateFilterValue,
+    updateUserFilters,
   } = useAdminTabSearch({ users, brandTeams, hackathonTeams })
 
   const getTabData = () => {
@@ -55,17 +55,6 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
           filterType: 'team' as const,
           isFilterActive:
             filterValues.brandTeams && filterValues.brandTeams !== 'all',
-        }
-      case 'hackathonTeams':
-        return {
-          items: [],
-          isLoading: false,
-          searchTerm: searchTerms.hackathonTeams,
-          filterValue: filterValues.hackathonTeams,
-          filterType: 'status' as const,
-          isFilterActive:
-            filterValues.hackathonTeams &&
-            filterValues.hackathonTeams !== 'all',
         }
       default:
         return {
@@ -92,8 +81,10 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
     updateSearchTerm(tab, term)
   }
 
-  const handleFilterChange = (type: FilterType, value: string) => {
-    updateFilterValue(tab, value)
+  const handleFiltersChange = (filters: { role: string; status: string }) => {
+    if (tab === 'users') {
+      updateUserFilters(filters)
+    }
   }
 
   const getFilterTypes = () => {
@@ -102,8 +93,6 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
         return ['role', 'status'] as FilterType[]
       case 'brandTeams':
         return ['team'] as FilterType[]
-      case 'hackathonTeams':
-        return ['status'] as FilterType[]
       default:
         return [] as FilterType[]
     }
@@ -147,10 +136,10 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
   return (
     <div className={styles.adminTabManagementTab}>
       <AdminTabFilter
+        tab={tab}
         searchInputValue={searchTerm}
         setSearchInputValue={handleSearchTermChange}
-        filterTypes={getFilterTypes()}
-        onFilterChange={handleFilterChange}
+        onFiltersChange={handleFiltersChange}
       />
       <Accordion type='single' collapsible className={styles.adminTabAccordion}>
         {isLoading ? (

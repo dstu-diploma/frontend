@@ -12,7 +12,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+  width: 100%;
+  height: 44px;
+  min-height: 44px;
+  white-space: nowrap;
 
   span {
     font-size: 16px;
@@ -20,6 +27,9 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &:hover {
@@ -54,7 +64,12 @@
 .selectValue {
   color: #1e293b;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 14px;
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .selectContent {
@@ -63,10 +78,11 @@
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 4px;
-  min-width: 200px;
+  min-width: var(--radix-select-trigger-width);
   max-height: 300px;
   overflow-y: auto;
-  z-index: 50;
+  z-index: 9999;
+  position: relative;
 }
 
 .selectGroup {
@@ -86,7 +102,7 @@
   font-family: 'Roboto Fallback';
   font-size: 14px;
 
-  &[data-state="checked"] {
+  &[data-state='checked'] {
     background-color: rgb(37, 99, 235) !important;
     color: white !important;
     font-weight: 500;
@@ -97,7 +113,7 @@
     }
   }
 
-  &:hover:not([data-state="checked"]) {
+  &:hover:not([data-state='checked']) {
     background-color: #f8fafc;
     color: rgb(37, 99, 235);
   }

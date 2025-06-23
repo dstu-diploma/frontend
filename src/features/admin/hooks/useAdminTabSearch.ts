@@ -12,6 +12,7 @@ interface FilterConfig<T extends object> {
   filterValue?: string
   filterField?: keyof T
   filterType?: 'role' | 'status' | 'team'
+  filters?: { role: string; status: string }
 }
 
 const filterItems = <T extends object>({
@@ -21,10 +22,10 @@ const filterItems = <T extends object>({
   filterValue,
   filterField,
   filterType,
+  filters,
 }: FilterConfig<T>) => {
-  let filteredItems = items
+  let filteredItems = items || []
 
-  // Применяем поисковую фильтрацию
   if (searchTerm.trim()) {
     filteredItems = filteredItems.filter(item =>
       searchFields.some(field => {
@@ -37,8 +38,21 @@ const filterItems = <T extends object>({
     )
   }
 
-  // Применяем фильтрацию по селекту
-  if (filterValue && filterValue !== 'all') {
+  if (filters) {
+    filteredItems = filteredItems.filter(item => {
+      if (filters.role !== 'all' && 'role' in item) {
+        if (item.role !== filters.role) return false
+      }
+
+      // Фильтрация по статусу
+      if (filters.status !== 'all' && 'is_banned' in item) {
+        if (filters.status === 'active' && item.is_banned) return false
+        if (filters.status === 'inactive' && !item.is_banned) return false
+      }
+
+      return true
+    })
+  } else if (filterValue && filterValue !== 'all') {
     filteredItems = filteredItems.filter(item => {
       if (filterType === 'status' && 'is_banned' in item) {
         return (
@@ -82,7 +96,11 @@ export const useAdminTabSearch = ({
     hackathonTeams: '',
   })
 
-  // Обновление поискового запроса
+  const [userFilters, setUserFilters] = useState({
+    role: 'all',
+    status: 'all',
+  })
+
   const updateSearchTerm = (tab: keyof typeof searchTerms, value: string) => {
     setSearchTerms(prev => ({
       ...prev,
@@ -90,12 +108,16 @@ export const useAdminTabSearch = ({
     }))
   }
 
-  // Обновление значения фильтра
   const updateFilterValue = (tab: keyof typeof filterValues, value: string) => {
     setFilterValues(prev => ({
       ...prev,
       [tab]: value,
     }))
+  }
+
+  // Обновление множественных фильтров для пользователей
+  const updateUserFilters = (filters: { role: string; status: string }) => {
+    setUserFilters(filters)
   }
 
   // Поисковая фильтрация всех сущностей
@@ -104,10 +126,9 @@ export const useAdminTabSearch = ({
       items: users,
       searchTerm: searchTerms.users,
       searchFields: ['first_name', 'last_name', 'email'],
-      filterValue: filterValues.users,
-      filterType: 'role',
+      filters: userFilters, // Используем множественные фильтры
     })
-  }, [users, searchTerms.users, filterValues.users])
+  }, [users, searchTerms.users, userFilters])
 
   const searchedBrandTeams = useMemo(() => {
     return filterItems({
@@ -137,5 +158,6 @@ export const useAdminTabSearch = ({
     filterValues,
     updateSearchTerm,
     updateFilterValue,
+    updateUserFilters,
   }
 }

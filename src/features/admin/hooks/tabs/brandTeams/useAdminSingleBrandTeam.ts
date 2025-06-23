@@ -10,7 +10,9 @@ export const useAdminSingleBrandTeam = (teamInfo?: TeamInfo) => {
   const { mutate: deleteBrandTeam } = adminApi.useDeleteBrandTeam(
     teamInfo?.id ?? 0,
   )
-  const { mutate: renameBrandTeam } = adminApi.useChangeBrandTeamName()
+  const { mutate: renameBrandTeam } = adminApi.useChangeBrandTeamName(
+    teamInfo?.id,
+  )
   const { mutate: setCaptainRights } = adminApi.useChangeBrandTeamCaptainRights(
     teamInfo?.id ?? 0,
   )
@@ -45,15 +47,12 @@ export const useAdminSingleBrandTeam = (teamInfo?: TeamInfo) => {
     if (!currentBrandTeamName || !teamInfo) {
       return
     }
-    renameBrandTeam(
-      { team_id: teamInfo.id, new_name: currentBrandTeamName },
-      {
-        onSuccess: async () =>
-          notificationService.success('Название команды изменено'),
-        onError: error =>
-          notificationService.error(error, 'Ошибка при переименовании команды'),
-      },
-    )
+    renameBrandTeam(currentBrandTeamName, {
+      onSuccess: async () =>
+        notificationService.success('Название команды изменено'),
+      onError: error =>
+        notificationService.error(error, 'Ошибка при переименовании команды'),
+    })
   }
 
   const handleNewCaptainChange = (e: React.ChangeEvent<HTMLInputElement>) => {

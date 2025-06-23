@@ -1,5 +1,9 @@
 import React from 'react'
-import { formatDate } from '@/shared/lib/helpers/date'
+import {
+  dateTimeLocalToIso,
+  formatDate,
+  isoToDateTimeLocal,
+} from '@/shared/lib/helpers/date'
 import { Button } from '@/shared/ui/shadcn/button'
 import { Input } from '@/shared/ui/shadcn/input'
 import { Textarea } from '@/shared/ui/shadcn/textarea'
@@ -46,9 +50,11 @@ const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
     label: value,
   }))
 
+  const roleValue = watch('role') || ''
+
   return (
     <form
-      onSubmit={handleSubmit(submitHandler)}
+      onSubmit={handleSubmit(submitHandler as any)}
       className={accordionBlockFormStyles}
     >
       <div className={styles.accordionBlockFormContainer}>
@@ -62,7 +68,7 @@ const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
                 <Input
                   id='registerDate'
                   disabled={true}
-                  value={formatDate(entity.register_date)}
+                  value={formatDate(entity.register_date || '') || ''}
                   className={styles.accordionBlockFormInput}
                 />
               </div>
@@ -71,19 +77,26 @@ const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
                   Роль
                 </label>
                 <TabSelect
-                  selectedValue={watch('role')}
+                  selectedValue={roleValue}
                   handleSelect={(value: string) => {
-                    if (Object.keys(roleMap).includes(value)) {
-                      setValue('role', value, { 
-                        shouldValidate: true, 
+                    if (
+                      Object.keys(roleMap).includes(value) &&
+                      value !== roleValue
+                    ) {
+                      setValue('role', value as any, {
+                        shouldValidate: true,
                         shouldDirty: true,
-                        shouldTouch: true 
+                        shouldTouch: true,
                       })
                     }
                   }}
-                  placeholder="Выберите роль"
+                  placeholder='Выберите роль'
                   options={roleOptions}
                   disabled={entity.id === user?.id}
+                  position='popper'
+                  side='bottom'
+                  sideOffset={4}
+                  align='start'
                 />
               </div>
             </div>
@@ -144,8 +157,38 @@ const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
                 </label>
                 <Input
                   id='birthday'
-                  {...register('birthday')}
+                  type='datetime-local'
                   className={styles.accordionBlockFormInput}
+                  value={
+                    watch('birthday')
+                      ? isoToDateTimeLocal(watch('birthday')!) || ''
+                      : ''
+                  }
+                  onChange={e => {
+                    const value = e.target.value
+                    if (value) {
+                      try {
+                        const isoValue = dateTimeLocalToIso(value)
+                        if (isoValue) {
+                          setValue('birthday', isoValue)
+                          console.log(
+                            'AdminContentUserForm - setValue called with:',
+                            isoValue,
+                          )
+                        }
+                      } catch (error) {
+                        console.error(
+                          'AdminContentUserForm - Invalid date value:',
+                          error,
+                        )
+                      }
+                    } else {
+                      console.log(
+                        'AdminContentUserForm - clearing birthday value',
+                      )
+                      setValue('birthday', undefined)
+                    }
+                  }}
                 />
               </div>
             </div>

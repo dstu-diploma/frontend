@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styles from './TabSelect.module.scss'
 import {
   Select,
@@ -7,11 +7,10 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectPortal,
 } from '@radix-ui/react-select'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
-import { IoMdArrowDropdown } from "react-icons/io";
+import { IoMdArrowDropdown } from 'react-icons/io'
 
 interface SelectOption {
   value: string
@@ -19,71 +18,78 @@ interface SelectOption {
 }
 
 interface TabSelectProps {
-  selectedValue: string
+  selectedValue: string | undefined
   handleSelect: (value: string) => void
   placeholder: string
   options: SelectOption[]
   disabled?: boolean
+  position?: 'popper' | 'item-aligned'
+  sideOffset?: number
+  align?: 'start' | 'center' | 'end'
+  side?: 'top' | 'right' | 'bottom' | 'left'
+  triggerClassName?: string
 }
 
 const TabSelect = (props: TabSelectProps) => {
-  const [currentValue, setCurrentValue] = useState(props.selectedValue)
   const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
-  const selectTriggerStyles = clsx(styles.selectTrigger, {
-    [styles.mobile]: isMobile,
-    [styles.tablet]: isTablet,
-    [styles.desktop]: isDesktop,
-    [styles.mediumDesktop]: isMediumDesktop,
-    [styles.disabled]: props.disabled,
-  })
+  const selectTriggerStyles = clsx(
+    styles.selectTrigger,
+    props.triggerClassName,
+    {
+      [styles.mobile]: isMobile,
+      [styles.tablet]: isTablet,
+      [styles.desktop]: isDesktop,
+      [styles.mediumDesktop]: isMediumDesktop,
+      [styles.disabled]: props.disabled,
+    },
+  )
 
-  useEffect(() => {
-    if (props.selectedValue) {
-      setCurrentValue(props.selectedValue)
-    }
-  }, [props.selectedValue])
+  const selectedOption = props.options.find(
+    opt => opt.value === props.selectedValue,
+  )
 
-  const selectedOption = props.options.find(opt => opt.value === currentValue)
-  
   const handleValueChange = (value: string) => {
     if (props.disabled) return
-    setCurrentValue(value)
-    props.handleSelect(value)
+    if (value !== props.selectedValue) {
+      props.handleSelect(value)
+    }
   }
 
   return (
     <Select
-      value={currentValue}
+      value={props.selectedValue || ''}
       onValueChange={handleValueChange}
       disabled={props.disabled}
     >
       <SelectTrigger className={selectTriggerStyles}>
-        <SelectValue className={styles.selectValue}>
-          <span>{selectedOption?.label || props.placeholder}</span>
-          <IoMdArrowDropdown />
-        </SelectValue>
-      </SelectTrigger>
-      <SelectPortal>
-        <SelectContent
-          className={styles.selectContent}
-          position='popper'
-          sideOffset={4}
-          align='start'
+        <SelectValue
+          className={styles.selectValue}
+          placeholder={props.placeholder}
         >
-          <SelectGroup className={styles.selectGroup}>
-            {props.options.map(option => (
-              <SelectItem
-                key={option.value}
-                value={option.value}
-                className={styles.selectItem}
-                disabled={props.disabled}
-              >
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </SelectPortal>
+          {selectedOption?.label}
+        </SelectValue>
+        <IoMdArrowDropdown />
+      </SelectTrigger>
+      <SelectContent
+        className={styles.selectContent}
+        position={props.position || 'item-aligned'}
+        sideOffset={props.sideOffset || 8}
+        align={props.align || 'start'}
+        side={props.side || 'bottom'}
+      >
+        <SelectGroup className={styles.selectGroup}>
+          {props.options.map(option => (
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              className={styles.selectItem}
+              disabled={props.disabled}
+            >
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
     </Select>
   )
 }

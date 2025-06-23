@@ -1,7 +1,4 @@
-import {
-  ISOStringToDateString,
-  dateStringToISO,
-} from '@/shared/lib/helpers/date'
+import { isoToDateTimeLocal, dateStringToISO } from '@/shared/lib/helpers/date'
 import { roleMap } from '@/shared/lib/helpers/roleMapping'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -33,14 +30,14 @@ export const useAdminSingleUser = (entity: User) => {
       email: entity.email,
       about: entity.about ?? '',
       birthday: entity.birthday
-        ? ISOStringToDateString(entity.birthday)
+        ? isoToDateTimeLocal(entity.birthday) || undefined
         : undefined,
       role: entity.role ?? undefined,
       password: '',
       confirmPassword: '',
     },
   })
-  
+
   // Блокировка пользователя
   const handleBanUser = async () => {
     const requestBody = { userId: entity.id, is_banned: !entity.is_banned }
@@ -73,15 +70,27 @@ export const useAdminSingleUser = (entity: User) => {
 
   // Обновление данных о пользователе
   const submitHandler = (data: AdminUserFormData) => {
+    console.log('useAdminSingleUser - submitHandler called with data:', data)
+    console.log('useAdminSingleUser - birthday value:', data.birthday)
+    console.log('useAdminSingleUser - birthday type:', typeof data.birthday)
+
     const { password, role, ...restData } = data
     const transformedData = {
       ...restData,
-      birthday: data.birthday ? dateStringToISO(data.birthday) : undefined,
+      birthday:
+        data.birthday && data.birthday !== null ? data.birthday : undefined,
       ...(entity.id !== user?.id ? { role } : {}),
       ...(password && password.trim() !== '' ? { password } : {}),
-    }
+    } as any
+
+    console.log('useAdminSingleUser - transformedData:', transformedData)
+    console.log(
+      'useAdminSingleUser - birthday after transformation:',
+      transformedData.birthday,
+    )
+
     const requestBody = { userId: entity.id, data: transformedData }
-    console.log(requestBody)
+    console.log('useAdminSingleUser - final requestBody:', requestBody)
 
     updateUser(requestBody, {
       onSuccess: () => {
@@ -90,7 +99,7 @@ export const useAdminSingleUser = (entity: User) => {
         )
       },
       onError: error => {
-        console.log(error)
+        console.log('useAdminSingleUser - updateUser error:', error)
         notificationService.error(error, 'Ошибка при обновлении пользователя')
       },
     })

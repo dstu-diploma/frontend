@@ -1,6 +1,6 @@
 import axiosInstance from '@/shared/api/axios'
 import { TEAM_SERVICE_ADMIN_API_URL } from '@/shared/api/basePaths'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const adminHackathonTeamsApi = {
   useGetAllHackathonTeams: (hackathonId: number) => {
@@ -31,20 +31,18 @@ export const adminHackathonTeamsApi = {
       },
     })
   },
-  useDeleteHackathonTeam: () => {
+  useDeleteHackathonTeam: (hackathon_id: number) => {
+    const queryClient = useQueryClient()
     return useMutation({
-      mutationFn: async ({
-        hackathon_id,
-        team_id,
-      }: {
-        hackathon_id: number
-        team_id: number
-      }) => {
+      mutationFn: async (team_id: number) => {
         const response = await axiosInstance.delete(
           `${TEAM_SERVICE_ADMIN_API_URL}/hackathon/${hackathon_id}/team/${team_id}`,
         )
         return response.data
       },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['hackathonById', hackathon_id]})
+      }
     })
   },
   useSetHackathonTeamRole: () => {

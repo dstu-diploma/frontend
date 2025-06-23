@@ -1,5 +1,11 @@
 import { useState, useMemo } from 'react'
-import { FilterType } from './types'
+import { FilterType } from '../model/types'
+
+// Интерфейс для состояния фильтров
+interface FilterState {
+  role: string
+  status: string
+}
 
 export const useAdminSelect = (filterType: FilterType) => {
   const [selectedValue, setSelectedValue] = useState('all')
@@ -65,6 +71,68 @@ export const useAdminSelect = (filterType: FilterType) => {
     options,
     placeholder,
     handleSelectChange,
+    filterUsers,
+  }
+}
+
+export const useAdminFilters = () => {
+  const [filters, setFilters] = useState<FilterState>({
+    role: 'all',
+    status: 'all',
+  })
+
+  const roleOptions = useMemo(
+    () => [
+      { value: 'all', label: 'Все роли' },
+      { value: 'admin', label: 'Администратор' },
+      { value: 'user', label: 'Участник' },
+      { value: 'organizer', label: 'Организатор' },
+      { value: 'helper', label: 'Техническая поддержка' },
+      { value: 'judge', label: 'Член жюри' },
+    ],
+    [],
+  )
+
+  const statusOptions = useMemo(
+    () => [
+      { value: 'all', label: 'Все статусы' },
+      { value: 'active', label: 'Активный' },
+      { value: 'inactive', label: 'Заблокирован' },
+    ],
+    [],
+  )
+
+  const handleRoleChange = (value: string) => {
+    setFilters(prev => ({ ...prev, role: value }))
+  }
+
+  const handleStatusChange = (value: string) => {
+    setFilters(prev => ({ ...prev, status: value }))
+  }
+
+  const filterUsers = (users: any[]) => {
+    return users.filter(user => {
+      // Фильтрация по роли
+      const roleMatch = filters.role === 'all' || user.role === filters.role
+
+      // Фильтрация по статусу
+      let statusMatch = true
+      if (filters.status === 'active') {
+        statusMatch = user.is_banned === false
+      } else if (filters.status === 'inactive') {
+        statusMatch = user.is_banned === true
+      }
+
+      return roleMatch && statusMatch
+    })
+  }
+
+  return {
+    filters,
+    roleOptions,
+    statusOptions,
+    handleRoleChange,
+    handleStatusChange,
     filterUsers,
   }
 }
