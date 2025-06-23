@@ -24,6 +24,7 @@ export const useSidebar = () => {
     if (!user) return false
     if (item.href === '/admin' && user.role !== 'admin') return false
     if (item.href === '/team' && user.role !== 'user') return false
+    if (item.href === '/requests' && user.role === 'judge') return false
     return true
   })
 
