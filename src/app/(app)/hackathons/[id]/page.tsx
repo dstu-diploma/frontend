@@ -20,6 +20,7 @@ import LayoutFallback from '@/shared/ui/custom/fallback/LayoutFallback/LayoutFal
 import HackathonPageLeaderboard from '@/features/hackathons/ui/hackathonPage/page-sections/HackathonPageLeaderboard'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
+import { teamApi } from '@/features/team'
 
 const HackathonPage = () => {
   const { id } = useParams()
@@ -48,8 +49,15 @@ const HackathonPage = () => {
     handleSetJuryTeamScore,
   } = useHackathonJury(Number(id), hackathonInfo)
 
-  const { criterionForm, juryForm, editForm, editDescriptionForm } =
-    useHackathonForms(hackathonInfo)
+  const {
+    criterionForm,
+    criterionDeletionForm,
+    juryForm,
+    editForm,
+    editDescriptionForm,
+  } = useHackathonForms(hackathonInfo)
+
+  const { data: userTeamInfo } = teamApi.useGetMyTeamInfo()
 
   // Обновляем значения формы при изменении информации о хакатоне
   useEffect(() => {
@@ -69,6 +77,16 @@ const HackathonPage = () => {
     }
   }, [hackathonInfo, editDescriptionForm, editForm])
 
+  // Является ли пользователь капитаном
+  const isUserTeamCaptain = useMemo(() => {
+    if (userTeamInfo && userTeamInfo.mates.length > 0) {
+      const userInTeam = userTeamInfo.mates.find(
+        mate => user.id === mate.user_id,
+      )
+      return userInTeam?.is_captain
+    }
+  }, [userTeamInfo])
+
   // Права на секции
   const canSeeScores =
     user &&
@@ -85,6 +103,16 @@ const HackathonPage = () => {
     const endDate = new Date(hackathonInfo.end_date)
 
     return now >= scoreStartDate && now < endDate
+  }, [hackathonInfo])
+
+  // Проверка начала хакатона
+  const isStartPeriod = useMemo(() => {
+    if (!hackathonInfo) return false
+
+    const now = new Date()
+    const endDate = new Date(hackathonInfo.start_date)
+
+    return now >= endDate
   }, [hackathonInfo])
 
   // Проверка периода оценки
@@ -126,6 +154,7 @@ const HackathonPage = () => {
                 hasTeam={hasTeam}
                 onHackathonApply={handleApplicationSubmit}
                 isUserTeamApplied={isUserTeamApplied}
+                isUserTeamCaptain={isUserTeamCaptain}
                 hackathonInfo={hackathonInfo}
               />
             ) : null}
@@ -140,13 +169,16 @@ const HackathonPage = () => {
                   <HackathonPageLeaderboard hackathonId={hackathonInfo?.id} />
                 )}
                 <HackathonPageCriteria
+                  isStartPeriod={isStartPeriod}
                   criteria={hackathonInfo?.criteria}
                   criterionForm={criterionForm}
+                  criterionDeletionForm={criterionDeletionForm}
                   handleCriterionCreation={handleCriterionCreation}
                   handleCriterionUpdate={handleCriterionUpdate}
                   handleCriterionDeletion={handleCriterionDeletion}
                 />
                 <HackathonPageJury
+                  isStartPeriod={isStartPeriod}
                   juryInfo={hackathonInfo?.judges}
                   juryForm={juryForm}
                   handleJuryAddition={handleJuryAddition}
