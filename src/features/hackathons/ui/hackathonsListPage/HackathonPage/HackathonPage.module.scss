@@ -1,0 +1,15 @@
+@use './media/mobile';
+@use './media/tablet';
+@use './media/desktop';
+
+.hackathonsContainer {
+  width: 100%;
+
+  .hackathonsContent {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+}
