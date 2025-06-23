@@ -20,7 +20,7 @@ interface ActionModalProps {
   type?: 'actionWithField' | 'actionChoose'
   destructive?: boolean
   submitButtonText: string
-  onSave: (event: React.FormEvent) => Promise<void> | void
+  onSave: (event: React.FormEvent) => Promise<boolean | void> | boolean | void
   contentClassName?: string
   form?: UseFormReturn<any>
   isSubmitting?: boolean
@@ -30,11 +30,8 @@ export const ActionModal = (props: ActionModalProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  console.log('ActionModal rendered, isOpen:', isOpen)
-
   // Запрет на автоматический выбор текста в инпутах
   const preventAutoInputSelection = (e: Event) => {
-    console.log('preventAutoInputSelection called')
     e.preventDefault()
     if (inputRef.current) {
       const input = inputRef.current
@@ -47,22 +44,24 @@ export const ActionModal = (props: ActionModalProps) => {
   // Обработка отправки формы. Если форма не валидна,
   // то не отправляем форму (и не закрываем модалку)
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log('handleSubmit called')
     e.preventDefault()
 
+    // Если есть форма, проверяем валидацию
     if (props.form) {
-      console.log('Checking form validation')
       const isValid = await props.form.trigger()
-      console.log('Form validation result:', isValid)
       if (!isValid) {
+        // Форма не валидна - не отправляем и не закрываем модалку
         return
       }
     }
 
-    console.log('Calling onSave')
-    await props.onSave(e)
-    console.log('Setting isOpen to false')
-    setIsOpen(false)
+    // Форма валидна или её нет - вызываем обработчик
+    const result = await props.onSave(e)
+
+    // Закрываем модалку только если onSave не вернул false
+    if (result !== false) {
+      setIsOpen(false)
+    }
   }
 
   const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
@@ -77,14 +76,11 @@ export const ActionModal = (props: ActionModalProps) => {
     <Dialog
       open={isOpen}
       onOpenChange={open => {
-        console.log('Dialog onOpenChange called with:', open)
         setIsOpen(open)
       }}
     >
       <DialogTrigger asChild>
-        <div onClick={() => console.log('DialogTrigger clicked')}>
-          {props.trigger}
-        </div>
+        <div>{props.trigger}</div>
       </DialogTrigger>
       <DialogContent
         className={clsx(actionModalContent, props.contentClassName)}
