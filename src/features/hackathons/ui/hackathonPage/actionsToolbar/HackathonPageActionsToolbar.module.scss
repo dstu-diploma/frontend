@@ -9,3 +9,23 @@
     justify-content: flex-start;
   }
 }
+
+@media (max-width: 767px) {
+  .hackathonPageInfoToolbar {
+    padding: 1rem !important;
+    .hackathonPageInfoToolbarButtons {
+      width: 100%;
+      a {
+        width: 100%;
+        button {
+          width: 100%;
+        }
+      }
+    }
+    .message {
+      span {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}

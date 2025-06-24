@@ -8,6 +8,9 @@
   font-size: 0.875rem;
   line-height: 1.25rem;
   position: relative;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInadminTab 0.5s ease forwards;
 
   .messageUserInfo {
     display: flex;
@@ -66,5 +69,12 @@
     border-radius: 50%;
     font-size: 0.875rem;
     background-color: #e2e8f0;
+  }
+}
+
+@keyframes fadeInadminTab {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

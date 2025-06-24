@@ -68,7 +68,7 @@ export default function UserPage() {
           <div className={styles.avatarContainer}>
             <div className={styles.avatar}>
               {avatarUrl && !imageError ? (
-                <Image
+                <img
                   className={styles.avatarImage}
                   src={avatarUrl}
                   alt='Аватар пользователя'

@@ -14,6 +14,11 @@
       }
 
       .hackathonPageInfo {
+        .hackathonPageInfoToolbar {
+          button {
+            width: 100%;
+          }
+        }
         .hackathonInfo {
           display: flex;
           flex-direction: column;

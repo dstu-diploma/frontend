@@ -1,9 +1,10 @@
 import {
+  API_URL,
   CHAT_SERVICE_API_URL,
   USER_SERVICE_API_URL,
 } from '@/shared/api/basePaths'
 import Cookies from 'js-cookie'
-import axiosInstance, { API_URL } from '@/shared/api/axios'
+import axiosInstance from '@/shared/api/axios'
 import { type Request } from '@/features/requests/model/types'
 import { notificationService } from './notification.service'
 import axios from 'axios'
@@ -34,6 +35,7 @@ class WebSocketService {
     }
     this.apiKey = apiKey
     this.refreshToken = refreshToken
+    console.log('[WebSocket] Constructor called')
   }
 
   // Получение инстанса соединения
@@ -89,35 +91,58 @@ class WebSocketService {
 
   // Слушатель события получения сообщения с сокета
   private async onMessage(event: MessageEvent<string>): Promise<void> {
+    console.log('[WebSocket] onMessage called')
     try {
+      console.log('[WebSocket] Received event:', event)
       const data = JSON.parse(event.data) as WebSocketMessage
+      console.log('[WebSocket] Parsed data:', data)
 
       // Глобальная обработка событий
       switch (data.action) {
-        case 'request_opened':
+        case 'request_opened': {
+          const openData = data.data as WSOpenRequestData
+          console.log('[WebSocket] Action: request_opened, id:', openData.id)
           const newRequest = await axiosInstance.get<Request>(
-            `${CHAT_SERVICE_API_URL}/${data.data.id}`,
+            `${CHAT_SERVICE_API_URL}/${openData.id}`,
           )
+          console.log('[WebSocket] New request loaded:', newRequest.data)
           notificationService.success(
             `Добавлено новое обращение: «${newRequest.data.subject}»`,
           )
           break
-        case 'message':
+        }
+        case 'message': {
+          const messageData = data.data as WSMessageData
+          console.log(
+            '[WebSocket] Action: message, request_id:',
+            messageData.request_id,
+          )
           const currentRequest = await axiosInstance.get<Request>(
-            `${CHAT_SERVICE_API_URL}/${data.data.request_id}`,
+            `${CHAT_SERVICE_API_URL}/${messageData.request_id}`,
+          )
+          console.log(
+            '[WebSocket] Current request loaded:',
+            currentRequest.data,
           )
           notificationService.success(
             `Пришло новое сообщение в обращение: «${currentRequest.data.subject}»`,
           )
           break
-        case 'request_closed':
+        }
+        case 'request_closed': {
+          const closeData = data.data as WSCloseRequestData
+          console.log('[WebSocket] Action: request_closed, id:', closeData.id)
           const closedRequest = await axiosInstance.get<Request>(
-            `${CHAT_SERVICE_API_URL}/${data.data.id}`,
+            `${CHAT_SERVICE_API_URL}/${closeData.id}`,
           )
+          console.log('[WebSocket] Closed request loaded:', closedRequest.data)
           notificationService.success(
             `Обращение «${closedRequest.data.subject}» закрыто`,
           )
           break
+        }
+        default:
+          console.log('[WebSocket] Unknown action:', data.action)
       }
 
       // Вызываем колбэки подписчиков
@@ -129,59 +154,74 @@ class WebSocketService {
 
   // Слушатель открытия соединения в сокете
   private onOpen(): void {
-    console.log('WebSocket connected')
+    console.log('[WebSocket] onOpen called')
+    console.log('[WebSocket] connected, sending API key:', this.apiKey)
     this.ws?.send(this.apiKey)
+    console.log('[WebSocket] API key sent')
   }
 
   // Слушатель закрытия соединения
   private async onClose(): Promise<void> {
-    console.log('WebSocket disconnected')
-    console.log('Updating API token')
+    console.log('[WebSocket] disconnected')
+    console.log('[WebSocket] Updating API token')
     await this.refreshApiToken()
     this.ws = null
   }
 
   // Слушатель ошибки соединения
   private onError(e: Event): void {
-    console.log('WebSocket error', e)
+    console.log('[WebSocket] error', e)
   }
 
   // Подключение к чат-сервису
   public connect(): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      console.log('WebSocket already connected')
+      console.log('[WebSocket] already connected')
       return
     }
-
+    console.log('[WebSocket] Connecting to ws...')
     this.ws = new WebSocket('http://localhost/chat/ws')
-
     this.ws.onopen = this.onOpen.bind(this)
     this.ws.onmessage = this.onMessage.bind(this)
     this.ws.onclose = this.onClose.bind(this)
     this.ws.onerror = this.onError.bind(this)
+    console.log('[WebSocket] Handlers set, ws state:', this.ws.readyState)
   }
 
   // Подписка на веб-сокет
   public subscribe(callback: MessageCallback): void {
     this.messageCallbacks.push(callback)
+    console.log(
+      '[WebSocket] Subscribed callback. Total:',
+      this.messageCallbacks.length,
+    )
   }
 
   // Отписка от сокета
   public unsubscribe(callback: MessageCallback): void {
     this.messageCallbacks = this.messageCallbacks.filter(cb => cb !== callback)
+    console.log(
+      '[WebSocket] Unsubscribed callback. Total:',
+      this.messageCallbacks.length,
+    )
   }
 
   // Сброс соединения
   public disconnect(): void {
     if (this.ws) {
+      console.log('[WebSocket] Closing connection...')
       this.ws.close()
       this.ws = null
+    } else {
+      console.log('[WebSocket] No connection to close')
     }
   }
 
   // Существует ли открытое соединение
   public isConnected(): boolean {
-    return this.ws?.readyState === WebSocket.OPEN
+    const connected = !!this.ws && this.ws.readyState === WebSocket.OPEN
+    console.log('[WebSocket] isConnected:', connected)
+    return connected
   }
 }
 
@@ -193,10 +233,7 @@ const refresh_token = Cookies.get('refresh_token')
 
 if (access_token && refresh_token) {
   try {
-    wsService = WebSocketService.getInstance(
-      `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NDg2MzE5Mjl9.J1qAW4PJb47xM3LyStRZp9ceGXakujsRkPG-wRnErJ4`,
-      refresh_token,
-    )
+    wsService = WebSocketService.getInstance(access_token, refresh_token)
     wsService.connect()
   } catch (error) {
     console.error('Failed to initialize WebSocket service:', error)

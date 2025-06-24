@@ -34,6 +34,13 @@
           font-weight: 600;
         }
 
+        .formButtons {
+          button {
+            padding: 0.7rem;
+            font-size: 0.7rem;
+          }
+        }
+
         .fieldsContainer {
           padding-top: 1rem;
           border-top: 1px solid rgb(239, 239, 239);
@@ -53,18 +60,22 @@
           }
 
           .formGroup label {
-            font-size: 0.75rem;
+            font-size: 0.875rem;
           }
 
           .formGroup input {
             width: 100%;
-            padding: 0.5rem 0.625rem;
+            padding: 0.75rem 0.875rem;
             border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
             transition: all 0.2s ease;
             background-color: #f8fafc;
             color: #1a202c;
+
+            &:focus {
+              outline: none;
+            }
           }
 
           .errorText {

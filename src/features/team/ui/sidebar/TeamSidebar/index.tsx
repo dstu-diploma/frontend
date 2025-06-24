@@ -31,10 +31,6 @@ const TeamInfoBlock = memo(({ team, teamName }: TeamInfoBlockProps) => {
           </span>
         </li>
         <li className={styles.navItem}>
-          <span className={styles.param}>Запись на хакатоне</span>
-          <span className={styles.value}>Нет</span>
-        </li>
-        <li className={styles.navItem}>
           <span className={styles.param}>Участников</span>
           <span className={styles.value}>{team?.mates.length}</span>
         </li>
