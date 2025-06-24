@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import styles from './userpage.module.scss'
 import { useParams } from 'next/navigation'
 import { ISOStringToDateString } from '@/shared/lib/helpers/date'
