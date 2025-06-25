@@ -93,19 +93,15 @@ class WebSocketService {
   private async onMessage(event: MessageEvent<string>): Promise<void> {
     console.log('[WebSocket] onMessage called')
     try {
-      console.log('[WebSocket] Received event:', event)
       const data = JSON.parse(event.data) as WebSocketMessage
-      console.log('[WebSocket] Parsed data:', data)
 
       // Глобальная обработка событий
       switch (data.action) {
         case 'request_opened': {
           const openData = data.data as WSOpenRequestData
-          console.log('[WebSocket] Action: request_opened, id:', openData.id)
           const newRequest = await axiosInstance.get<Request>(
             `${CHAT_SERVICE_API_URL}/${openData.id}`,
           )
-          console.log('[WebSocket] New request loaded:', newRequest.data)
           notificationService.success(
             `Добавлено новое обращение: «${newRequest.data.subject}»`,
           )
@@ -113,16 +109,8 @@ class WebSocketService {
         }
         case 'message': {
           const messageData = data.data as WSMessageData
-          console.log(
-            '[WebSocket] Action: message, request_id:',
-            messageData.request_id,
-          )
           const currentRequest = await axiosInstance.get<Request>(
             `${CHAT_SERVICE_API_URL}/${messageData.request_id}`,
-          )
-          console.log(
-            '[WebSocket] Current request loaded:',
-            currentRequest.data,
           )
           notificationService.success(
             `Пришло новое сообщение в обращение: «${currentRequest.data.subject}»`,
@@ -131,11 +119,9 @@ class WebSocketService {
         }
         case 'request_closed': {
           const closeData = data.data as WSCloseRequestData
-          console.log('[WebSocket] Action: request_closed, id:', closeData.id)
           const closedRequest = await axiosInstance.get<Request>(
             `${CHAT_SERVICE_API_URL}/${closeData.id}`,
           )
-          console.log('[WebSocket] Closed request loaded:', closedRequest.data)
           notificationService.success(
             `Обращение «${closedRequest.data.subject}» закрыто`,
           )
@@ -180,7 +166,7 @@ class WebSocketService {
       return
     }
     console.log('[WebSocket] Connecting to ws...')
-    this.ws = new WebSocket('http://localhost/chat/ws')
+    this.ws = new WebSocket('https://api.pakosti.online/chat/ws')
     this.ws.onopen = this.onOpen.bind(this)
     this.ws.onmessage = this.onMessage.bind(this)
     this.ws.onclose = this.onClose.bind(this)
