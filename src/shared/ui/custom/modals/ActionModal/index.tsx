@@ -24,6 +24,7 @@ interface ActionModalProps {
   contentClassName?: string
   form?: UseFormReturn<any>
   isSubmitting?: boolean
+  footerActions?: React.ReactNode
 }
 
 export const ActionModal = (props: ActionModalProps) => {
@@ -97,13 +98,19 @@ export const ActionModal = (props: ActionModalProps) => {
             {props.children}
           </div>
           <DialogFooter>
-            <Button
-              variant={props.destructive ? 'destructive' : 'default'}
-              type='submit'
-              disabled={props.isSubmitting}
-            >
-              {props.isSubmitting ? 'Отправка...' : props.submitButtonText}
-            </Button>
+            {props.footerActions ? (
+              <div className={styles.footerActionsContainer}>
+                {props.footerActions}
+              </div>
+            ) : (
+              <Button
+                variant={props.destructive ? 'destructive' : 'default'}
+                type='submit'
+                disabled={props.isSubmitting}
+              >
+                {props.isSubmitting ? 'Отправка...' : props.submitButtonText}
+              </Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>

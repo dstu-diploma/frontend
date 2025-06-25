@@ -92,7 +92,7 @@ export function ProfileAvatar({ profile }: ProfileAvatarProps) {
           >
             {avatarLink ? (
               <AvatarImage
-                src={avatarLink}
+                src={avatarLink ? `${avatarLink}?v=${Date.now()}` : undefined}
                 alt='User avatar'
                 width={150}
                 height={150}

@@ -84,7 +84,10 @@ const HackathonPageCriteria = ({
                     <div className={styles.criterionWeight}>
                       <span className={styles.weightLabel}>вес</span>
                       <span className={styles.weightValue}>
-                        {cropCriteria(criterion.weight)}
+                        {Math.floor(
+                          Number(cropCriteria(criterion.weight)) * 100,
+                        )}
+                        &nbsp;%
                       </span>
                     </div>
                   </HackathonPageOptionCard>

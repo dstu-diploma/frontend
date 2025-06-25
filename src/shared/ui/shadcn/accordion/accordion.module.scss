@@ -50,16 +50,41 @@
 }
 
 @keyframes accordion-down {
-  from { height: 0; opacity: 0; }
-  to { height: var(--radix-accordion-content-height); opacity: 1; }
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
 }
 
 @keyframes accordion-up {
-  from { height: var(--radix-accordion-content-height); opacity: 1; }
-  to { height: 0; opacity: 0; }
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
 }
 
 .accordionContentInner {
   padding-bottom: 1rem;
   padding-top: 0;
+}
+
+// Медиа-запросы для мобильных устройств
+@media (max-width: 767px) {
+  .accordionContent {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+  }
+
+  .accordionContentInner {
+    padding-bottom: 0.5rem;
+    padding-top: 0;
+  }
 }
