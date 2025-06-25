@@ -1,5 +1,5 @@
 // Основной базовый URL для всех API
-export const API_URL = 'http://localhost'
+export const API_URL = 'https://api.pakosti.online'
 
 // Базовые URL для всех сервисов
 export const USER_SERVICE_API_URL = API_URL + '/user'
