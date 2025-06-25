@@ -97,7 +97,7 @@ export const LoginForm = () => {
             </Button>
             <Link href='/register' className={styles.linkButton}>
               <Button type='submit' className={styles.formButton}>
-                Создать аккаунт
+                Регистрация
               </Button>
             </Link>
           </div>

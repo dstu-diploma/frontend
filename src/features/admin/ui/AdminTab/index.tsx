@@ -12,6 +12,8 @@ import AdminAccordionBlock from '../AdminAccordionBlock'
 import { useAdminUsers } from '../../hooks/tabs/users/useAdminUsers'
 import { useAdminBrandTeams } from '../../hooks/tabs/brandTeams/useAdminBrandTeams'
 import { useAdminHackathonTeams } from '../../hooks/tabs/hackathonTeams/useAdminHackathonTeams'
+import { useScreenSize } from '@/providers/ScreenSizeProvider'
+import clsx from 'clsx'
 
 export type AdminTabType = 'users' | 'brandTeams'
 type AdminEntityType = User | TeamInfo
@@ -25,6 +27,7 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
   const { users, isUsersLoading } = useAdminUsers()
   const { brandTeams, isBrandTeamsLoading } = useAdminBrandTeams()
   const { hackathonTeams } = useAdminHackathonTeams()
+  const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
 
   const {
     searchedUsers,
@@ -35,6 +38,13 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
     updateUserFilters,
   } = useAdminTabSearch({ users, brandTeams, hackathonTeams })
 
+  const adminTabManagementTabStyles = clsx(styles.adminTabManagementTab, {
+    [styles.mobile]: isMobile,
+    [styles.tablet]: isTablet,
+    [styles.desktop]: isDesktop,
+    [styles.mediumDesktop]: isMediumDesktop,
+  })
+
   const getTabData = () => {
     switch (tab) {
       case 'users':
@@ -43,7 +53,7 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
           isLoading: isUsersLoading,
           searchTerm: searchTerms.users,
           filterValue: filterValues.users,
-          filterType: 'role' as const,
+          filterType: 'role' as FilterType,
           isFilterActive: filterValues.users && filterValues.users !== 'all',
         }
       case 'brandTeams':
@@ -52,7 +62,7 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
           isLoading: isBrandTeamsLoading,
           searchTerm: searchTerms.brandTeams,
           filterValue: filterValues.brandTeams,
-          filterType: 'team' as const,
+          filterType: 'team' as FilterType,
           isFilterActive:
             filterValues.brandTeams && filterValues.brandTeams !== 'all',
         }
@@ -62,7 +72,7 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
           isLoading: false,
           searchTerm: '',
           filterValue: '',
-          filterType: 'role' as const,
+          filterType: 'role' as FilterType,
           isFilterActive: false,
         }
     }
@@ -84,17 +94,6 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
   const handleFiltersChange = (filters: { role: string; status: string }) => {
     if (tab === 'users') {
       updateUserFilters(filters)
-    }
-  }
-
-  const getFilterTypes = () => {
-    switch (tab) {
-      case 'users':
-        return ['role', 'status'] as FilterType[]
-      case 'brandTeams':
-        return ['team'] as FilterType[]
-      default:
-        return [] as FilterType[]
     }
   }
 
@@ -134,7 +133,7 @@ const AdminTab: React.FC<AdminTabProps> = ({ tab }) => {
     }) ?? []
 
   return (
-    <div className={styles.adminTabManagementTab}>
+    <div className={adminTabManagementTabStyles}>
       <AdminTabFilter
         tab={tab}
         searchInputValue={searchTerm}

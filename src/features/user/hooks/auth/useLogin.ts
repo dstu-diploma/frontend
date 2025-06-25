@@ -1,7 +1,7 @@
 import { useToast } from '@/shared/hooks/use-toast'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import { AxiosError } from 'axios'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { userApi } from '../../api'
 import { LoginFormData } from '../../model/schemas'
@@ -12,22 +12,22 @@ export const useLogin = () => {
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null)
+  const searchParams = useSearchParams()
 
   const { mutate: loginUser, isPending: isSubmitting } = userApi.useLogin()
   const { data: userInfo } = userApi.useGetSingleUser(loggedInUserId!)
 
   useEffect(() => {
-    const redirectReason = localStorage.getItem('login_redirect_reason')
+    const redirectReason = searchParams.get('reason')
     if (redirectReason === 'session_expired') {
       toast({
         title: 'Сессия истекла',
         description: 'Пожалуйста, войдите снова',
         variant: 'destructive',
       })
-      localStorage.removeItem('login_redirect_reason')
     }
     setHasCheckedAuth(true)
-  }, [toast])
+  }, [toast, searchParams])
 
   // Обрабатываем получение данных пользователя после установки ID
   useEffect(() => {

@@ -3,7 +3,7 @@
 @include media(tablet, max) {
   .requestContainer.mobile {
     width: 100%;
-    height: calc(100vh - 72px - 2rem);
+    height: calc(100dvh - 115px - env(safe-area-inset-bottom, 0px));
     box-sizing: border-box;
     .requestContent {
       .requestContentContainer {
@@ -48,6 +48,7 @@
         }
         .requestChatWindow {
           width: 100%;
+          flex: 1;
           margin-top: 0;
           display: flex;
 
@@ -106,7 +107,7 @@
                 border-radius: 0.5rem;
                 font-size: 0.75rem;
                 resize: none;
-                min-height: 40px;
+                min-height: 60px;
                 max-height: 120px;
                 transition: border-color 0.2s ease;
 
@@ -143,5 +144,16 @@
         }
       }
     }
+  }
+}
+
+@media (max-width: 767px) {
+  .requestContentContainer,
+  .requestContent {
+    min-height: 0;
+  }
+  .requestChatWindow {
+    flex: 1;
+    min-height: 0;
   }
 }

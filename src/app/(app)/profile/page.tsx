@@ -234,11 +234,14 @@ export default function ProfilePage() {
               <Label className={styles.detailLabel}>О себе</Label>
               <div className={styles.detailValue}>
                 <CustomMDEditor
-                  value={watch('about') || ''}
+                  value={
+                    typeof watch('about') === 'string' ? watch('about') : ''
+                  }
                   onChange={value => {
                     setValue('about', value || '')
                   }}
                   height={300}
+                  preview='edit'
                 />
               </div>
             </div>

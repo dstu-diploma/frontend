@@ -70,6 +70,16 @@
         flex-direction: column;
 
         .w-md-editor-input {
+          display: flex;
+          order: 1;
+        }
+
+        .w-md-editor-preview {
+          display: flex;
+          order: 2;
+        }
+
+        .w-md-editor-input {
           .w-md-editor-text {
             .wmde-markdown-color pre {
               font-size: 18px;

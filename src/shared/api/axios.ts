@@ -1,8 +1,7 @@
 import axios from 'axios'
 import { cookiesApi } from '../lib/helpers/cookies'
 import { AuthService } from '../lib/services/auth.service'
-
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost'
+import { API_URL } from './basePaths'
 
 const axiosInstance = axios.create({
   baseURL: API_URL,

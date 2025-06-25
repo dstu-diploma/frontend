@@ -150,6 +150,7 @@ const HackathonEditFormContent = ({ form }: HackathonEditFormContentProps) => {
               form.setValue('description', value || '')
             }}
             mdClassName={styles.markdownEditor}
+            preview='edit'
           />
           {form.formState.errors.description && (
             <p className={styles.errorMessage}>

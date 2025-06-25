@@ -30,12 +30,6 @@ export const useCustomToast = () => {
 
         // Если detail - строка
         if (typeof errorData.detail === 'string') {
-          if (
-            errorData.detail ===
-            'Данный пользователь не является членом какой-либо команды!'
-          ) {
-            return
-          }
           dismiss()
           toast({
             title: errorMessage,
@@ -44,7 +38,7 @@ export const useCustomToast = () => {
           })
         }
       }
-      console.warn(errorMessage, error)
+      console.warn(errorMessage)
     },
     [dismiss, toast],
   )

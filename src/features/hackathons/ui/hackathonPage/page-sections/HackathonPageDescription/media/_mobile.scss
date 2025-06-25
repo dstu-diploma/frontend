@@ -1,7 +1,8 @@
 @use '@/shared/styles/mixins' as *;
 
 @include media(tablet, max) {
-  .hackathonDescription {
+  .hackathonDescription.mobile {
+    padding: 1rem;
     .hackathonSectionContainer {
       h4 {
         font-size: 1rem;

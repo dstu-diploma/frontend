@@ -9,20 +9,24 @@ import { Input } from '@/shared/ui/shadcn/input'
 import { Textarea } from '@/shared/ui/shadcn/textarea'
 import { User } from '@/features/user'
 import { type AdminUserFormData } from '@/features/admin/model/schemas'
-import styles from './AdminContentUserForm.module.scss'
 import { useAdminSingleUser } from '@/features/admin/hooks/tabs/users/useAdminSingleUser'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
 import clsx from 'clsx'
 import { cookiesApi } from '@/shared/lib/helpers/cookies'
 import TabSelect from '@/features/admin/ui/AdminTabFilter/TabSelect/TabSelect'
 import { roleMap } from '@/shared/lib/helpers/roleMapping'
+import styles from './AdminContentUserForm.module.scss'
 
 interface AdminContentUserFormProps {
   entity: User
   onSubmit: (data: AdminUserFormData) => void
+  hideButtons?: boolean
 }
 
-const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
+const AdminContentUserForm = ({
+  entity,
+  hideButtons = false,
+}: AdminContentUserFormProps) => {
   const {
     handleSubmit,
     submitHandler,
@@ -225,10 +229,12 @@ const AdminContentUserForm = ({ entity }: AdminContentUserFormProps) => {
           </div>
         </div>
         <div className={styles.accordionBlockFormButtons}>
-          <Button type='submit' disabled={isSubmitting}>
-            {isSubmitting ? 'Сохранение...' : 'Сохранить изменения'}
-          </Button>
-          {entity.role !== 'admin' && (
+          {!hideButtons && (
+            <Button type='submit' disabled={isSubmitting}>
+              {isSubmitting ? 'Сохранение...' : 'Сохранить изменения'}
+            </Button>
+          )}
+          {!hideButtons && entity.role !== 'admin' && (
             <div className={styles.adminButtons}>
               <Button
                 type='button'

@@ -18,8 +18,6 @@ import clsx from 'clsx'
 import { TeamInfo } from '@/features/team/model/types'
 import { useAdminSingleBrandTeam } from '@/features/admin/hooks/tabs/brandTeams/useAdminSingleBrandTeam'
 import Toolbar from '@/shared/ui/custom/misc/Toolbar/Toolbar'
-import { hackathonApi } from '@/features/hackathons/api'
-import { notificationService } from '@/shared/lib/services/notification.service'
 
 interface TeamPageContentProps {
   user: UserPartial

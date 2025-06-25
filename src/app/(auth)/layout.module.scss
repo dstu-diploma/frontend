@@ -1,14 +1,15 @@
 .layout {
-    min-height: 100vh;
-    min-width: 100vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f8fafc;
-    overflow: hidden;
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8fafc;
+  overflow: hidden;
 }
 
 .main {
-    width: 100vh;
-    max-width: 600px;
+  width: 100vh;
+  max-width: 600px;
+  overflow-y: hidden;
 }

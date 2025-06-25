@@ -297,3 +297,32 @@
 .wmde-markdown {
   background-color: white;
 }
+
+.mdEditor :global(.w-md-editor-fullscreen) {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  background: #fff !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.mdEditor :global(.w-md-editor-fullscreen .w-md-editor-content) {
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+}
+
+.mdEditor :global(.w-md-editor-fullscreen .w-md-editor-input),
+.mdEditor :global(.w-md-editor-fullscreen .w-md-editor-preview) {
+  min-height: 0 !important;
+  max-height: 100% !important;
+  height: 100% !important;
+}

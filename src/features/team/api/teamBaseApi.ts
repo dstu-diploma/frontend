@@ -37,7 +37,7 @@ export const teamBaseApi = {
       queryFn: async () => {
         try {
           const response = await axiosInstance.get(
-            `${TEAM_SERVICE_API_URL}/mate`,
+            `${TEAM_SERVICE_API_URL}/mate/`,
           )
           return response.data ?? null
         } catch (error) {

@@ -75,7 +75,7 @@ const MyRequestsPage = () => {
         {user.role !== 'user' ? 'Все' : 'Мои'} обращения
       </h1>
       <div className={styles.requestsContent}>
-        {canCreateRequest && (
+        {canCreateRequest && hackathonsList && hackathonsList.length > 0 && (
           <Toolbar className={styles.requestsToolbar}>
             <ActionModal
               title='Создание обращения'

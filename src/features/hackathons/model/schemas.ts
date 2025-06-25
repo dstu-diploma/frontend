@@ -6,31 +6,41 @@ export const hackathonFormSchema = z
       .string()
       .min(3, 'Название должно содержать минимум 3 символа')
       .max(100, 'Название не должно превышать 100 символов'),
-    max_participant_count: z.coerce.number(),
-    max_team_mates_count: z.coerce.number(),
+    max_participant_count: z.coerce
+      .number()
+      .min(1, 'Число участников должно быть больше 0'),
+    max_team_mates_count: z.coerce
+      .number()
+      .min(1, 'Размер команды должен быть больше 0'),
     description: z.string(),
-    start_date: z.string(),
-    score_start_date: z.string().superRefine((date, ctx) => {
-      const startDate = new Date((ctx.path[0] as any).start_date)
-      const scoreStartDate = new Date(date)
-      if (scoreStartDate < startDate) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message:
-            'Дата начала оценок должна быть не раньше даты начала хакатона',
-        })
-      }
-    }),
-    end_date: z.string().superRefine((date, ctx) => {
-      const scoreStartDate = new Date((ctx.path[0] as any).score_start_date)
-      const endDate = new Date(date)
-      if (endDate < scoreStartDate) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Дата окончания должна быть не раньше даты начала оценок',
-        })
-      }
-    }),
+    start_date: z.string().min(1, 'Укажите дату начала'),
+    score_start_date: z
+      .string()
+      .min(1, 'Укажите дату начала оценивания')
+      .superRefine((date, ctx) => {
+        const startDate = new Date((ctx.path[0] as any).start_date)
+        const scoreStartDate = new Date(date)
+        if (scoreStartDate < startDate) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message:
+              'Дата начала оценок должна быть не раньше даты начала хакатона',
+          })
+        }
+      }),
+    end_date: z
+      .string()
+      .min(1, 'Укажите дату окончания')
+      .superRefine((date, ctx) => {
+        const scoreStartDate = new Date((ctx.path[0] as any).score_start_date)
+        const endDate = new Date(date)
+        if (endDate < scoreStartDate) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Дата окончания должна быть не раньше даты начала оценок',
+          })
+        }
+      }),
   })
   .refine(
     data => {

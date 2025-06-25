@@ -10,7 +10,7 @@ export const hackathonBaseApi = {
       queryKey: ['hackathonList'],
       queryFn: async () => {
         const response = await axiosInstance.get(
-          `${HACKATHON_SERVICE_API_URL}/hackathon/`,
+          `${HACKATHON_SERVICE_API_URL}/`,
         )
         return response.data
       },
@@ -22,7 +22,7 @@ export const hackathonBaseApi = {
       queryKey: ['hackathonById', hackathon_id],
       queryFn: async () => {
         const response = await axiosInstance.get(
-          `${HACKATHON_SERVICE_API_URL}/hackathon/${hackathon_id}`,
+          `${HACKATHON_SERVICE_API_URL}/${hackathon_id}`,
         )
         return response.data
       },
@@ -45,7 +45,7 @@ export const hackathonBaseApi = {
       queryKey: ['hackathonTeams', hackathon_id],
       queryFn: async () => {
         const response = await axiosInstance.get(
-          `${HACKATHON_SERVICE_API_URL}/hackathon/${hackathon_id}/teams`,
+          `${HACKATHON_SERVICE_API_URL}/${hackathon_id}/teams`,
         )
         return response.data
       },

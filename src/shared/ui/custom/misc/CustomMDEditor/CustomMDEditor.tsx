@@ -1,5 +1,8 @@
 import React from 'react'
-import MDEditor, { PreviewType } from '@uiw/react-md-editor'
+import MDEditor, {
+  PreviewType,
+  commands as mdCommands,
+} from '@uiw/react-md-editor'
 import styles from './CustomMDEditor.module.scss'
 import clsx from 'clsx'
 import { useScreenSize } from '@/providers/ScreenSizeProvider'
@@ -17,6 +20,8 @@ interface CustomMDEditorProps {
   hideToolbar?: boolean | undefined
   mdClassName?: string
   wrapperClassName?: string
+  fullscreen?: boolean
+  extraCommands?: any[]
 }
 
 const CustomMDEditor = ({
@@ -32,6 +37,8 @@ const CustomMDEditor = ({
   hideToolbar,
   mdClassName,
   wrapperClassName,
+  fullscreen,
+  extraCommands,
 }: CustomMDEditorProps) => {
   const { isMobile, isTablet, isDesktop, isMediumDesktop } = useScreenSize()
   const mdEditorStyles = clsx(styles.mdEditor, wrapperClassName, {
@@ -40,6 +47,13 @@ const CustomMDEditor = ({
     [styles.desktop]: isDesktop,
     [styles.mediumDesktop]: isMediumDesktop,
   })
+
+  const defaultExtraCommands = [
+    mdCommands.codeEdit,
+    mdCommands.codePreview,
+    mdCommands.divider,
+    mdCommands.fullscreen,
+  ]
 
   return (
     <div className={mdEditorStyles}>
@@ -55,6 +69,8 @@ const CustomMDEditor = ({
         tabSize={tabSize || 2}
         className={mdClassName}
         hideToolbar={hideToolbar || false}
+        fullscreen={fullscreen}
+        extraCommands={extraCommands || defaultExtraCommands}
       />
     </div>
   )

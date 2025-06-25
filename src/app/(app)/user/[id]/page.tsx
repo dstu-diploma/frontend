@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import styles from './userpage.module.scss'
 import { useParams } from 'next/navigation'
 import { ISOStringToDateString } from '@/shared/lib/helpers/date'
@@ -68,7 +67,7 @@ export default function UserPage() {
           <div className={styles.avatarContainer}>
             <div className={styles.avatar}>
               {avatarUrl && !imageError ? (
-                <Image
+                <img
                   className={styles.avatarImage}
                   src={avatarUrl}
                   alt='Аватар пользователя'

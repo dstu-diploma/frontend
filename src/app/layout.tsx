@@ -10,6 +10,9 @@ import { UserProvider } from '@/providers/UserProvider'
 export const metadata: Metadata = {
   title: '404 - Страница не найдена',
   description: 'Страница не найдена',
+  icons: {
+    icon: '/favicon.png',
+  },
 }
 
 interface RootLayoutProps {

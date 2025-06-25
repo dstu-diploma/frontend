@@ -1,8 +1,30 @@
 .invitesContainer {
+  h3 {
+    margin-top: 10px;
+  }
   .invites {
-      margin-top: 20px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .invitesContainer {
+    h3 {
+      margin-top: 25px;
+      font-size: 1.125rem;
+    }
+    .invites {
+      margin-top: 15px;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.25rem;
+
+      span {
+        font-size: 0.875rem;
+      }
+    }
   }
 }

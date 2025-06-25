@@ -30,7 +30,6 @@ const HackathonList = () => {
 
   return (
     <div className={styles.hackathons}>
-      <h4>Список хакатонов</h4>
       <div className={styles.hackathonsList}>
         {allHackathons && allHackathons.length > 0 ? (
           allHackathons.map(renderHackathonCard)

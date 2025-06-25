@@ -13,7 +13,7 @@ import {
 import { Hackathon } from '@/features/hackathons/model/types'
 import { DescriptionFormData } from '@/features/hackathons/model/schemas'
 import { UseFormReturn } from 'react-hook-form'
-import { isAdmin, isAdminOrOrganizer } from '@/shared/lib/helpers/roleMapping'
+import { isAdminOrOrganizer } from '@/shared/lib/helpers/roleMapping'
 import '@uiw/react-md-editor/markdown-editor.css'
 import '@uiw/react-markdown-preview/markdown.css'
 import styles from './HackathonPageDescription.module.scss'
@@ -62,6 +62,7 @@ const HackathonPageDescription = ({
                       <CustomMDEditor
                         value={field.value}
                         onChange={field.onChange}
+                        preview='edit'
                       />
                     </FormControl>
                     <FormMessage />
